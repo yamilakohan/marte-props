@@ -491,6 +491,7 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
 
 <script>
 const SURL='https://script.google.com/macros/s/AKfycbxX11I0g-_auQW1Jw67Tbqq4VKbtqyZumUXj0yz4sYgbkImdeAqvDpDYi3HB1lWpIH_Pg/exec';
+const SURL_POST='https://script.google.com/macros/s/AKfycbxX11I0g-_auQW1Jw67Tbqq4VKbtqyZumUXj0yz4sYgbkImdeAqvDpDYi3HB1lWpIH_Pg/exec';
 const SK='marte_v4';
 const STOCK_EDITS_KEY='marte_stock_edits_v1';
 let STOCK=[],loaded=false,SEL=[],pendCod=null,editKey=null,editItems=[];
@@ -501,6 +502,31 @@ let calVista='mes',calDate=new Date();
 
 function saveRL(){try{localStorage.setItem(SK,JSON.stringify(RL));}catch(e){}}
 function loadRL(){try{const d=localStorage.getItem(SK);if(d)RL=JSON.parse(d);}catch(e){RL={};}}
+
+// POST to Apps Script
+function postToSheet(data){
+  return fetch(SURL_POST,{
+    method:'POST',
+    body:JSON.stringify(data)
+  }).then(r=>r.json()).catch(e=>({ok:false,error:e.toString()}));
+}
+
+// Load remitos from Sheet (merges with local cache)
+function loadRemitosFromSheet(){
+  const fetchUrl = SURL_POST + '?action=getRemitos&nocache=' + Date.now();
+  fetch(fetchUrl)
+    .then(r=>r.json())
+    .then(remitos=>{
+      if(Array.isArray(remitos)){
+        // Merge sheet remitos into RL
+        remitos.forEach(r=>{RL[r.numero]=r;});
+        saveRL();
+        renderDash();filterH();
+        if($('section-remitos')&&$('section-remitos').classList.contains('active'))renderRemitos();
+      }
+    })
+    .catch(e=>console.log('Sheet remitos load failed:',e));
+}
 const $=id=>document.getElementById(id);
 const fmt=n=>{if(!n&&n!==0)return'—';return'$\u00A0'+Math.round(n).toLocaleString('es-AR');};
 const fD=d=>d?d.split('-').reverse().join('/'):'—';
@@ -666,6 +692,7 @@ function avEst(num){
   ensureLocal(num);
   RL[num].estado=nextEst(RL[num].estado||'borrador');
   saveRL();
+  postToSheet({action:'updateEstado',numero:num,valor:RL[num].estado}).catch(()=>{});
   if($('section-remitos').classList.contains('active'))renderRemitos();
   if($('section-dashboard').classList.contains('active'))renderDash();
 }
@@ -673,6 +700,7 @@ function avPago(num){
   ensureLocal(num);
   RL[num].pago=nextPago(RL[num].pago||'pendiente');
   saveRL();
+  postToSheet({action:'updatePago',numero:num,valor:RL[num].pago}).catch(()=>{});
   if($('section-remitos').classList.contains('active'))renderRemitos();
   if($('section-dashboard').classList.contains('active'))renderDash();
 }
@@ -760,7 +788,7 @@ function confirmOcup(){
 function renderRes(){
   const ta=SEL.reduce((s,i)=>s+i.alq,0),tg=SEL.reduce((s,i)=>s+i.gtia,0);
   $('nr-cnt').textContent=SEL.length;$('t-alq').textContent=fmt(ta);$('t-30').textContent=fmt(Math.round(ta*1.2));$('t-gtia').textContent=fmt(tg);
-  $('r-items').innerHTML=SEL.map(i=>`<div class="ri">${imgT(i.foto,32)}<div style="flex:1;padding:0 6px;min-width:0;"><div style="font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${i.nombre}${i.conflicto?' ⚠':''}</div><div style="font-size:10px;color:var(--mut);">${fmt(i.alq)}</div></div><button class="xbtn" onclick="togItem(${i.cod})">×</button></div>`).join('')||'<div style="font-size:12px;color:var(--mut);padding:8px 0;">Ningún item seleccionado</div>';
+  $('r-items').innerHTML=SEL.map(i=>{const ef=getEffectiveStock().find(s=>s.cod===i.cod);const url=i.foto||(ef?ef.foto:'');return`<div class="ri">${imgT(url,32)}<div style="flex:1;padding:0 6px;min-width:0;"><div style="font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${i.nombre}${i.conflicto?' ⚠':''}</div><div style="font-size:10px;color:var(--mut);">${fmt(i.alq)}</div></div><button class="xbtn" onclick="togItem(${i.cod})">×</button></div>`;}).join('')||'<div style="font-size:12px;color:var(--mut);padding:8px 0;">Ningún item seleccionado</div>';
 }
 function clearSel(){SEL=[];renderIS();renderRes();}
 function saveAndView(){
@@ -769,7 +797,7 @@ function saveAndView(){
   if(!num){alert('Ingresá el número de remito.');return;}
   if(!cli){alert('Ingresá el nombre del cliente.');return;}
   const ret=$('nr-r').value,dev=$('nr-d').value;
-  RL[num]={numero:num,cliente:cli,retiro:ret,devolucion:dev,
+  const remitoData={numero:num,cliente:cli,retiro:ret,devolucion:dev,
     fecha:new Date().toISOString().slice(0,10),
     items:SEL.map(i=>({cod:i.cod,desc:i.nombre,alq:i.alq,gtia:i.gtia,foto:i.foto,conflicto:i.conflicto||false})),
     pago:RL[num]?RL[num].pago:'pendiente',
@@ -778,7 +806,13 @@ function saveAndView(){
     gtipo:$('nr-gtipo').value||'',
     gref:$('nr-gref').value||'',
   };
-  saveRL();goSec('remitos');
+  RL[num]=remitoData;
+  saveRL();
+  // Sync to Sheet
+  postToSheet({action:'saveRemito',remito:remitoData})
+    .then(r=>{if(!r.ok)console.log('Sheet sync error:',r.error);})
+    .catch(e=>console.log('Sheet sync failed:',e));
+  goSec('remitos');
   setTimeout(()=>{setTab('p');$('sel-prev').value=num;renderPrev();},60);
 }
 
@@ -846,7 +880,7 @@ function buildRemito(r){
         <th style="padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);border-bottom:0.5px solid var(--bor);text-align:right;">Alq./sem</th>
       </tr></thead>
       <tbody>${r.items.map(i=>`<tr style="border-bottom:0.5px solid var(--bor);">
-        <td style="padding:8px 10px;">${i.foto?`<img src="${i.foto}" style="width:56px;height:56px;object-fit:cover;border-radius:6px;" onerror="this.style.visibility='hidden'"/>`:'<div style="width:56px;height:56px;background:var(--tag);border-radius:6px;"></div>'}</td>
+        <td style="padding:8px 10px;">${(()=>{const ef=getEffectiveStock().find(s=>s.cod===i.cod);const url=i.foto||(ef?ef.foto:'');return url?`<img src="${url}" style="width:56px;height:56px;object-fit:cover;border-radius:6px;" onerror="this.style.visibility='hidden'"/>`:'<div style="width:56px;height:56px;background:var(--tag);border-radius:6px;"></div>'})()}</td>
         <td style="padding:8px 10px;font-size:12px;color:var(--mut);">${i.cod}</td>
         <td style="padding:8px 10px;font-size:13px;">${i.desc}${i.conflicto?' <span style="font-size:10px;color:var(--atx);">⚠</span>':''}</td>
         <td style="padding:8px 10px;font-size:13px;text-align:center;">1</td>
@@ -907,9 +941,12 @@ function saveEdit(){
   const pago=RL[editKey]?RL[editKey].pago:'pendiente';
   const fecha=RL[editKey]?RL[editKey].fecha:new Date().toISOString().slice(0,10);
   if(editKey!==num)delete RL[editKey];
-  RL[num]={numero:num,cliente:cli,retiro:$('er').value,devolucion:$('ed2').value,fecha,items:editItems,pago,
+  const editedRemito={numero:num,cliente:cli,retiro:$('er').value,devolucion:$('ed2').value,fecha,items:editItems,pago,
     estado:$('eest').value,facturador:$('efact').value,gtipo:$('egtipo').value,gref:$('egref').value};
-  saveRL();closeM('m-edit');renderRemitos();
+  RL[num]=editedRemito;
+  saveRL();
+  postToSheet({action:'saveRemito',remito:editedRemito}).catch(()=>{});
+  closeM('m-edit');renderRemitos();
 }
 
 // CALENDARIO
@@ -1138,6 +1175,7 @@ function guardarItem(){
   const isNew=editingItemCod===null&&!STOCK.find(s=>s.cod===cod);
   STOCK_EDITS[cod]={cod,nombre,cat,alq,gtia,foto,medidas,isNew};
   saveStockEdits();
+  postToSheet({action:'saveStockEdit',item:{cod,nombre,cat,alq,gtia,foto,medidas,isNew}}).catch(()=>{});
   closeM('m-item');
   filterSES();initCats();renderIS();filterS();
   alert('Guardado correctamente.');
@@ -1180,7 +1218,7 @@ function updateStockField(cod,field,val){
 }
 
 
-loadRL();loadStockEdits();renderDash();filterH();loadStock();
+loadRL();loadStockEdits();renderDash();filterH();loadStock();setTimeout(loadRemitosFromSheet,2000);
 
 
 function toggleNav(){
