@@ -408,7 +408,7 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
 </div>
 
 <script>
-const SURL='https://script.google.com/macros/s/AKfycbxX11I0g-_auQW1Jw67Tbqq4VKbtqyZumUXj0yz4sYgbkImdeAqvDpDYi3HB1lWpIH_Pg/exec';
+const SURL='https://script.googleusercontent.com/macros/echo?user_content_key=AWDtjMX7YN3GOTU2G7lwnPjvf-7iue2AddHus9bsx95iYdsAFvJjEqHD_0Si49vM7hVBj0REr-ye09H8JAdzoC2zIvjRE085s2ElzZtxszvtWeADiRN0kPnbuJOYTOSYy1FHCYJBrbTGkexZt7GyPN24Imwc-yXEJH0djup-ZcR1j1qrPylLtcuk4mtk-l8I8LTfQlsLaubZ0fbeYZnZnofIuopa5zmuDHKRwi43d6Iuai_ZbtIG9CBlFC5vBK8sntLRkMlkEJL5QwQXEDcn3feP-XUJ6PXkpVw5SC_Wlpo1&lib=MfqAuIu9sz5rCSd7pSEMEW11DU9AiyABu';
 const SK='marte_v4';
 let STOCK=[],loaded=false,SEL=[],pendCod=null,editKey=null,editItems=[];
 let RL={};
@@ -485,7 +485,7 @@ const HB=[
 
 function getAllR(){
   const base=HB.map(h=>({numero:h.n,cliente:h.c,retiro:h.r,devolucion:h.dv,fecha:h.f,
-    items:h.it.map(i=>{const s=STOCK.find(x=>x.cod===i.a);return{cod:i.a,desc:i.d,alq:i.p,gtia:s?s.gtia:0,foto:s?s.foto:''};}),,
+    items:h.it.map(i=>{const s=STOCK.find(x=>x.cod===i.a);return{cod:i.a,desc:i.d,alq:i.p,gtia:s?s.gtia:0,foto:s?s.foto:''};}),
     pago:'pagado',estado:'finalizado',facturador:'',gtipo:'cheque',gref:'',isBase:true}));
   const loc=Object.values(RL);
   const locN=new Set(loc.map(r=>r.numero));
