@@ -408,7 +408,7 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
 </div>
 
 <script>
-const SURL='https://script.googleusercontent.com/macros/echo?user_content_key=AWDtjMX7YN3GOTU2G7lwnPjvf-7iue2AddHus9bsx95iYdsAFvJjEqHD_0Si49vM7hVBj0REr-ye09H8JAdzoC2zIvjRE085s2ElzZtxszvtWeADiRN0kPnbuJOYTOSYy1FHCYJBrbTGkexZt7GyPN24Imwc-yXEJH0djup-ZcR1j1qrPylLtcuk4mtk-l8I8LTfQlsLaubZ0fbeYZnZnofIuopa5zmuDHKRwi43d6Iuai_ZbtIG9CBlFC5vBK8sntLRkMlkEJL5QwQXEDcn3feP-XUJ6PXkpVw5SC_Wlpo1&lib=MfqAuIu9sz5rCSd7pSEMEW11DU9AiyABu';
+const SURL='https://script.google.com/macros/s/AKfycbxX11I0g-_auQW1Jw67Tbqq4VKbtqyZumUXj0yz4sYgbkImdeAqvDpDYi3HB1lWpIH_Pg/exec';
 const SK='marte_v4';
 let STOCK=[],loaded=false,SEL=[],pendCod=null,editKey=null,editItems=[];
 let RL={};
@@ -501,30 +501,51 @@ function getOcup(desde,hasta,excl=null){
   return o;
 }
 
+function processStockData(data){
+  const dot=$('sdot'),txt=$('stxt');
+  try{
+    STOCK=data.filter(r=>r.cod&&String(r.cod).trim()&&String(r.cod).trim()!=='ART.').map(r=>({
+      cat:String(r.rubro||'').trim(),
+      foto:exUrl(r.foto||''),
+      cod:parseInt(String(r.cod).replace(/\D/g,''))||0,
+      nombre:String(r.nombre||'').trim(),
+      gtia:pNum(r.gtia),alq:pNum(r.alq),
+      medidas:String(r.medidas||'').trim()
+    })).filter(r=>r.cod>0&&r.nombre);
+    loaded=true;dot.style.background='#4ade80';
+    txt.textContent=STOCK.filter(s=>s.alq>0).length+' items cargados ✓';
+    initCats();renderDash();renderIS();filterS();filterH();
+    if($('section-calendario').classList.contains('active'))renderCal();
+  }catch(e){dot.style.background='#ef4444';txt.textContent='Error al procesar stock';console.error(e);}
+}
 function loadStock(){
-  const dot=$('sdot'),txt=$('stxt');dot.style.background='#f59e0b';
+  const dot=$('sdot'),txt=$('stxt');
+  dot.style.background='#f59e0b';
+  txt.textContent='Cargando stock...';
+  // Intento 1: fetch directo con no-cors no funciona, usamos JSONP con la URL del script
+  // pero primero hacemos fetch para ver si responde
   const cb='mpcb_'+Date.now();
+  let done=false;
   window[cb]=function(data){
-    try{
-      STOCK=data.filter(r=>r.cod&&String(r.cod).trim()&&String(r.cod).trim()!=='ART.').map(r=>({
-        cat:String(r.rubro||'').trim(),
-        foto:exUrl(r.foto||''),
-        cod:parseInt(String(r.cod).replace(/\D/g,''))||0,
-        nombre:String(r.nombre||'').trim(),
-        gtia:pNum(r.gtia),alq:pNum(r.alq),
-        medidas:String(r.medidas||'').trim()
-      })).filter(r=>r.cod>0&&r.nombre);
-      loaded=true;dot.style.background='#4ade80';
-      txt.textContent=STOCK.filter(s=>s.alq>0).length+' items cargados ✓';
-      initCats();renderDash();renderIS();filterS();filterH();
-      if($('section-calendario').classList.contains('active'))renderCal();
-    }catch(e){dot.style.background='#ef4444';txt.textContent='Error al cargar stock';console.error(e);}
+    if(done)return;done=true;
+    processStockData(data);
     delete window[cb];
   };
+  // Timeout: si en 12 segundos no cargó, mostrar error con instrucciones
+  const timer=setTimeout(()=>{
+    if(!done){
+      done=true;
+      delete window[cb];
+      dot.style.background='#ef4444';
+      txt.textContent='Sin conexión al stock — recargá la página';
+    }
+  },12000);
   const s=document.createElement('script');
-  s.crossOrigin='anonymous';
-  s.onerror=()=>{$('sdot').style.background='#ef4444';$('stxt').textContent='Sin conexión al stock';delete window[cb];};
-  s.src=SURL+'?callback='+cb+'&t='+Date.now();
+  s.onerror=()=>{
+    if(!done){done=true;clearTimeout(timer);delete window[cb];
+    dot.style.background='#ef4444';txt.textContent='Error de conexión al stock';}
+  };
+  s.src=SURL+'?callback='+cb+'&nocache='+Date.now();
   document.head.appendChild(s);
 }
 
