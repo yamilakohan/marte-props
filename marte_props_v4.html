@@ -626,7 +626,7 @@ function processStockData(data){
     txt.textContent=STOCK.filter(s=>s.alq>0).length+' items cargados ✓';
     initCats();renderDash();renderIS();filterS();filterH();
     if($('section-calendario').classList.contains('active'))renderCal();
-      var _sp=$('sel-prev');if(_sp&&_sp.value)setTimeout(renderPrev,200);
+      var _sp=$('sel-prev');if(_sp&&_sp.value)setTimeout(renderPrev,200);else setTimeout(patchRemitoFotos,200);
   }catch(e){dot.style.background='#ef4444';txt.textContent='Error al procesar stock';console.error(e);}
 }
 function loadStock(){
@@ -853,6 +853,7 @@ function setTab(t){
 function renderPrev(){
   const num=$('sel-prev').value;if(!num){$('prev-content').innerHTML='';return;}
   const r=getAllR().find(x=>x.numero===num);if(!r)return;buildRemito(r);
+  if(loaded)setTimeout(patchRemitoFotos,50);
 }
 function buildRemito(r){
   const tot=r.items.reduce((s,i)=>s+(i.alq||0),0);
@@ -881,7 +882,7 @@ function buildRemito(r){
         <th style="padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);border-bottom:0.5px solid var(--bor);text-align:right;">Alq./sem</th>
       </tr></thead>
       <tbody>${r.items.map(i=>`<tr style="border-bottom:0.5px solid var(--bor);">
-        <td style="padding:8px 10px;">${(()=>{const ef=getEffectiveStock().find(s=>String(s.cod)===String(i.cod));const url=i.foto||(ef?ef.foto:'');return url?`<img src="${url}" style="width:56px;height:56px;object-fit:cover;border-radius:6px;" onerror="this.style.visibility='hidden'"/>`:'<div style="width:56px;height:56px;background:var(--tag);border-radius:6px;"></div>'})()}</td>
+        <td style="padding:8px 10px;">${(()=>{const ef=getEffectiveStock().find(s=>String(s.cod)===String(i.cod));const url=i.foto||(ef?ef.foto:'');return url?`<img src="${url}" style="width:56px;height:56px;object-fit:cover;border-radius:6px;" onerror="this.style.visibility='hidden'"/>`:`<div data-cod="${i.cod}" style="width:56px;height:56px;background:var(--tag);border-radius:6px;"></div>`;})()}</td>
         <td style="padding:8px 10px;font-size:12px;color:var(--mut);">${i.cod}</td>
         <td style="padding:8px 10px;font-size:13px;">${i.desc}${i.conflicto?' <span style="font-size:10px;color:var(--atx);">⚠</span>':''}</td>
         <td style="padding:8px 10px;font-size:13px;text-align:center;">1</td>
@@ -1221,6 +1222,27 @@ function updateStockField(cod,field,val){
 
 loadRL();loadStockEdits();renderDash();filterH();loadStock();setTimeout(loadRemitosFromSheet,2000);
 
+
+function patchRemitoFotos(){
+  // Find all foto placeholder divs in the remito preview and replace with real images
+  var preview=$('prev-content');
+  if(!preview)return;
+  var cells=preview.querySelectorAll('td');
+  cells.forEach(function(td){
+    var div=td.querySelector('div[data-cod]');
+    if(!div)return;
+    var cod=div.getAttribute('data-cod');
+    var ef=getEffectiveStock().find(function(s){return String(s.cod)===String(cod);});
+    if(ef&&ef.foto){
+      var img=document.createElement('img');
+      img.src=ef.foto;
+      img.style.cssText='width:56px;height:56px;object-fit:cover;border-radius:6px;';
+      img.onerror=function(){this.style.visibility='hidden';};
+      td.innerHTML='';
+      td.appendChild(img);
+    }
+  });
+}
 
 function toggleNav(){
   const nav=document.querySelector('nav');
