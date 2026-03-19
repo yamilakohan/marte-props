@@ -112,14 +112,35 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
 .week-cell{border-left:0.5px solid var(--bor);border-bottom:0.5px solid var(--bor);min-height:28px;padding:2px;}
 .week-event{font-size:10px;padding:2px 4px;border-radius:3px;margin-bottom:1px;}
 @media print{nav,header,.tabs,.sbar,.btn,.rcard,#tab-lista-div,#rcontrols,.mbg{display:none!important;}main{padding:0;}.sec{display:none!important;}#section-remitos{display:block!important;}#tab-preview-div{display:block!important;}}
-@media(max-width:700px){nav{display:none;}.g2,.g4,.g3{grid-template-columns:1fr;}.rbuilder{grid-template-columns:1fr;}.rcard{position:static;}}
+@media(max-width:700px){
+  nav{position:fixed;left:-220px;top:56px;height:calc(100vh - 56px);z-index:150;transition:left .25s;box-shadow:2px 0 12px rgba(0,0,0,.15);}
+  nav.open{left:0;}
+  #menu-toggle{display:flex!important;}
+  .g2,.g4,.g3{grid-template-columns:1fr;}
+  .rbuilder{grid-template-columns:1fr;}
+  .rcard{position:static;}
+  main{padding:1rem;}
+  .stitle{font-size:20px;}
+  table{font-size:12px;}
+  th,td{padding:7px 8px;}
+  .metric{padding:.7rem .9rem;}
+  .mv{font-size:18px;}
+}
 </style>
 </head>
 <body>
 <header>
-  <h1>★ Marte Props</h1>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <button id="menu-toggle" onclick="toggleNav()" style="background:none;border:none;color:#fff;cursor:pointer;padding:4px;display:none;flex-direction:column;gap:4px;" aria-label="Menu">
+      <span style="display:block;width:20px;height:2px;background:#fff;border-radius:1px;"></span>
+      <span style="display:block;width:20px;height:2px;background:#fff;border-radius:1px;"></span>
+      <span style="display:block;width:20px;height:2px;background:#fff;border-radius:1px;"></span>
+    </button>
+    <h1>★ Marte Props</h1>
+  </div>
   <span style="font-size:12px;opacity:.8;display:flex;align-items:center;"><span class="dot" id="sdot"></span><span id="stxt">Conectando...</span></span>
 </header>
+<div id="nav-overlay" onclick="closeNav()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:149;"></div>
 
 <!-- MODAL OCUPADO -->
 <div class="mbg" id="m-ocup">
@@ -1002,6 +1023,24 @@ function closeM(id){$(id).classList.remove('open');}
 document.querySelectorAll('.mbg').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
 
 loadRL();renderDash();filterH();loadStock();
+
+function toggleNav(){
+  const nav=document.querySelector('nav');
+  const overlay=$('nav-overlay');
+  const isOpen=nav.classList.contains('open');
+  if(isOpen){nav.classList.remove('open');overlay.style.display='none';}
+  else{nav.classList.add('open');overlay.style.display='block';}
+}
+function closeNav(){
+  document.querySelector('nav').classList.remove('open');
+  $('nav-overlay').style.display='none';
+}
+// Close nav when selecting a section on mobile
+document.querySelectorAll('.ni').forEach(n=>{
+  n.addEventListener('click',()=>{
+    if(window.innerWidth<=700)closeNav();
+  });
+});
 </script>
 </body>
 </html>
