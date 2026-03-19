@@ -492,8 +492,10 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
 <script>
 const SURL='https://script.google.com/macros/s/AKfycbxX11I0g-_auQW1Jw67Tbqq4VKbtqyZumUXj0yz4sYgbkImdeAqvDpDYi3HB1lWpIH_Pg/exec';
 const SK='marte_v4';
+const STOCK_EDITS_KEY='marte_stock_edits_v1';
 let STOCK=[],loaded=false,SEL=[],pendCod=null,editKey=null,editItems=[];
 let RL={};
+let STOCK_EDITS={};
 // CALENDARIO
 let calVista='mes',calDate=new Date();
 
@@ -1093,9 +1095,6 @@ loadRL();loadStockEdits();renderDash();filterH();loadStock();
 
 
 // STOCK EDITOR
-const STOCK_EDITS_KEY='marte_stock_edits_v1';
-let STOCK_EDITS={};
-
 function loadStockEdits(){
   try{const d=localStorage.getItem(STOCK_EDITS_KEY);if(d)STOCK_EDITS=JSON.parse(d);}catch(e){STOCK_EDITS={};}
 }
