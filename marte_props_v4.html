@@ -626,6 +626,7 @@ function processStockData(data){
     txt.textContent=STOCK.filter(s=>s.alq>0).length+' items cargados ✓';
     initCats();renderDash();renderIS();filterS();filterH();
     if($('section-calendario').classList.contains('active'))renderCal();
+      var _sp=$('sel-prev');if(_sp&&_sp.value)setTimeout(renderPrev,200);
   }catch(e){dot.style.background='#ef4444';txt.textContent='Error al procesar stock';console.error(e);}
 }
 function loadStock(){
@@ -788,7 +789,7 @@ function confirmOcup(){
 function renderRes(){
   const ta=SEL.reduce((s,i)=>s+i.alq,0),tg=SEL.reduce((s,i)=>s+i.gtia,0);
   $('nr-cnt').textContent=SEL.length;$('t-alq').textContent=fmt(ta);$('t-30').textContent=fmt(Math.round(ta*1.2));$('t-gtia').textContent=fmt(tg);
-  $('r-items').innerHTML=SEL.map(i=>{const ef=getEffectiveStock().find(s=>s.cod===i.cod);const url=i.foto||(ef?ef.foto:'');return`<div class="ri">${imgT(url,32)}<div style="flex:1;padding:0 6px;min-width:0;"><div style="font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${i.nombre}${i.conflicto?' ⚠':''}</div><div style="font-size:10px;color:var(--mut);">${fmt(i.alq)}</div></div><button class="xbtn" onclick="togItem(${i.cod})">×</button></div>`;}).join('')||'<div style="font-size:12px;color:var(--mut);padding:8px 0;">Ningún item seleccionado</div>';
+  $('r-items').innerHTML=SEL.map(i=>{const ef=getEffectiveStock().find(s=>String(s.cod)===String(i.cod));const url=i.foto||(ef?ef.foto:'');return`<div class="ri">${imgT(url,32)}<div style="flex:1;padding:0 6px;min-width:0;"><div style="font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${i.nombre}${i.conflicto?' ⚠':''}</div><div style="font-size:10px;color:var(--mut);">${fmt(i.alq)}</div></div><button class="xbtn" onclick="togItem(${i.cod})">×</button></div>`;}).join('')||'<div style="font-size:12px;color:var(--mut);padding:8px 0;">Ningún item seleccionado</div>';
 }
 function clearSel(){SEL=[];renderIS();renderRes();}
 function saveAndView(){
@@ -880,7 +881,7 @@ function buildRemito(r){
         <th style="padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);border-bottom:0.5px solid var(--bor);text-align:right;">Alq./sem</th>
       </tr></thead>
       <tbody>${r.items.map(i=>`<tr style="border-bottom:0.5px solid var(--bor);">
-        <td style="padding:8px 10px;">${(()=>{const ef=getEffectiveStock().find(s=>s.cod===i.cod);const url=i.foto||(ef?ef.foto:'');return url?`<img src="${url}" style="width:56px;height:56px;object-fit:cover;border-radius:6px;" onerror="this.style.visibility='hidden'"/>`:'<div style="width:56px;height:56px;background:var(--tag);border-radius:6px;"></div>'})()}</td>
+        <td style="padding:8px 10px;">${(()=>{const ef=getEffectiveStock().find(s=>String(s.cod)===String(i.cod));const url=i.foto||(ef?ef.foto:'');return url?`<img src="${url}" style="width:56px;height:56px;object-fit:cover;border-radius:6px;" onerror="this.style.visibility='hidden'"/>`:'<div style="width:56px;height:56px;background:var(--tag);border-radius:6px;"></div>'})()}</td>
         <td style="padding:8px 10px;font-size:12px;color:var(--mut);">${i.cod}</td>
         <td style="padding:8px 10px;font-size:13px;">${i.desc}${i.conflicto?' <span style="font-size:10px;color:var(--atx);">⚠</span>':''}</td>
         <td style="padding:8px 10px;font-size:13px;text-align:center;">1</td>
