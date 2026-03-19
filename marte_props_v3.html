@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>★ Marte Props — v3</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#FAFAF7;--sur:#fff;--bor:#E8E4DC;--txt:#1A1916;--mut:#6B6860;--acc:#1A1916;--tag:#F0EDE6;
+--gbg:#EAF3DE;--gtx:#3B6D11;--rbg:#FCEBEB;--rtx:#A32D2D;--abg:#FAEEDA;--atx:#854F0B;--bbg:#E6F1FB;--btx:#185FA5;
+--pbg:#EEEDFE;--ptx:#3C3489;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;display:flex;flex-direction:column;}
+header{background:var(--acc);color:#fff;padding:0 1.5rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;flex-shrink:0;}
+header h1{font-family:'DM Serif Display',serif;font-size:20px;}
+.dot{width:8px;height:8px;border-radius:50%;background:#888;display:inline-block;margin-right:6px;transition:background .3s;}
+.layout{display:flex;flex:1;min-height:calc(100vh - 56px);}
+nav{width:210px;background:var(--sur);border-right:1px solid var(--bor);padding:1rem 0;flex-shrink:0;}
+.ni{display:flex;align-items:center;gap:8px;padding:9px 1.2rem;cursor:pointer;font-size:13px;color:var(--mut);border-left:2px solid transparent;transition:all .15s;}
+.ni:hover{color:var(--txt);background:var(--bg);}
+.ni.active{color:var(--txt);font-weight:500;border-left-color:var(--acc);background:var(--bg);}
+.ns{padding:6px 1.2rem 3px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mut);margin-top:6px;}
+main{flex:1;overflow-y:auto;padding:1.5rem;}
+.sec{display:none;}.sec.active{display:block;}
+.card{background:var(--sur);border:0.5px solid var(--bor);border-radius:12px;padding:1.25rem;}
+.stitle{font-family:'DM Serif Display',serif;font-size:24px;margin-bottom:1.25rem;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.metric{background:var(--sur);border:0.5px solid var(--bor);border-radius:10px;padding:.9rem 1.1rem;}
+.ml{font-size:11px;color:var(--mut);letter-spacing:.5px;margin-bottom:5px;}
+.mv{font-size:20px;font-weight:300;font-family:'DM Serif Display',serif;}
+.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:500;}
+.bg{background:var(--gbg);color:var(--gtx);}
+.br{background:var(--rbg);color:var(--rtx);}
+.ba{background:var(--abg);color:var(--atx);}
+.bb{background:var(--bbg);color:var(--btx);}
+.bp2{background:var(--pbg);color:var(--ptx);}
+.bgr{background:var(--tag);color:var(--mut);}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-family:inherit;font-weight:500;transition:all .15s;}
+.bp{background:var(--acc);color:#fff;}.bp:hover{opacity:.85;}
+.bs{background:transparent;border:0.5px solid var(--bor);color:var(--txt);}.bs:hover{background:var(--bg);}
+.bd{background:var(--rbg);border:0.5px solid var(--rtx);color:var(--rtx);}
+.bsm{padding:5px 11px;font-size:12px;}
+input,select,textarea{font-family:inherit;font-size:13px;padding:8px 11px;border:0.5px solid var(--bor);border-radius:8px;background:var(--sur);color:var(--txt);width:100%;outline:none;}
+input:focus,select:focus,textarea:focus{border-color:var(--acc);}
+label{font-size:12px;color:var(--mut);display:block;margin-bottom:3px;}
+table{width:100%;border-collapse:collapse;}
+th{font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--mut);font-weight:500;text-align:left;padding:9px 12px;border-bottom:0.5px solid var(--bor);}
+td{font-size:13px;padding:9px 12px;border-bottom:0.5px solid var(--bor);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
+.sbar{display:flex;gap:8px;margin-bottom:1.2rem;align-items:center;}.sbar input{flex:1;}
+.tabs{display:flex;border-bottom:0.5px solid var(--bor);margin-bottom:1.2rem;}
+.tab{padding:9px 16px;font-size:13px;cursor:pointer;color:var(--mut);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;}
+.tab.active{color:var(--txt);font-weight:500;border-bottom-color:var(--acc);}
+.isel{background:var(--sur);border:0.5px solid var(--bor);border-radius:10px;max-height:460px;overflow-y:auto;}
+.irow{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:0.5px solid var(--bor);transition:background .1s;}
+.irow:hover{background:var(--bg);}.irow:last-child{border-bottom:none;}.irow.ocup{background:#fffbeb;}
+.rbuilder{display:grid;grid-template-columns:1fr 370px;gap:1.25rem;align-items:start;}
+.rcard{background:var(--sur);border:0.5px solid var(--bor);border-radius:12px;padding:1.1rem;position:sticky;top:16px;}
+.ri{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:0.5px solid var(--bor);font-size:12px;}
+.ri:last-child{border-bottom:none;}
+.xbtn{background:none;border:none;cursor:pointer;color:var(--mut);font-size:15px;padding:0 3px;}
+.xbtn:hover{color:var(--rtx);}
+.agrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;}
+.icard{background:var(--sur);border:0.5px solid var(--bor);border-radius:10px;padding:.9rem;}
+.prow{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:0.5px solid var(--bor);}
+.prow:last-child{border-bottom:none;}
+.chip{background:var(--tag);padding:3px 9px;border-radius:20px;font-size:11px;}
+.srow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--bor);font-size:13px;}
+.srow:last-child{border-bottom:none;}
+.barbg{background:var(--bor);border-radius:4px;height:5px;margin-top:3px;}
+.barfill{background:var(--acc);border-radius:4px;height:5px;}
+.ldg{text-align:center;padding:2rem;color:var(--mut);font-size:13px;}
+.spin{display:inline-block;width:20px;height:20px;border:2px solid var(--bor);border-top-color:var(--acc);border-radius:50%;animation:sp .8s linear infinite;margin-right:8px;vertical-align:middle;}
+@keyframes sp{to{transform:rotate(360deg)}}
+.warn{background:#fffbeb;border:1px solid #f59e0b;border-radius:8px;padding:10px 14px;font-size:13px;color:#854F0B;margin-bottom:10px;display:flex;align-items:flex-start;gap:8px;}
+/* ESTADO REMITO */
+.estbtn{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;border:none;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.est-borrador{background:#F1EFE8;color:#5F5E5A;}
+.est-confirmado{background:var(--bbg);color:var(--btx);}
+.est-entregado{background:var(--abg);color:var(--atx);}
+.est-devuelto{background:var(--pbg);color:var(--ptx);}
+.est-finalizado{background:var(--gbg);color:var(--gtx);}
+/* PAGO */
+.pbtn{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;border:none;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.p-pendiente{background:var(--rbg);color:var(--rtx);}
+.p-facturado{background:var(--abg);color:var(--atx);}
+.p-pagado{background:var(--gbg);color:var(--gtx);}
+/* MODAL */
+.mbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center;}
+.mbg.open{display:flex;}
+.modal{background:var(--sur);border-radius:16px;padding:1.75rem;width:90%;max-height:90vh;overflow-y:auto;}
+.modal h2{font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:1rem;}
+/* CALENDARIO */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.cal-day-name{text-align:center;font-size:11px;color:var(--mut);padding:6px 0;font-weight:500;}
+.cal-day{min-height:80px;background:var(--sur);border:0.5px solid var(--bor);border-radius:6px;padding:4px;cursor:pointer;transition:background .1s;}
+.cal-day:hover{background:var(--bg);}
+.cal-day.other-month{opacity:.35;}
+.cal-day.today{border-color:var(--acc);border-width:1.5px;}
+.cal-day-num{font-size:12px;font-weight:500;margin-bottom:3px;}
+.cal-chip{font-size:9px;padding:1px 4px;border-radius:4px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;}
+.cal-chip.retiro{background:var(--abg);color:var(--atx);}
+.cal-chip.devolucion{background:var(--gbg);color:var(--gtx);}
+.cal-chip.activo{background:var(--bbg);color:var(--btx);}
+/* SEMANA */
+.week-grid{display:grid;grid-template-columns:80px repeat(7,1fr);gap:0;}
+.week-header{text-align:center;font-size:11px;color:var(--mut);padding:8px 4px;border-bottom:0.5px solid var(--bor);font-weight:500;}
+.week-time{font-size:10px;color:var(--mut);padding:4px 6px;border-right:0.5px solid var(--bor);text-align:right;}
+.week-cell{border-left:0.5px solid var(--bor);border-bottom:0.5px solid var(--bor);min-height:28px;padding:2px;}
+.week-event{font-size:10px;padding:2px 4px;border-radius:3px;margin-bottom:1px;}
+@media print{nav,header,.tabs,.sbar,.btn,.rcard,#tab-lista-div,#rcontrols,.mbg{display:none!important;}main{padding:0;}.sec{display:none!important;}#section-remitos{display:block!important;}#tab-preview-div{display:block!important;}}
+@media(max-width:700px){nav{display:none;}.g2,.g4,.g3{grid-template-columns:1fr;}.rbuilder{grid-template-columns:1fr;}.rcard{position:static;}}
+</style>
+</head>
+<body>
+<header>
+  <h1>★ Marte Props</h1>
+  <span style="font-size:12px;opacity:.8;display:flex;align-items:center;"><span class="dot" id="sdot"></span><span id="stxt">Conectando...</span></span>
+</header>
+
+<!-- MODAL OCUPADO -->
+<div class="mbg" id="m-ocup">
+  <div class="modal" style="max-width:460px;">
+    <h2>⚠ Item no disponible</h2>
+    <p id="m-ocup-msg" style="font-size:14px;line-height:1.7;color:var(--mut);margin-bottom:1.5rem;"></p>
+    <div style="display:flex;gap:8px;">
+      <button class="btn bd" onclick="confirmOcup()">Agregar igual (con advertencia)</button>
+      <button class="btn bs" onclick="closeM('m-ocup')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDITAR REMITO -->
+<div class="mbg" id="m-edit">
+  <div class="modal" style="max-width:760px;">
+    <h2>Editar remito</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.9rem;margin-bottom:1rem;">
+      <div><label>Número</label><input id="en" type="text"/></div>
+      <div><label>Cliente / Productora</label><input id="ec" type="text"/></div>
+      <div><label>Facturado por</label>
+        <select id="efact">
+          <option value="">— Sin asignar —</option>
+          <option value="Ed">Ed</option>
+          <option value="Yami">Yami</option>
+        </select>
+      </div>
+      <div><label>Retiro</label><input id="er" type="date"/></div>
+      <div><label>Devolución</label><input id="ed2" type="date"/></div>
+      <div><label>Estado del remito</label>
+        <select id="eest">
+          <option value="borrador">Borrador</option>
+          <option value="confirmado">Confirmado</option>
+          <option value="entregado">Entregado</option>
+          <option value="devuelto">Devuelto</option>
+          <option value="finalizado">Finalizado ✓</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-bottom:1rem;">
+      <div><label>Garantía — tipo</label>
+        <select id="egtipo">
+          <option value="">— Sin garantía —</option>
+          <option value="cheque">Cheque</option>
+          <option value="transferencia">Transferencia</option>
+          <option value="efectivo">Efectivo</option>
+          <option value="otro">Otro</option>
+        </select>
+      </div>
+      <div><label>Número / referencia de garantía</label><input id="egref" type="text" placeholder="Ej: Nº 00123456 o CBU..."/></div>
+    </div>
+    <div style="font-size:12px;color:var(--mut);margin-bottom:6px;">Items en el remito</div>
+    <div id="eil" style="max-height:180px;overflow-y:auto;border:0.5px solid var(--bor);border-radius:8px;margin-bottom:1rem;"></div>
+    <div style="font-size:12px;color:var(--mut);margin-bottom:6px;">Agregar items</div>
+    <input id="esa" type="text" placeholder="Buscar item para agregar..." oninput="renderESR()" style="margin-bottom:6px;"/>
+    <div id="esr" style="max-height:180px;overflow-y:auto;border:0.5px solid var(--bor);border-radius:8px;margin-bottom:1rem;"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;padding-top:.5rem;border-top:0.5px solid var(--bor);">
+      <button class="btn bp" onclick="saveEdit()">Guardar cambios</button>
+      <button class="btn bs" onclick="closeM('m-edit')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DETALLE CALENDARIO -->
+<div class="mbg" id="m-cal">
+  <div class="modal" style="max-width:500px;">
+    <h2 id="m-cal-title"></h2>
+    <div id="m-cal-content"></div>
+    <div style="margin-top:1rem;display:flex;gap:8px;">
+      <button class="btn bs" onclick="closeM('m-cal')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <nav>
+    <div class="ns">Principal</div>
+    <div class="ni active" onclick="goSec('dashboard')">◈ Dashboard</div>
+    <div class="ns">Remitos</div>
+    <div class="ni" onclick="goSec('nuevo-remito')">＋ Nuevo remito</div>
+    <div class="ni" onclick="goSec('remitos')">◻ Ver remitos</div>
+    <div class="ns">Calendario</div>
+    <div class="ni" onclick="goSec('calendario')">◷ Calendario</div>
+    <div class="ns">Inventario</div>
+    <div class="ni" onclick="goSec('disponibilidad')">◎ Disponibilidad</div>
+    <div class="ni" onclick="goSec('stock')">▣ Stock completo</div>
+    <div class="ns">Análisis</div>
+    <div class="ni" onclick="goSec('historial')">⊡ Historial</div>
+    <div class="ni" onclick="goSec('estadisticas')">◈ Estadísticas</div>
+  </nav>
+  <main>
+
+    <!-- DASHBOARD -->
+    <div id="section-dashboard" class="sec active">
+      <p class="stitle">Dashboard</p>
+      <div class="g4" style="margin-bottom:1.25rem;">
+        <div class="metric"><div class="ml">Items en catálogo</div><div class="mv" id="m-s">—</div></div>
+        <div class="metric"><div class="ml">Remitos totales</div><div class="mv" id="m-r">—</div></div>
+        <div class="metric"><div class="ml">Clientes únicos</div><div class="mv" id="m-c">—</div></div>
+        <div class="metric"><div class="ml">Recaudación total</div><div class="mv" id="m-t">—</div></div>
+      </div>
+      <div class="g2" style="margin-bottom:1rem;">
+        <div class="card"><div style="font-weight:500;font-size:14px;margin-bottom:.9rem;">Remitos recientes</div><div id="d-rem"></div></div>
+        <div class="card"><div style="font-weight:500;font-size:14px;margin-bottom:.9rem;">Estado de pagos</div><div id="d-pago"></div></div>
+      </div>
+      <div class="card"><div style="font-weight:500;font-size:14px;margin-bottom:.9rem;">Próximos retiros y devoluciones</div><div id="d-proximos"></div></div>
+    </div>
+
+    <!-- NUEVO REMITO -->
+    <div id="section-nuevo-remito" class="sec">
+      <p class="stitle">Nuevo remito</p>
+      <div class="card" style="margin-bottom:1.25rem;">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem;margin-bottom:.9rem;">
+          <div><label>Número</label><input id="nr-n" type="text" placeholder="11-1236"/></div>
+          <div><label>Cliente / Productora</label><input id="nr-c" type="text" placeholder="Nombre - Productora"/></div>
+          <div><label>Facturado por</label>
+            <select id="nr-fact">
+              <option value="">— Sin asignar —</option>
+              <option value="Ed">Ed</option>
+              <option value="Yami">Yami</option>
+            </select>
+          </div>
+          <div><label>Fecha de retiro</label><input id="nr-r" type="date" onchange="renderIS()"/></div>
+          <div><label>Fecha de devolución</label><input id="nr-d" type="date" onchange="renderIS()"/></div>
+          <div><label>Estado inicial</label>
+            <select id="nr-est">
+              <option value="borrador">Borrador</option>
+              <option value="confirmado">Confirmado</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.9rem;">
+          <div><label>Garantía — tipo</label>
+            <select id="nr-gtipo">
+              <option value="">— Sin garantía —</option>
+              <option value="cheque">Cheque</option>
+              <option value="transferencia">Transferencia</option>
+              <option value="efectivo">Efectivo</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+          <div><label>Número / referencia de garantía</label><input id="nr-gref" type="text" placeholder="Ej: Nº 00123456"/></div>
+        </div>
+      </div>
+      <div id="av-fechas" class="warn" style="display:none;">⚠ Ingresá las fechas de retiro y devolución para ver disponibilidad en tiempo real.</div>
+      <div class="rbuilder">
+        <div>
+          <div class="sbar">
+            <input id="nr-s" type="text" placeholder="Buscar por nombre o código..." oninput="renderIS()"/>
+            <select id="nr-cat" onchange="renderIS()" style="width:auto;min-width:140px;"></select>
+          </div>
+          <div id="isel" class="isel"><div class="ldg"><span class="spin"></span>Cargando items...</div></div>
+        </div>
+        <div>
+          <div class="rcard">
+            <div style="font-weight:500;font-size:14px;margin-bottom:.9rem;display:flex;justify-content:space-between;">
+              <span>Seleccionados</span><span id="nr-cnt" style="font-weight:300;color:var(--mut);">0</span>
+            </div>
+            <div id="r-items" style="max-height:260px;overflow-y:auto;"></div>
+            <div style="padding-top:10px;margin-top:4px;border-top:0.5px solid var(--bor);">
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span style="color:var(--mut);">Alquiler 1 semana</span><span id="t-alq" style="font-weight:500;">$ 0</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span style="color:var(--mut);">+ 20% diferido 30 días</span><span id="t-30">$ 0</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;padding-top:8px;border-top:0.5px solid var(--bor);"><span style="color:var(--mut);">Garantía total</span><span id="t-gtia" style="font-weight:500;">$ 0</span></div>
+            </div>
+            <div style="margin-top:.9rem;display:flex;flex-direction:column;gap:7px;">
+              <button class="btn bp" onclick="saveAndView()" style="width:100%;justify-content:center;">Guardar y ver remito →</button>
+              <button class="btn bs bsm" onclick="clearSel()" style="width:100%;justify-content:center;">Limpiar selección</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VER REMITOS -->
+    <div id="section-remitos" class="sec">
+      <p class="stitle">Remitos</p>
+      <div class="tabs">
+        <div class="tab active" id="tl" onclick="setTab('l')">Lista</div>
+        <div class="tab" id="tp" onclick="setTab('p')">Vista previa / Imprimir</div>
+      </div>
+      <div id="tab-lista-div">
+        <div class="sbar">
+          <input id="sr" type="text" placeholder="Buscar por número, cliente o facturador..." oninput="filterR()"/>
+          <select id="fil-est" onchange="filterR()" style="width:auto;min-width:140px;">
+            <option value="">Todos los estados</option>
+            <option value="borrador">Borrador</option>
+            <option value="confirmado">Confirmado</option>
+            <option value="entregado">Entregado</option>
+            <option value="devuelto">Devuelto</option>
+            <option value="finalizado">Finalizado</option>
+          </select>
+        </div>
+        <div class="card" style="padding:0;overflow:auto;">
+          <table><thead><tr>
+            <th>N° Remito</th><th>Cliente</th><th>Retiro</th><th>Devolución</th>
+            <th>Items</th><th>Total</th><th>Estado remito</th><th>Pago</th><th>Facturó</th><th>Acciones</th>
+          </tr></thead>
+          <tbody id="r-table"></tbody></table>
+        </div>
+      </div>
+      <div id="tab-preview-div" style="display:none;">
+        <div id="rcontrols" style="margin-bottom:.9rem;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <select id="sel-prev" style="width:auto;min-width:260px;" onchange="renderPrev()"><option value="">Seleccionar remito...</option></select>
+          <button class="btn bsm bs" onclick="window.print()">🖨 Imprimir / PDF</button>
+        </div>
+        <div id="prev-content"></div>
+      </div>
+    </div>
+
+    <!-- CALENDARIO -->
+    <div id="section-calendario" class="sec">
+      <p class="stitle">Calendario</p>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px;">
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button class="btn bs bsm" onclick="calPrev()">←</button>
+          <span id="cal-label" style="font-weight:500;font-size:15px;min-width:160px;text-align:center;"></span>
+          <button class="btn bs bsm" onclick="calNext()">→</button>
+          <button class="btn bs bsm" onclick="calHoy()">Hoy</button>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn bsm" id="cal-btn-mes" onclick="setCalVista('mes')" style="background:var(--acc);color:#fff;">Mes</button>
+          <button class="btn bs bsm" id="cal-btn-sem" onclick="setCalVista('semana')">Semana</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;margin-bottom:1rem;font-size:12px;">
+        <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:var(--abg);display:inline-block;"></span>Retiro</span>
+        <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:var(--gbg);display:inline-block;"></span>Devolución</span>
+        <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:var(--bbg);display:inline-block;"></span>En curso</span>
+      </div>
+      <div class="card" style="padding:.9rem;">
+        <div id="cal-container"></div>
+      </div>
+    </div>
+
+    <!-- DISPONIBILIDAD -->
+    <div id="section-disponibilidad" class="sec">
+      <p class="stitle">Disponibilidad</p>
+      <div class="card" style="margin-bottom:1.25rem;">
+        <div style="display:flex;gap:.9rem;align-items:flex-end;flex-wrap:wrap;">
+          <div style="flex:1;min-width:150px;"><label>Desde</label><input type="date" id="dd"/></div>
+          <div style="flex:1;min-width:150px;"><label>Hasta</label><input type="date" id="dh"/></div>
+          <div style="flex:1;min-width:140px;"><label>Categoría</label><select id="dcat"><option value="">Todas</option></select></div>
+          <button class="btn bp" onclick="checkDisp()">Consultar</button>
+        </div>
+      </div>
+      <div id="disp-res"></div>
+    </div>
+
+    <!-- STOCK -->
+    <div id="section-stock" class="sec">
+      <p class="stitle">Stock completo</p>
+      <div class="sbar">
+        <input id="ss" type="text" placeholder="Buscar..." oninput="filterS()"/>
+        <select id="scat" onchange="filterS()" style="width:auto;min-width:140px;"><option value="">Todas</option></select>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden;">
+        <table><thead><tr><th style="width:56px;">Foto</th><th>Código</th><th>Nombre</th><th>Categoría</th><th>Garantía</th><th>Alquiler/sem</th></tr></thead>
+        <tbody id="s-table"><tr><td colspan="6" class="ldg"><span class="spin"></span>Cargando...</td></tr></tbody></table>
+      </div>
+    </div>
+
+    <!-- HISTORIAL -->
+    <div id="section-historial" class="sec">
+      <p class="stitle">Historial</p>
+      <div class="sbar"><input id="sh" type="text" placeholder="Buscar por cliente o artículo..." oninput="filterH()"/></div>
+      <div class="card" style="padding:0;overflow:hidden;">
+        <table><thead><tr><th>Remito</th><th>Fecha</th><th>Cliente</th><th>Retiro</th><th>Devolución</th><th>Artículo</th><th>Alquiler</th></tr></thead>
+        <tbody id="h-table"></tbody></table>
+      </div>
+    </div>
+
+    <!-- ESTADÍSTICAS -->
+    <div id="section-estadisticas" class="sec">
+      <p class="stitle">Estadísticas</p>
+      <div class="g2" style="margin-bottom:1.25rem;">
+        <div class="card"><div style="font-weight:500;font-size:14px;margin-bottom:.9rem;">Items más alquilados</div><div id="top-i"></div></div>
+        <div class="card"><div style="font-weight:500;font-size:14px;margin-bottom:.9rem;">Mejores clientes</div><div id="top-c"></div></div>
+      </div>
+      <div class="g2">
+        <div class="card"><div style="font-weight:500;font-size:14px;margin-bottom:.9rem;">Recaudación por categoría</div><div id="top-cat"></div></div>
+        <div class="card"><div style="font-weight:500;font-size:14px;margin-bottom:.9rem;">Facturación por persona</div><div id="top-fact"></div></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+const SURL='https://script.google.com/macros/s/AKfycbxX11I0g-_auQW1Jw67Tbqq4VKbtqyZumUXj0yz4sYgbkImdeAqvDpDYi3HB1lWpIH_Pg/exec';
+const SK='marte_v4';
+let STOCK=[],loaded=false,SEL=[],pendCod=null,editKey=null,editItems=[];
+let RL={};
+// CALENDARIO
+let calVista='mes',calDate=new Date();
+
+function saveRL(){try{localStorage.setItem(SK,JSON.stringify(RL));}catch(e){}}
+function loadRL(){try{const d=localStorage.getItem(SK);if(d)RL=JSON.parse(d);}catch(e){RL={};}}
+const $=id=>document.getElementById(id);
+const fmt=n=>{if(!n&&n!==0)return'—';return'$\u00A0'+Math.round(n).toLocaleString('es-AR');};
+const fD=d=>d?d.split('-').reverse().join('/'):'—';
+
+// CLAVE: extrae URL de =IMAGE("url";2) o =IMAGE("url") o url directa
+function exUrl(raw){
+  if(!raw)return'';
+  const s=String(raw).trim();
+  // URL directa
+  if(s.startsWith('http')){
+    return cleanWixUrl(s);
+  }
+  // =IMAGE("https://...";2) — formato europeo Google Sheets
+  const m=s.match(/=IMAGE\s*\(\s*"(https?:\/\/[^"]+)"/i);
+  if(m) return cleanWixUrl(m[1]);
+  // Comilla simple
+  const m2=s.match(/=IMAGE\s*\(\s*'(https?:\/\/[^']+)'/i);
+  if(m2) return cleanWixUrl(m2[1]);
+  // Cualquier URL en el texto
+  const m3=s.match(/https?:\/\/[^"';,\)\s]+/i);
+  return m3?cleanWixUrl(m3[0]):'';
+}
+function cleanWixUrl(url){
+  if(!url)return'';
+  // Wix sirve imágenes en /media/ID~mv2.jpg/v1/fill/w_X,h_Y,.../ID~mv2.jpg
+  // Extraemos la URL base limpia: https://static.wixstatic.com/media/ID~mv2.jpg
+  const wix=url.match(/(https?:\/\/[^/]+\/media\/[^/~]+~mv2\.[a-z]+)/i);
+  if(wix) return wix[1];
+  return url.replace(/[;,\s]+$/,'');
+}
+function pNum(v){if(!v&&v!==0)return 0;return parseFloat(String(v).replace(/[^\d.,]/g,'').replace(',','.'))||0;}
+function imgT(url,sz=44){
+  if(!url)return`<div style="width:${sz}px;height:${sz}px;border-radius:6px;background:var(--tag);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--mut);">—</div>`;
+  return`<img src="${url}" style="width:${sz}px;height:${sz}px;object-fit:cover;border-radius:6px;flex-shrink:0;" onerror="this.style.visibility='hidden'"/>`;
+}
+
+// ESTADOS REMITO
+const EST_ORDER=['borrador','confirmado','entregado','devuelto','finalizado'];
+const EST_LABEL={borrador:'Borrador',confirmado:'Confirmado',entregado:'Entregado',devuelto:'Devuelto',finalizado:'Finalizado ✓'};
+const EST_CLASS={borrador:'est-borrador',confirmado:'est-confirmado',entregado:'est-entregado',devuelto:'est-devuelto',finalizado:'est-finalizado'};
+function nextEst(e){const i=EST_ORDER.indexOf(e);return EST_ORDER[(i+1)%EST_ORDER.length];}
+
+// ESTADOS PAGO
+const PAGO_ORDER=['pendiente','facturado','pagado'];
+const PAGO_LABEL={pendiente:'Pendiente',facturado:'Facturado',pagado:'Pagado'};
+const PAGO_CLASS={pendiente:'p-pendiente',facturado:'p-facturado',pagado:'p-pagado'};
+function nextPago(p){const i=PAGO_ORDER.indexOf(p||'pendiente');return PAGO_ORDER[(i+1)%PAGO_ORDER.length];}
+
+const HB=[
+  {n:"11-1217",f:"2025-12-19",c:"Camila Colauti - Moria - About Ent.",r:"2025-12-17",dv:"2025-12-23",it:[{a:20001,d:"FASANO",p:11500},{a:20002,d:"CARTERA PARMA",p:10500},{a:20021,d:"CARTERA RITA",p:12500},{a:20022,d:"CARTERA SOLAR",p:12500},{a:20023,d:"CARTERA MOSS",p:10500},{a:20029,d:"CARTERA BRIGITTE",p:11500},{a:20031,d:"CARTERA MERLINA",p:12500},{a:20036,d:"SARITA",p:14500},{a:20045,d:"CARTERA BERTA",p:10500},{a:20049,d:"CARTERA BARBARA",p:9500},{a:20052,d:"CARTERA XL CUERO",p:14500},{a:35006,d:"RIÑONERA NEGRA SAMSONITE",p:9500}]},
+  {n:"11-1218",f:"2026-01-06",c:"Ana Arenas - Corto Enerc",r:"2026-01-06",dv:"2026-01-12",it:[{a:25300,d:"CARRO DE LIMPIEZA + BALDE",p:16500}]},
+  {n:"11-1219",f:"2026-01-06",c:"24/7 - Ann Altmark / Malen Cortes",r:"2026-01-05",dv:"2026-01-12",it:[{a:25001,d:"MALETIN PORTAFOLIO NEGRO",p:18500},{a:25008,d:"MALETIN MARRON MADRID",p:16500},{a:25009,d:"MALETÍN PORTFOLIO ZUELA",p:16500},{a:25012,d:"MALETÍN BORDEAUX",p:16500},{a:15035,d:"MOCHILA NEGRA UNICROSS",p:10500},{a:15063,d:"MOCHILA MR. TRAVOLTA",p:10500},{a:36500,d:"LLAVERO EFRAÍM CUERO",p:6500}]},
+  {n:"11-1220",f:"2026-01-21",c:"Luli Kohn",r:"2026-01-19",dv:"2026-01-26",it:[{a:1024,d:"CARRY ON IT LUGGAGE PLATA",p:16500},{a:1009,d:"CARRY ON DUDLEY NEGRA",p:15000},{a:1002,d:"CARRY ON AMAYRA NUDE",p:16500},{a:1011,d:"CARRY ON RÍGIDA BLACK",p:15000},{a:1025,d:"CARRY ON FONDA",p:19500},{a:1013,d:"CARRY ON UNICROSS PELTRE",p:15000}]},
+  {n:"11-1224",f:"2026-02-10",c:"Loreta Palombo - Labhouse - Lacoste",r:"2026-02-06",dv:"2026-02-09",it:[{a:11014,d:"BOLSO PIED DE POUL BLAQUE",p:16500},{a:11032,d:"BOLSO LEBOWSKI",p:14500},{a:15006,d:"MOCHILA GABARDINA MARRON",p:10500},{a:20002,d:"CARTERA PARMA",p:10500},{a:25002,d:"MALETIN PORTAFOLIO CUERO",p:18500},{a:25009,d:"MALETÍN PORTFOLIO ZUELA",p:16500}]},
+  {n:"11-1225",f:"2026-02-04",c:"Paz Miqueles Echarri - Not Normal",r:"2026-02-18",dv:"2026-02-20",it:[{a:15006,d:"MOCHILA GABARDINA MARRON",p:10500},{a:15043,d:"MOCHILA AVELLANA GORRION",p:13500},{a:15052,d:"MOCHILA VILLICUM",p:10500},{a:36201,d:"CÁMARA ROLLO RACHELE",p:12000}]},
+  {n:"11-1226",f:"2026-02-04",c:"Natalia Atencio - 24/7 - DELL",r:"2026-02-05",dv:"2026-02-09",it:[{a:36502,d:"LLAVERO SALA GRANDE",p:8500},{a:36500,d:"LLAVERO EFRAÍM CUERO",p:8500}]},
+  {n:"11-1227",f:"2026-02-04",c:"Sofia Benseñor - Casta Diva",r:"2026-02-09",dv:"2026-02-13",it:[{a:35100,d:"PORTAPAPELES VACAVALIENTE JENGIBRE",p:14500},{a:35101,d:"SOBRE VACAVALIENTE JENGIBRE",p:12500},{a:15026,d:"MOCHILA AZUL COLLEGE",p:10500},{a:15065,d:"MOCHILA TURQUEZA AVIADOR",p:14500},{a:20012,d:"CANASTA CHANIA",p:14500},{a:30032,d:"BOLSA RAYADA AZUL Y BLANCA",p:10500}]},
+  {n:"11-1228",f:"2026-02-05",c:"Daniela Bracamonte",r:"2026-02-06",dv:"2026-02-10",it:[{a:15034,d:"MOCHILA CAMPING 60LT BEIGE",p:20000}]},
+  {n:"11-1229",f:"2026-02-13",c:"Malen Motzo",r:"2026-02-13",dv:"2026-02-18",it:[{a:36500,d:"LLAVERO EFRAÍM CUERO",p:8500},{a:35100,d:"PORTAPAPELES VACAVALIENTE",p:14500},{a:15063,d:"MOCHILA MR. TRAVOLTA",p:10500},{a:15065,d:"MOCHILA TURQUEZA AVIADOR",p:14500}]},
+  {n:"11-1230",f:"2026-02-24",c:"Julieta Figallo",r:"2026-02-24",dv:"2026-02-26",it:[{a:1022,d:"CARRY ON AMAYRA ROSE GOLD",p:16500}]},
+  {n:"11-1232",f:"2026-03-11",c:"Ann Altmark 24.7",r:"2026-03-13",dv:"2026-03-18",it:[{a:1023,d:"CARRY ON BLANCO IT",p:15000},{a:2005,d:"VALIJA GRANDE BLANCO IT",p:14500},{a:1029,d:"CARRY ON BRETÓN",p:16500},{a:30611,d:"MATE TÉRMICO DISCOVERY",p:12500},{a:30602,d:"CANASTA MATERA CUERO",p:12500},{a:11033,d:"BOLSO TRAVEL FONDA",p:14500}]},
+  {n:"11-1233",f:"2026-03-16",c:"Mec Barbero - 24/7",r:"2026-03-17",dv:"2026-03-25",it:[{a:15006,d:"MOCHILA GABARDINA MARRON",p:10500},{a:25364,d:"TABLERO DE DIBUJO TECNICO",p:8000},{a:11018,d:"BOLSO CUERO DE DESCARNE",p:16500},{a:11024,d:"BOLSO SIMIL CUERO MARRON",p:14500},{a:20010,d:"FLOWERS FLOWERS",p:10500},{a:1015,d:"CARRY ON UNICROSS AZUL OSCURO",p:15000},{a:1025,d:"CARRY ON FONDA",p:19500},{a:35515,d:"NECESSAIRE TRAVEL FONDA",p:6500},{a:30030,d:"BOLSA DE TELA ARIZONA",p:8500},{a:25003,d:"MALETIN CUERO TRAMA",p:18500},{a:25013,d:"MALETÍN GEORGE",p:16500},{a:25008,d:"MALETIN MARRON MADRID",p:16500},{a:20045,d:"CARTERA BERTA",p:10500},{a:25012,d:"MALETÍN CUERO BORDEAUX",p:16500},{a:15001,d:"MORRAL VERDE MILITAR",p:12500},{a:25002,d:"MALETIN PORTAFOLIO CUERO",p:18500},{a:25001,d:"MALETIN PORTAFOLIO PLASTICAS",p:18500},{a:25009,d:"MALETÍN PORTFOLIO ZUELA",p:16500},{a:25004,d:"PORTA NOTEBOOK HP NEGRO",p:14500},{a:15043,d:"MOCHILA AVELLANA GORRION",p:13500},{a:15044,d:"MOCHILA LONA ESCOSESA",p:10500},{a:15065,d:"MOCHILA TURQUEZA AVIADOR",p:14500},{a:15060,d:"MOCHILAS OXIDO CELESTE Y BLANCA",p:14500},{a:15042,d:"MOCHILA FLORES RAQUEL GORRION",p:16500}]},
+  {n:"11-1234",f:"2026-03-13",c:"Antonella Casarotti - Lab House",r:"2026-03-13",dv:"2026-03-16",it:[{a:2108,d:"VALIJA RÍGIDA CADENAS",p:15000},{a:2103,d:"PORTASOMBRERO FLORA",p:15000},{a:1025,d:"CARRY ON FONDA",p:19500}]},
+  {n:"11-1235",f:"2026-03-13",c:"Lara Treglia - Underground",r:"2026-03-18",dv:"2026-03-20",it:[{a:1002,d:"CARRY ON AMAYRA NUDE",p:16500},{a:1009,d:"CARRY ON DUDLEY NEGRA",p:15000},{a:1024,d:"CARRY ON IT LUGGAGE PLATA",p:16500}]},
+];
+
+function getAllR(){
+  const base=HB.map(h=>({numero:h.n,cliente:h.c,retiro:h.r,devolucion:h.dv,fecha:h.f,
+    items:h.it.map(i=>{const s=STOCK.find(x=>x.cod===i.a);return{cod:i.a,desc:i.d,alq:i.p,gtia:s?s.gtia:0,foto:s?s.foto:''};}),,
+    pago:'pagado',estado:'finalizado',facturador:'',gtipo:'cheque',gref:'',isBase:true}));
+  const loc=Object.values(RL);
+  const locN=new Set(loc.map(r=>r.numero));
+  return[...loc,...base.filter(r=>!locN.has(r.numero))].sort((a,b)=>b.numero.localeCompare(a.numero));
+}
+function getOcup(desde,hasta,excl=null){
+  const dD=new Date(desde),dH=new Date(hasta),o=new Set();
+  getAllR().forEach(r=>{
+    if(excl&&r.numero===excl)return;
+    if(!r.retiro||!r.devolucion)return;
+    if(new Date(r.retiro)<=dH&&new Date(r.devolucion)>=dD)r.items.forEach(i=>o.add(i.cod));
+  });
+  return o;
+}
+
+function loadStock(){
+  const dot=$('sdot'),txt=$('stxt');dot.style.background='#f59e0b';
+  const cb='mpcb_'+Date.now();
+  window[cb]=function(data){
+    try{
+      STOCK=data.filter(r=>r.cod&&String(r.cod).trim()&&String(r.cod).trim()!=='ART.').map(r=>({
+        cat:String(r.rubro||'').trim(),
+        foto:exUrl(r.foto||''),
+        cod:parseInt(String(r.cod).replace(/\D/g,''))||0,
+        nombre:String(r.nombre||'').trim(),
+        gtia:pNum(r.gtia),alq:pNum(r.alq),
+        medidas:String(r.medidas||'').trim()
+      })).filter(r=>r.cod>0&&r.nombre);
+      loaded=true;dot.style.background='#4ade80';
+      txt.textContent=STOCK.filter(s=>s.alq>0).length+' items cargados ✓';
+      initCats();renderDash();renderIS();filterS();filterH();
+      if($('section-calendario').classList.contains('active'))renderCal();
+    }catch(e){dot.style.background='#ef4444';txt.textContent='Error al cargar stock';console.error(e);}
+    delete window[cb];
+  };
+  const s=document.createElement('script');
+  s.crossOrigin='anonymous';
+  s.onerror=()=>{$('sdot').style.background='#ef4444';$('stxt').textContent='Sin conexión al stock';delete window[cb];};
+  s.src=SURL+'?callback='+cb+'&t='+Date.now();
+  document.head.appendChild(s);
+}
+
+function initCats(){
+  const cats=[...new Set(STOCK.map(s=>s.cat))].filter(Boolean).sort();
+  ['nr-cat','dcat','scat'].forEach(id=>{
+    const el=$(id);if(!el)return;
+    el.innerHTML='<option value="">Todas</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+  });
+}
+
+function goSec(id){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  $('section-'+id).classList.add('active');
+  document.querySelectorAll('.ni').forEach(n=>{if(n.getAttribute('onclick')===`goSec('${id}')`)n.classList.add('active');});
+  if(id==='dashboard')renderDash();
+  if(id==='remitos')renderRemitos();
+  if(id==='estadisticas')renderEst();
+  if(id==='historial')filterH();
+  if(id==='stock'){initCats();filterS();}
+  if(id==='disponibilidad')initCats();
+  if(id==='nuevo-remito'){initCats();renderIS();renderRes();}
+  if(id==='calendario')renderCal();
+}
+
+function avEst(num){
+  ensureLocal(num);
+  RL[num].estado=nextEst(RL[num].estado||'borrador');
+  saveRL();
+  if($('section-remitos').classList.contains('active'))renderRemitos();
+  if($('section-dashboard').classList.contains('active'))renderDash();
+}
+function avPago(num){
+  ensureLocal(num);
+  RL[num].pago=nextPago(RL[num].pago||'pendiente');
+  saveRL();
+  if($('section-remitos').classList.contains('active'))renderRemitos();
+  if($('section-dashboard').classList.contains('active'))renderDash();
+}
+function ensureLocal(num){
+  if(!RL[num]){const b=getAllR().find(r=>r.numero===num);if(b)RL[num]=JSON.parse(JSON.stringify(b));}
+}
+
+function renderDash(){
+  const rem=getAllR();
+  const allI=rem.flatMap(r=>r.items);
+  const cl=new Set(rem.map(r=>r.cliente)).size;
+  const tot=allI.reduce((s,i)=>s+(i.alq||0),0);
+  $('m-s').textContent=loaded?STOCK.filter(s=>s.alq>0).length:'…';
+  $('m-r').textContent=rem.length;$('m-c').textContent=cl;$('m-t').textContent=fmt(tot);
+  $('d-rem').innerHTML=rem.slice(0,6).map(r=>{
+    const t=r.items.reduce((s,i)=>s+(i.alq||0),0);
+    return`<div class="prow"><div><div style="font-size:13px;font-weight:500;">${r.numero}</div><div style="font-size:11px;color:var(--mut);">${r.cliente.split('-')[0].trim()}</div></div><div style="text-align:right;"><div style="font-size:13px;">${fmt(t)}</div><div style="font-size:11px;color:var(--mut);">${fD(r.retiro)} → ${fD(r.devolucion)}</div></div></div>`;
+  }).join('');
+  const byPago={pendiente:0,facturado:0,pagado:0};
+  rem.forEach(r=>byPago[r.pago||'pendiente']=(byPago[r.pago||'pendiente']||0)+1);
+  $('d-pago').innerHTML=`<div style="display:flex;gap:8px;margin-bottom:.9rem;">
+    <div style="flex:1;background:var(--rbg);border-radius:8px;padding:10px;"><div style="font-size:11px;color:var(--rtx);">Pendientes</div><div style="font-size:20px;font-weight:300;font-family:'DM Serif Display',serif;color:var(--rtx);">${byPago.pendiente}</div></div>
+    <div style="flex:1;background:var(--abg);border-radius:8px;padding:10px;"><div style="font-size:11px;color:var(--atx);">Facturados</div><div style="font-size:20px;font-weight:300;font-family:'DM Serif Display',serif;color:var(--atx);">${byPago.facturado}</div></div>
+    <div style="flex:1;background:var(--gbg);border-radius:8px;padding:10px;"><div style="font-size:11px;color:var(--gtx);">Pagados</div><div style="font-size:20px;font-weight:300;font-family:'DM Serif Display',serif;color:var(--gtx);">${byPago.pagado}</div></div>
+  </div>`+rem.slice(0,5).map(r=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid var(--bor);font-size:12px;gap:6px;">
+    <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.numero} — ${r.cliente.split('-')[0].trim()}</span>
+    <button class="estbtn ${EST_CLASS[r.estado||'borrador']}" onclick="avEst('${r.numero}')" style="font-size:10px;">${EST_LABEL[r.estado||'borrador']}</button>
+    <button class="pbtn ${PAGO_CLASS[r.pago||'pendiente']}" onclick="avPago('${r.numero}')" style="font-size:10px;">${PAGO_LABEL[r.pago||'pendiente']}</button>
+  </div>`).join('');
+  // Próximos
+  const today=new Date();today.setHours(0,0,0,0);
+  const prox=rem.filter(r=>r.retiro||r.devolucion).flatMap(r=>{
+    const ev=[];
+    if(r.retiro){const d=new Date(r.retiro);if(d>=today)ev.push({tipo:'retiro',fecha:r.retiro,r});}
+    if(r.devolucion){const d=new Date(r.devolucion);if(d>=today)ev.push({tipo:'devolucion',fecha:r.devolucion,r});}
+    return ev;
+  }).sort((a,b)=>a.fecha.localeCompare(b.fecha)).slice(0,8);
+  $('d-proximos').innerHTML=prox.length?prox.map(ev=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--bor);">
+    <span class="badge ${ev.tipo==='retiro'?'ba':'bg'}" style="flex-shrink:0;">${ev.tipo==='retiro'?'Retiro':'Devolución'}</span>
+    <span style="font-size:13px;font-weight:500;">${fD(ev.fecha)}</span>
+    <span style="font-size:12px;color:var(--mut);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${ev.r.numero} — ${ev.r.cliente.split('-')[0].trim()}</span>
+    <span class="estbtn ${EST_CLASS[ev.r.estado||'borrador']}" style="font-size:10px;">${EST_LABEL[ev.r.estado||'borrador']}</span>
+  </div>`).join(''):'<div style="font-size:13px;color:var(--mut);padding:.5rem 0;">Sin eventos próximos</div>';
+}
+
+function renderIS(){
+  const q=($('nr-s')||{value:''}).value.toLowerCase();
+  const cat=($('nr-cat')||{value:''}).value;
+  const ret=($('nr-r')||{value:''}).value;
+  const dev=($('nr-d')||{value:''}).value;
+  const av=$('av-fechas');if(av)av.style.display=(!ret||!dev)?'flex':'none';
+  const ocup=(ret&&dev)?getOcup(ret,dev):new Set();
+  const sel=$('isel');if(!sel)return;
+  if(!loaded){sel.innerHTML='<div class="ldg"><span class="spin"></span>Cargando items...</div>';return;}
+  const f=STOCK.filter(s=>s.alq>0&&(!q||s.nombre.toLowerCase().includes(q)||String(s.cod).includes(q))&&(!cat||s.cat===cat)).slice(0,120);
+  if(!f.length){sel.innerHTML='<div style="padding:1.5rem;text-align:center;font-size:13px;color:var(--mut);">Sin resultados</div>';return;}
+  sel.innerHTML=f.map(s=>{
+    const iS=SEL.find(i=>i.cod===s.cod);const isO=ocup.has(s.cod);
+    return`<div class="irow${isO?' ocup':''}">${imgT(s.foto,44)}<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:500;line-height:1.3;">${s.nombre}${isO?` <span style="font-size:10px;background:var(--abg);color:var(--atx);padding:1px 5px;border-radius:10px;">Ocupado</span>`:''}</div><div style="font-size:11px;color:var(--mut);">${s.cod} · ${s.cat} · ${fmt(s.alq)}/sem</div></div><button class="btn bsm ${iS?'bp':'bs'}" onclick="togItem(${s.cod})" style="flex-shrink:0;">${iS?'✓':'+'}</button></div>`;
+  }).join('');
+}
+
+let pendItemCod=null;
+function togItem(cod){
+  const item=STOCK.find(s=>s.cod===cod);if(!item)return;
+  const idx=SEL.findIndex(i=>i.cod===cod);
+  if(idx>=0){SEL.splice(idx,1);renderIS();renderRes();return;}
+  const ret=($('nr-r')||{value:''}).value,dev=($('nr-d')||{value:''}).value;
+  if(ret&&dev){
+    const oc=getOcup(ret,dev);
+    if(oc.has(cod)){
+      pendItemCod=cod;
+      const otros=getAllR().filter(r=>r.retiro&&r.devolucion&&new Date(r.retiro)<=new Date(dev)&&new Date(r.devolucion)>=new Date(ret)&&r.items.find(i=>i.cod===cod));
+      const on=otros.length?otros.map(r=>`${r.numero} (${r.cliente.split('-')[0].trim()})`).join(', '):'otro remito';
+      $('m-ocup-msg').innerHTML=`<strong>${item.nombre}</strong> ya está en <strong>${on}</strong> para ${fD(ret)} → ${fD(dev)}.<br><br>¿Querés agregarlo igual?`;
+      openM('m-ocup');return;
+    }
+  }
+  SEL.push(item);renderIS();renderRes();
+}
+function confirmOcup(){
+  if(pendItemCod!==null){const i=STOCK.find(s=>s.cod===pendItemCod);if(i)SEL.push({...i,conflicto:true});pendItemCod=null;}
+  closeM('m-ocup');renderIS();renderRes();
+}
+function renderRes(){
+  const ta=SEL.reduce((s,i)=>s+i.alq,0),tg=SEL.reduce((s,i)=>s+i.gtia,0);
+  $('nr-cnt').textContent=SEL.length;$('t-alq').textContent=fmt(ta);$('t-30').textContent=fmt(Math.round(ta*1.2));$('t-gtia').textContent=fmt(tg);
+  $('r-items').innerHTML=SEL.map(i=>`<div class="ri">${imgT(i.foto,32)}<div style="flex:1;padding:0 6px;min-width:0;"><div style="font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${i.nombre}${i.conflicto?' ⚠':''}</div><div style="font-size:10px;color:var(--mut);">${fmt(i.alq)}</div></div><button class="xbtn" onclick="togItem(${i.cod})">×</button></div>`).join('')||'<div style="font-size:12px;color:var(--mut);padding:8px 0;">Ningún item seleccionado</div>';
+}
+function clearSel(){SEL=[];renderIS();renderRes();}
+function saveAndView(){
+  if(!SEL.length){alert('Seleccioná al menos un item.');return;}
+  const num=$('nr-n').value.trim(),cli=$('nr-c').value.trim();
+  if(!num){alert('Ingresá el número de remito.');return;}
+  if(!cli){alert('Ingresá el nombre del cliente.');return;}
+  const ret=$('nr-r').value,dev=$('nr-d').value;
+  RL[num]={numero:num,cliente:cli,retiro:ret,devolucion:dev,
+    fecha:new Date().toISOString().slice(0,10),
+    items:SEL.map(i=>({cod:i.cod,desc:i.nombre,alq:i.alq,gtia:i.gtia,foto:i.foto,conflicto:i.conflicto||false})),
+    pago:RL[num]?RL[num].pago:'pendiente',
+    estado:$('nr-est').value||'borrador',
+    facturador:$('nr-fact').value||'',
+    gtipo:$('nr-gtipo').value||'',
+    gref:$('nr-gref').value||'',
+  };
+  saveRL();goSec('remitos');
+  setTimeout(()=>{setTab('p');$('sel-prev').value=num;renderPrev();},60);
+}
+
+function renderRemitos(){
+  const rem=getAllR();
+  $('sel-prev').innerHTML='<option value="">Seleccionar remito...</option>'+rem.map(r=>`<option value="${r.numero}">${r.numero} — ${r.cliente.split('-')[0].trim()}</option>`).join('');
+  filterR();
+}
+function filterR(){
+  const q=($('sr')||{value:''}).value.toLowerCase();
+  const filEst=($('fil-est')||{value:''}).value;
+  const rem=getAllR().filter(r=>(!q||r.numero.toLowerCase().includes(q)||r.cliente.toLowerCase().includes(q)||(r.facturador||'').toLowerCase().includes(q))&&(!filEst||r.estado===filEst||(!r.estado&&filEst==='borrador')));
+  $('r-table').innerHTML=rem.map(r=>{
+    const tot=r.items.reduce((s,i)=>s+(i.alq||0),0);
+    const est=r.estado||'borrador';const pago=r.pago||'pendiente';
+    return`<tr>
+      <td style="font-weight:500;">${r.numero}</td>
+      <td><span class="chip">${r.cliente.split('-')[0].trim()}</span></td>
+      <td>${fD(r.retiro)}</td><td>${fD(r.devolucion)}</td>
+      <td>${r.items.length}</td>
+      <td style="font-weight:500;">${fmt(tot)}</td>
+      <td><button class="estbtn ${EST_CLASS[est]}" onclick="avEst('${r.numero}')">${EST_LABEL[est]}</button></td>
+      <td><button class="pbtn ${PAGO_CLASS[pago]}" onclick="avPago('${r.numero}')">${PAGO_LABEL[pago]}</button></td>
+      <td style="font-size:12px;color:var(--mut);">${r.facturador||'—'}</td>
+      <td style="white-space:nowrap;">
+        <button class="btn bsm bs" onclick="abrirEdit('${r.numero}')" style="margin-right:4px;">✏</button>
+        <button class="btn bsm bs" onclick="verPrevTab('${r.numero}')">Ver</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+function verPrevTab(num){setTab('p');$('sel-prev').value=num;renderPrev();}
+function setTab(t){
+  $('tl').classList.toggle('active',t==='l');$('tp').classList.toggle('active',t==='p');
+  $('tab-lista-div').style.display=t==='l'?'block':'none';$('tab-preview-div').style.display=t==='p'?'block':'none';
+}
+function renderPrev(){
+  const num=$('sel-prev').value;if(!num){$('prev-content').innerHTML='';return;}
+  const r=getAllR().find(x=>x.numero===num);if(!r)return;buildRemito(r);
+}
+function buildRemito(r){
+  const tot=r.items.reduce((s,i)=>s+(i.alq||0),0);
+  const tg=r.items.reduce((s,i)=>s+(i.gtia||0),0);
+  const dias=r.retiro&&r.devolucion?Math.round((new Date(r.devolucion)-new Date(r.retiro))/86400000):null;
+  const fecha=r.fecha?fD(r.fecha):new Date().toLocaleDateString('es-AR');
+  const gtiaStr=r.gtipo?`${r.gtipo.charAt(0).toUpperCase()+r.gtipo.slice(1)}${r.gref?' — '+r.gref:''}`:'';
+  $('prev-content').innerHTML=`<div style="background:#fff;border:0.5px solid var(--bor);border-radius:12px;padding:2rem;max-width:800px;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem;padding-bottom:1.25rem;border-bottom:2px solid var(--acc);">
+      <div><div style="font-family:'DM Serif Display',serif;font-size:26px;">★ MARTE PROPS</div><div style="font-size:10px;letter-spacing:2px;color:var(--mut);text-transform:uppercase;margin-top:3px;">Utilería en alquiler · marteprops.com.ar</div></div>
+      <div style="text-align:right;"><div style="font-size:20px;font-weight:500;font-family:'DM Serif Display',serif;">N° ${r.numero}</div><div style="font-size:12px;color:var(--mut);">Fecha: ${fecha}</div>${r.facturador?`<div style="font-size:11px;color:var(--mut);">Facturó: ${r.facturador}</div>`:''}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
+      <div><div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);">Cliente</div><div style="font-size:14px;font-weight:500;margin-top:2px;">${r.cliente}</div></div>
+      <div><div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);">Retiro</div><div style="font-size:14px;font-weight:500;margin-top:2px;">${fD(r.retiro)}</div></div>
+      <div><div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);">Devolución</div><div style="font-size:14px;font-weight:500;margin-top:2px;">${fD(r.devolucion)}</div></div>
+      <div><div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);">Días</div><div style="font-size:14px;font-weight:500;margin-top:2px;">${dias!==null?dias+' días':'—'}</div></div>
+    </div>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:1.5rem;">
+      <thead><tr style="background:var(--bg);">
+        <th style="padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);border-bottom:0.5px solid var(--bor);">Foto</th>
+        <th style="padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);border-bottom:0.5px solid var(--bor);">Art.</th>
+        <th style="padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);border-bottom:0.5px solid var(--bor);">Descripción</th>
+        <th style="padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);border-bottom:0.5px solid var(--bor);text-align:center;">Cant.</th>
+        <th style="padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);border-bottom:0.5px solid var(--bor);text-align:right;">Garantía</th>
+        <th style="padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);border-bottom:0.5px solid var(--bor);text-align:right;">Alq./sem</th>
+      </tr></thead>
+      <tbody>${r.items.map(i=>`<tr style="border-bottom:0.5px solid var(--bor);">
+        <td style="padding:8px 10px;">${i.foto?`<img src="${i.foto}" style="width:56px;height:56px;object-fit:cover;border-radius:6px;" onerror="this.style.visibility='hidden'"/>`:'<div style="width:56px;height:56px;background:var(--tag);border-radius:6px;"></div>'}</td>
+        <td style="padding:8px 10px;font-size:12px;color:var(--mut);">${i.cod}</td>
+        <td style="padding:8px 10px;font-size:13px;">${i.desc}${i.conflicto?' <span style="font-size:10px;color:var(--atx);">⚠</span>':''}</td>
+        <td style="padding:8px 10px;font-size:13px;text-align:center;">1</td>
+        <td style="padding:8px 10px;font-size:13px;text-align:right;">${i.gtia?fmt(i.gtia):'—'}</td>
+        <td style="padding:8px 10px;font-size:13px;font-weight:500;text-align:right;">${fmt(i.alq)}</td>
+      </tr>`).join('')}</tbody>
+    </table>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-top:1rem;border-top:0.5px solid var(--bor);">
+      <div style="font-size:10px;color:var(--mut);line-height:2;max-width:400px;">
+        — De cancelar con menos de 24hs del retiro, se cobrará el 50% del alquiler.<br>
+        — Validez del presupuesto 15 días. El valor del alquiler es por una semana.<br>
+        — Para confirmar un alquiler, hacerlo vía mail.<br>
+        — Pagos con más de 7 días de demora tendrán recarga del 20%.<br>
+        — Por favor devolver los elementos embalados.
+        ${gtiaStr?`<br>— Garantía: ${gtiaStr}`:''}
+      </div>
+      <div style="text-align:right;min-width:210px;">
+        <div style="font-size:11px;color:var(--mut);">Alquiler (1 semana)</div>
+        <div style="font-size:28px;font-family:'DM Serif Display',serif;">${fmt(tot)}</div>
+        <div style="font-size:11px;color:var(--mut);margin-top:6px;">Diferido 30 días (+20%)</div>
+        <div style="font-size:16px;">${fmt(Math.round(tot*1.2))}</div>
+        ${tg?`<div style="font-size:11px;color:var(--mut);margin-top:8px;padding-top:8px;border-top:0.5px solid var(--bor);">Total garantía (cheque)</div><div style="font-size:16px;font-weight:500;">${fmt(tg)}</div>`:''}
+      </div>
+    </div>
+  </div>`;
+}
+
+// EDITAR REMITO
+function abrirEdit(num){
+  const r=getAllR().find(x=>x.numero===num);if(!r)return;
+  ensureLocal(num);editKey=num;editItems=JSON.parse(JSON.stringify(RL[num].items||[]));
+  $('en').value=RL[num].numero;$('ec').value=RL[num].cliente;
+  $('er').value=RL[num].retiro||'';$('ed2').value=RL[num].devolucion||'';
+  $('eest').value=RL[num].estado||'borrador';
+  $('efact').value=RL[num].facturador||'';
+  $('egtipo').value=RL[num].gtipo||'';
+  $('egref').value=RL[num].gref||'';
+  $('esa').value='';renderEIL();renderESR();openM('m-edit');
+}
+function renderEIL(){
+  const el=$('eil');
+  if(!editItems.length){el.innerHTML='<div style="padding:12px;font-size:13px;color:var(--mut);">Sin items</div>';return;}
+  el.innerHTML=editItems.map((i,idx)=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:0.5px solid var(--bor);">${imgT(i.foto,36)}<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:500;">${i.desc}</div><div style="font-size:11px;color:var(--mut);">${i.cod} · ${fmt(i.alq)}</div></div><button class="xbtn" onclick="eRemI(${idx})">×</button></div>`).join('');
+}
+function eRemI(idx){editItems.splice(idx,1);renderEIL();}
+function renderESR(){
+  const q=$('esa').value.toLowerCase();const el=$('esr');
+  if(!q||!loaded){el.innerHTML='';return;}
+  const f=STOCK.filter(s=>s.alq>0&&(s.nombre.toLowerCase().includes(q)||String(s.cod).includes(q))).slice(0,30);
+  el.innerHTML=f.map(s=>{const ex=editItems.find(i=>i.cod===s.cod);
+    return`<div style="display:flex;align-items:center;gap:8px;padding:7px 12px;border-bottom:0.5px solid var(--bor);">${imgT(s.foto,36)}<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:500;">${s.nombre}</div><div style="font-size:11px;color:var(--mut);">${s.cod} · ${fmt(s.alq)}</div></div><button class="btn bsm ${ex?'bs':'bp'}" onclick="eAddI(${s.cod})" ${ex?'disabled':''}>${ex?'Ya está':'+ Agregar'}</button></div>`;
+  }).join('')||'<div style="padding:12px;font-size:13px;color:var(--mut);">Sin resultados</div>';
+}
+function eAddI(cod){const s=STOCK.find(x=>x.cod===cod);if(!s||editItems.find(i=>i.cod===cod))return;editItems.push({cod:s.cod,desc:s.nombre,alq:s.alq,gtia:s.gtia,foto:s.foto});renderEIL();renderESR();}
+function saveEdit(){
+  const num=$('en').value.trim(),cli=$('ec').value.trim();
+  if(!num||!cli){alert('Completá número y cliente.');return;}
+  const pago=RL[editKey]?RL[editKey].pago:'pendiente';
+  const fecha=RL[editKey]?RL[editKey].fecha:new Date().toISOString().slice(0,10);
+  if(editKey!==num)delete RL[editKey];
+  RL[num]={numero:num,cliente:cli,retiro:$('er').value,devolucion:$('ed2').value,fecha,items:editItems,pago,
+    estado:$('eest').value,facturador:$('efact').value,gtipo:$('egtipo').value,gref:$('egref').value};
+  saveRL();closeM('m-edit');renderRemitos();
+}
+
+// CALENDARIO
+function calPrev(){
+  if(calVista==='mes'){calDate=new Date(calDate.getFullYear(),calDate.getMonth()-1,1);}
+  else{calDate=new Date(calDate.getTime()-7*86400000);}
+  renderCal();
+}
+function calNext(){
+  if(calVista==='mes'){calDate=new Date(calDate.getFullYear(),calDate.getMonth()+1,1);}
+  else{calDate=new Date(calDate.getTime()+7*86400000);}
+  renderCal();
+}
+function calHoy(){calDate=new Date();renderCal();}
+function setCalVista(v){
+  calVista=v;
+  $('cal-btn-mes').className='btn bsm'+(v==='mes'?' bp':' bs');
+  $('cal-btn-sem').className='btn bsm'+(v==='semana'?' bp':' bs');
+  renderCal();
+}
+function renderCal(){
+  const rem=getAllR();
+  if(calVista==='mes')renderCalMes(rem);
+  else renderCalSem(rem);
+}
+function renderCalMes(rem){
+  const y=calDate.getFullYear(),m=calDate.getMonth();
+  const meses=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  $('cal-label').textContent=`${meses[m]} ${y}`;
+  const firstDay=new Date(y,m,1);const lastDay=new Date(y,m+1,0);
+  let startDow=firstDay.getDay();// 0=dom
+  const dias=['Do','Lu','Ma','Mi','Ju','Vi','Sá'];
+  const today=new Date();today.setHours(0,0,0,0);
+  let html=dias.map(d=>`<div class="cal-day-name">${d}</div>`).join('');
+  // Días del mes anterior
+  for(let i=0;i<startDow;i++){
+    const d=new Date(y,m,-(startDow-1-i));
+    html+=`<div class="cal-day other-month"><div class="cal-day-num">${d.getDate()}</div></div>`;
+  }
+  // Días del mes
+  for(let d=1;d<=lastDay.getDate();d++){
+    const date=new Date(y,m,d);date.setHours(0,0,0,0);
+    const iso=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday=date.getTime()===today.getTime();
+    const retiros=rem.filter(r=>r.retiro===iso);
+    const devoluciones=rem.filter(r=>r.devolucion===iso);
+    const activos=rem.filter(r=>r.retiro&&r.devolucion&&r.retiro<iso&&r.devolucion>iso);
+    let chips='';
+    retiros.forEach(r=>chips+=`<div class="cal-chip retiro" onclick="showCalDetail('${r.numero}')" title="${r.cliente}">↑ ${r.numero}</div>`);
+    devoluciones.forEach(r=>chips+=`<div class="cal-chip devolucion" onclick="showCalDetail('${r.numero}')" title="${r.cliente}">↓ ${r.numero}</div>`);
+    activos.slice(0,2).forEach(r=>chips+=`<div class="cal-chip activo" onclick="showCalDetail('${r.numero}')" title="${r.cliente}">${r.numero}</div>`);
+    if(activos.length>2)chips+=`<div style="font-size:9px;color:var(--mut);">+${activos.length-2} más</div>`;
+    html+=`<div class="cal-day${isToday?' today':''}"><div class="cal-day-num">${d}</div>${chips}</div>`;
+  }
+  // Completar grid
+  const total=startDow+lastDay.getDate();const remaining=(7-total%7)%7;
+  for(let i=1;i<=remaining;i++)html+=`<div class="cal-day other-month"><div class="cal-day-num">${i}</div></div>`;
+  $('cal-container').innerHTML=`<div class="cal-grid">${html}</div>`;
+}
+function renderCalSem(rem){
+  const dow=calDate.getDay();
+  const weekStart=new Date(calDate.getTime()-dow*86400000);weekStart.setHours(0,0,0,0);
+  const dias=['Do','Lu','Ma','Mi','Ju','Vi','Sá'];
+  const meses=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const weekDays=Array.from({length:7},(_,i)=>{const d=new Date(weekStart.getTime()+i*86400000);return d;});
+  const startStr=weekDays[0].toLocaleDateString('es-AR',{day:'numeric',month:'short'});
+  const endStr=weekDays[6].toLocaleDateString('es-AR',{day:'numeric',month:'short'});
+  $('cal-label').textContent=`${startStr} — ${endStr}`;
+  const today=new Date();today.setHours(0,0,0,0);
+  let html=`<div class="week-grid">
+    <div class="week-header"></div>
+    ${weekDays.map(d=>`<div class="week-header${d.getTime()===today.getTime()?' ':''}"><div>${dias[d.getDay()]}</div><div style="font-size:15px;font-weight:500;">${d.getDate()}</div><div style="font-size:10px;color:var(--mut);">${meses[d.getMonth()]}</div></div>`).join('')}
+  `;
+  // Eventos por día
+  const rows=[];
+  weekDays.forEach((d,di)=>{
+    const iso=d.toISOString().slice(0,10);
+    const evs=[];
+    rem.forEach(r=>{
+      if(r.retiro===iso)evs.push({tipo:'retiro',r,color:'var(--abg)',tc:'var(--atx)'});
+      if(r.devolucion===iso)evs.push({tipo:'devolucion',r,color:'var(--gbg)',tc:'var(--gtx)'});
+      else if(r.retiro&&r.devolucion&&r.retiro<=iso&&r.devolucion>=iso&&r.retiro!==iso)evs.push({tipo:'activo',r,color:'var(--bbg)',tc:'var(--btx)'});
+    });
+    rows.push({di,evs});
+  });
+  const maxEvs=Math.max(...rows.map(r=>r.evs.length),1);
+  for(let row=0;row<maxEvs;row++){
+    html+=`<div class="week-time"></div>`;
+    weekDays.forEach((_,di)=>{
+      const ev=rows[di].evs[row];
+      html+=`<div class="week-cell">${ev?`<div class="week-event" style="background:${ev.color};color:${ev.tc};cursor:pointer;" onclick="showCalDetail('${ev.r.numero}')">${ev.tipo==='retiro'?'↑':ev.tipo==='devolucion'?'↓':'·'} ${ev.r.numero} — ${ev.r.cliente.split('-')[0].trim().slice(0,12)}</div>`:'&nbsp;'}</div>`;
+    });
+  }
+  html+='</div>';
+  $('cal-container').innerHTML=html;
+}
+function showCalDetail(num){
+  const r=getAllR().find(x=>x.numero===num);if(!r)return;
+  const tot=r.items.reduce((s,i)=>s+(i.alq||0),0);
+  $('m-cal-title').textContent=`Remito ${r.numero}`;
+  $('m-cal-content').innerHTML=`
+    <div style="font-size:14px;margin-bottom:1rem;">
+      <div style="margin-bottom:6px;"><strong>${r.cliente}</strong></div>
+      <div style="font-size:13px;color:var(--mut);">Retiro: ${fD(r.retiro)} · Devolución: ${fD(r.devolucion)}</div>
+      <div style="font-size:13px;color:var(--mut);">Total: ${fmt(tot)} · Items: ${r.items.length}</div>
+      ${r.facturador?`<div style="font-size:13px;color:var(--mut);">Facturó: ${r.facturador}</div>`:''}
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;">
+      <button class="estbtn ${EST_CLASS[r.estado||'borrador']}">${EST_LABEL[r.estado||'borrador']}</button>
+      <button class="pbtn ${PAGO_CLASS[r.pago||'pendiente']}">${PAGO_LABEL[r.pago||'pendiente']}</button>
+    </div>
+    <div style="max-height:200px;overflow-y:auto;">${r.items.map(i=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--bor);font-size:12px;">${imgT(i.foto,32)}<span style="flex:1;">${i.desc}</span><span style="font-weight:500;">${fmt(i.alq)}</span></div>`).join('')}</div>
+    <div style="margin-top:1rem;display:flex;gap:8px;">
+      <button class="btn bsm bp" onclick="closeM('m-cal');abrirEdit('${num}')">✏ Editar</button>
+      <button class="btn bsm bs" onclick="closeM('m-cal');verPrevTab('${num}')">Ver remito</button>
+    </div>`;
+  openM('m-cal');
+}
+
+// DISPONIBILIDAD
+function checkDisp(){
+  const desde=$('dd').value,hasta=$('dh').value,cat=$('dcat').value;
+  if(!desde||!hasta){$('disp-res').innerHTML='<div class="warn">⚠ Ingresá ambas fechas.</div>';return;}
+  const oc=getOcup(desde,hasta);
+  const items=STOCK.filter(s=>s.alq>0&&(!cat||s.cat===cat));
+  const dis=items.filter(s=>!oc.has(s.cod)),noD=items.filter(s=>oc.has(s.cod));
+  $('disp-res').innerHTML=`<div style="margin-bottom:1rem;display:flex;gap:10px;align-items:center;">
+    <span class="badge bg">${dis.length} disponibles</span>
+    <span class="badge br">${noD.length} no disponibles</span>
+    <span style="font-size:12px;color:var(--mut);">${fD(desde)} → ${fD(hasta)}</span>
+  </div>
+  <div class="agrid">
+    ${dis.slice(0,60).map(s=>`<div class="icard">${s.foto?`<img src="${s.foto}" style="width:100%;height:110px;object-fit:cover;border-radius:6px;margin-bottom:8px;" onerror="this.style.display='none'"/>`:''}<div style="display:flex;justify-content:space-between;gap:4px;"><div><div style="font-size:12px;font-weight:500;">${s.nombre}</div><div style="font-size:10px;color:var(--mut);">${s.cod} · ${s.cat}</div></div><span class="badge bg" style="font-size:10px;flex-shrink:0;align-self:flex-start;">Disponible</span></div><div style="font-size:14px;font-family:'DM Serif Display',serif;margin-top:6px;">${fmt(s.alq)}<span style="font-size:10px;color:var(--mut);">/sem</span></div></div>`).join('')}
+    ${noD.slice(0,30).map(s=>`<div class="icard" style="opacity:.5;">${s.foto?`<img src="${s.foto}" style="width:100%;height:110px;object-fit:cover;border-radius:6px;margin-bottom:8px;filter:grayscale(1);" onerror="this.style.display='none'"/>`:''}<div style="display:flex;justify-content:space-between;gap:4px;"><div><div style="font-size:12px;font-weight:500;">${s.nombre}</div><div style="font-size:10px;color:var(--mut);">${s.cod} · ${s.cat}</div></div><span class="badge br" style="font-size:10px;flex-shrink:0;align-self:flex-start;">No disp.</span></div><div style="font-size:14px;font-family:'DM Serif Display',serif;margin-top:6px;">${fmt(s.alq)}<span style="font-size:10px;color:var(--mut);">/sem</span></div></div>`).join('')}
+  </div>`;
+}
+
+// STOCK
+function filterS(){
+  const q=($('ss')||{value:''}).value.toLowerCase();const cat=($('scat')||{value:''}).value;
+  const tb=$('s-table');if(!tb)return;
+  if(!loaded){tb.innerHTML='<tr><td colspan="6" class="ldg"><span class="spin"></span>Cargando...</td></tr>';return;}
+  const f=STOCK.filter(s=>(!q||s.nombre.toLowerCase().includes(q)||String(s.cod).includes(q)||s.cat.toLowerCase().includes(q))&&(!cat||s.cat===cat)).slice(0,200);
+  tb.innerHTML=f.map(s=>`<tr><td>${imgT(s.foto,42)}</td><td style="font-family:monospace;font-size:11px;color:var(--mut);">${s.cod}</td><td style="font-weight:500;">${s.nombre}</td><td><span class="badge bgr">${s.cat}</span></td><td>${fmt(s.gtia)}</td><td style="font-weight:500;">${s.alq?fmt(s.alq):'—'}</td></tr>`).join('');
+}
+
+// HISTORIAL
+function filterH(){
+  const q=($('sh')||{value:''}).value.toLowerCase();
+  const rows=[];
+  getAllR().forEach(r=>r.items.forEach(i=>rows.push({remito:r.numero,fecha:r.fecha,cliente:r.cliente,retiro:r.retiro,devolucion:r.devolucion,desc:i.desc,alq:i.alq})));
+  const f=rows.filter(h=>!q||h.cliente.toLowerCase().includes(q)||h.desc.toLowerCase().includes(q)||h.remito.toLowerCase().includes(q));
+  $('h-table').innerHTML=f.slice(0,200).map(h=>`<tr><td style="font-weight:500;">${h.remito}</td><td style="color:var(--mut);">${fD(h.fecha)}</td><td><span class="chip">${h.cliente.split('-')[0].trim()}</span></td><td>${fD(h.retiro)}</td><td>${fD(h.devolucion)}</td><td>${h.desc}</td><td style="font-weight:500;">${fmt(h.alq)}</td></tr>`).join('');
+}
+
+// ESTADÍSTICAS
+function renderEst(){
+  const iC={},cT={},cI={},catT={},factT={};
+  getAllR().forEach(r=>{
+    const c=r.cliente.split('-')[0].trim();
+    const fact=r.facturador||'Sin asignar';
+    r.items.forEach(i=>{
+      iC[i.desc]=(iC[i.desc]||0)+1;
+      cT[c]=(cT[c]||0)+(i.alq||0);cI[c]=(cI[c]||0)+1;
+      const s=STOCK.find(x=>x.cod===i.cod);const cat=s?s.cat:'Otros';
+      catT[cat]=(catT[cat]||0)+(i.alq||0);
+      factT[fact]=(factT[fact]||0)+(i.alq||0);
+    });
+  });
+  $('top-i').innerHTML=Object.entries(iC).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([n,c],i)=>`<div class="srow"><div style="display:flex;gap:8px;align-items:center;flex:1;min-width:0;"><span style="font-size:11px;color:var(--mut);width:14px;">${i+1}</span><span style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${n}</span></div><span class="badge bgr">${c}x</span></div>`).join('');
+  $('top-c').innerHTML=Object.entries(cT).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([c,t],i)=>`<div class="srow"><div style="display:flex;gap:8px;align-items:center;flex:1;min-width:0;"><span style="font-size:11px;color:var(--mut);width:14px;">${i+1}</span><span style="font-size:12px;">${c}</span></div><div style="text-align:right;"><div style="font-size:12px;font-weight:500;">${fmt(t)}</div><div style="font-size:10px;color:var(--mut);">${cI[c]} items</div></div></div>`).join('');
+  const tot=Object.values(catT).reduce((s,v)=>s+v,0);
+  $('top-cat').innerHTML=Object.entries(catT).sort((a,b)=>b[1]-a[1]).slice(0,12).map(([cat,t])=>`<div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;"><span>${cat}</span><span style="font-weight:500;">${fmt(t)} <span style="color:var(--mut);font-weight:400;">(${Math.round(t/tot*100)}%)</span></span></div><div class="barbg"><div class="barfill" style="width:${Math.round(t/tot*100)}%;"></div></div></div>`).join('');
+  const totF=Object.values(factT).reduce((s,v)=>s+v,0);
+  $('top-fact').innerHTML=Object.entries(factT).sort((a,b)=>b[1]-a[1]).map(([fact,t])=>`<div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;"><span style="font-weight:500;">${fact}</span><span style="font-weight:500;">${fmt(t)} <span style="color:var(--mut);font-weight:400;">(${Math.round(t/totF*100)}%)</span></span></div><div class="barbg"><div class="barfill" style="width:${Math.round(t/totF*100)}%;"></div></div></div>`).join('');
+}
+
+function openM(id){$(id).classList.add('open');}
+function closeM(id){$(id).classList.remove('open');}
+document.querySelectorAll('.mbg').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+
+loadRL();renderDash();filterH();loadStock();
+</script>
+</body>
+</html>
