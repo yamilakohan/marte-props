@@ -611,9 +611,9 @@ const HB=[
 ];
 
 function getAllR(){
-  // Clean up any invalid keys from RL (dates or empty strings)
+  // Clean up only keys that look like full date strings (contain GMT or 'hora')
   Object.keys(RL).forEach(function(k){
-    if(!k||k.length>20||k.includes(' ')||isNaN(k.replace(/[^0-9\-]/g,'')))delete RL[k];
+    if(!k||k.includes('GMT')||k.includes('hora de'))delete RL[k];
   });
   const base=HB.map(h=>({numero:h.n,cliente:h.c,retiro:h.r,devolucion:h.dv,fecha:h.f,
     items:h.it.map(i=>{const s=STOCK.find(x=>x.cod===i.a);return{cod:i.a,desc:i.d,alq:i.p,gtia:s?s.gtia:0,foto:s?s.foto:''};}),
