@@ -518,8 +518,25 @@ function loadRemitosFromSheet(){
     .then(r=>r.json())
     .then(remitos=>{
       if(Array.isArray(remitos)){
-        // Merge sheet remitos into RL
-        remitos.forEach(r=>{RL[r.numero]=r;});
+        remitos.forEach(function(r){
+          // Ensure numero is always a clean string key
+          var num=String(r.numero||'').trim();
+          if(!num)return;
+          // Don't overwrite local remitos that are newer
+          RL[num]={
+            numero:num,
+            cliente:String(r.cliente||''),
+            retiro:String(r.retiro||''),
+            devolucion:String(r.devolucion||''),
+            fecha:String(r.fecha||''),
+            items:Array.isArray(r.items)?r.items:[],
+            pago:String(r.pago||'pendiente'),
+            estado:String(r.estado||'borrador'),
+            facturador:String(r.facturador||''),
+            gtipo:String(r.gtipo||''),
+            gref:String(r.gref||'')
+          };
+        });
         saveRL();
         renderDash();filterH();
         if($('section-remitos')&&$('section-remitos').classList.contains('active'))renderRemitos();
@@ -594,6 +611,10 @@ const HB=[
 ];
 
 function getAllR(){
+  // Clean up any invalid keys from RL (dates or empty strings)
+  Object.keys(RL).forEach(function(k){
+    if(!k||k.length>20||k.includes(' ')||isNaN(k.replace(/[^0-9\-]/g,'')))delete RL[k];
+  });
   const base=HB.map(h=>({numero:h.n,cliente:h.c,retiro:h.r,devolucion:h.dv,fecha:h.f,
     items:h.it.map(i=>{const s=STOCK.find(x=>x.cod===i.a);return{cod:i.a,desc:i.d,alq:i.p,gtia:s?s.gtia:0,foto:s?s.foto:''};}),
     pago:'pagado',estado:'finalizado',facturador:'',gtipo:'cheque',gref:'',isBase:true}));
@@ -794,8 +815,8 @@ function renderRes(){
 function clearSel(){SEL=[];renderIS();renderRes();}
 function saveAndView(){
   if(!SEL.length){alert('Seleccioná al menos un item.');return;}
-  const num=$('nr-n').value.trim(),cli=$('nr-c').value.trim();
-  if(!num){alert('Ingresá el número de remito.');return;}
+  const num=String($('nr-n').value||'').trim().replace(/[^0-9\-a-zA-Z]/g,''),cli=$('nr-c').value.trim();
+  if(!num){alert('Ingresá el número de remito (solo números y guiones, ej: 11-1236).');return;}
   if(!cli){alert('Ingresá el nombre del cliente.');return;}
   const ret=$('nr-r').value,dev=$('nr-d').value;
   const remitoData={numero:num,cliente:cli,retiro:ret,devolucion:dev,
@@ -938,7 +959,7 @@ function renderESR(){
 }
 function eAddI(cod){const s=STOCK.find(x=>x.cod===cod);if(!s||editItems.find(i=>i.cod===cod))return;editItems.push({cod:s.cod,desc:s.nombre,alq:s.alq,gtia:s.gtia,foto:s.foto});renderEIL();renderESR();}
 function saveEdit(){
-  const num=$('en').value.trim(),cli=$('ec').value.trim();
+  const num=String($('en').value||'').trim().replace(/[^0-9\-a-zA-Z]/g,''),cli=$('ec').value.trim();
   if(!num||!cli){alert('Completá número y cliente.');return;}
   const pago=RL[editKey]?RL[editKey].pago:'pendiente';
   const fecha=RL[editKey]?RL[editKey].fecha:new Date().toISOString().slice(0,10);
