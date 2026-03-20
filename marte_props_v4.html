@@ -511,39 +511,51 @@ function postToSheet(data){
   }).then(r=>r.json()).catch(e=>({ok:false,error:e.toString()}));
 }
 
-// Load remitos from Sheet (merges with local cache)
+// Load remitos from Sheet using JSONP (same as stock loading)
 function loadRemitosFromSheet(){
-  const fetchUrl = SURL_POST + '?action=getRemitos&nocache=' + Date.now();
-  fetch(fetchUrl)
-    .then(r=>r.json())
-    .then(remitos=>{
-      if(Array.isArray(remitos)){
-        remitos.forEach(function(r){
-          // Ensure numero is always a clean string key
-          var num=String(r.numero||'').trim();
-          if(!num)return;
-          // Don't overwrite local remitos that are newer
-          RL[num]={
-            numero:num,
-            cliente:String(r.cliente||''),
-            retiro:String(r.retiro||''),
-            devolucion:String(r.devolucion||''),
-            fecha:String(r.fecha||''),
-            items:Array.isArray(r.items)?r.items:[],
-            pago:String(r.pago||'pendiente'),
-            estado:String(r.estado||'borrador'),
-            facturador:String(r.facturador||''),
-            gtipo:String(r.gtipo||''),
-            gref:String(r.gref||'')
-          };
-        });
-        saveRL();
-        renderDash();filterH();
-        if($('section-remitos')&&$('section-remitos').classList.contains('active'))renderRemitos();
-      }
-    })
-    .catch(e=>console.log('Sheet remitos load failed:',e));
+  var cb='rmcb_'+Date.now();
+  var timer=setTimeout(function(){
+    delete window[cb];
+    console.log('loadRemitosFromSheet timeout');
+  },15000);
+  window[cb]=function(remitos){
+    clearTimeout(timer);
+    delete window[cb];
+    if(!Array.isArray(remitos))return;
+    var changed=false;
+    remitos.forEach(function(r){
+      var num=String(r.numero||'').trim();
+      if(!num||num.includes('GMT'))return;
+      RL[num]={
+        numero:num,
+        cliente:String(r.cliente||''),
+        retiro:String(r.retiro||''),
+        devolucion:String(r.devolucion||''),
+        fecha:String(r.fecha||''),
+        items:Array.isArray(r.items)?r.items:[],
+        pago:String(r.pago||'pendiente'),
+        estado:String(r.estado||'borrador'),
+        facturador:String(r.facturador||''),
+        gtipo:String(r.gtipo||''),
+        gref:String(r.gref||'')
+      };
+      changed=true;
+    });
+    if(changed){
+      saveRL();
+      renderDash();filterH();
+      if($('section-remitos')&&$('section-remitos').classList.contains('active'))renderRemitos();
+      if($('section-calendario')&&$('section-calendario').classList.contains('active'))renderCal();
+    }
+  };
+  var s=document.createElement('script');
+  s.onerror=function(){clearTimeout(timer);delete window[cb];};
+  s.src=SURL+'?action=getRemitos&callback='+cb+'&nocache='+Date.now();
+  document.head.appendChild(s);
 }
+
+// Auto-sync every 60 seconds
+setInterval(loadRemitosFromSheet, 60000);
 const $=id=>document.getElementById(id);
 const fmt=n=>{if(!n&&n!==0)return'—';return'$\u00A0'+Math.round(n).toLocaleString('es-AR');};
 const fD=d=>d?d.split('-').reverse().join('/'):'—';
