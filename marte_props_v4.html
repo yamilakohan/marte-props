@@ -399,7 +399,6 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
       <div style="display:flex;gap:12px;margin-bottom:1rem;font-size:12px;">
         <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:var(--abg);display:inline-block;"></span>Retiro</span>
         <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:var(--gbg);display:inline-block;"></span>Devolución</span>
-        <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:var(--bbg);display:inline-block;"></span>En curso</span>
       </div>
       <div class="card" style="padding:.9rem;">
         <div id="cal-container"></div>
@@ -484,6 +483,8 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
         <div class="card"><div style="font-weight:500;font-size:14px;margin-bottom:.9rem;">Recaudación por categoría</div><div id="top-cat"></div></div>
         <div class="card"><div style="font-weight:500;font-size:14px;margin-bottom:.9rem;">Facturación por persona</div><div id="top-fact"></div></div>
       </div>
+      <div class="card" style="margin-top:1rem;"><div style="font-weight:500;font-size:14px;margin-bottom:.9rem;">Recaudación por mes</div><div id="top-mes"></div></div>
+      <div class="card" style="margin-top:1rem;"><div style="font-weight:500;font-size:14px;margin-bottom:.9rem;">Recaudación por mes</div><div id="top-mes"></div></div>
     </div>
 
   </main>
@@ -639,6 +640,8 @@ function getOcup(desde,hasta,excl=null){
   getAllR().forEach(r=>{
     if(excl&&r.numero===excl)return;
     if(!r.retiro||!r.devolucion)return;
+    // Borradores no bloquean disponibilidad
+    if((r.estado||'borrador')==='borrador')return;
     if(new Date(r.retiro)<=dH&&new Date(r.devolucion)>=dD)r.items.forEach(i=>o.add(i.cod));
   });
   return o;
@@ -744,7 +747,8 @@ function ensureLocal(num){
 
 function renderDash(){
   const rem=getAllR();
-  const allI=rem.flatMap(r=>r.items);
+  const remActivos=rem.filter(r=>(r.estado||'borrador')!=='borrador');
+  const allI=remActivos.flatMap(r=>r.items);
   const cl=new Set(rem.map(r=>r.cliente)).size;
   const tot=allI.reduce((s,i)=>s+(i.alq||0),0);
   $('m-s').textContent=loaded?STOCK.filter(s=>s.alq>0).length:'…';
@@ -1026,14 +1030,11 @@ function renderCalMes(rem){
     const date=new Date(y,m,d);date.setHours(0,0,0,0);
     const iso=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const isToday=date.getTime()===today.getTime();
-    const retiros=rem.filter(r=>r.retiro===iso);
-    const devoluciones=rem.filter(r=>r.devolucion===iso);
-    const activos=rem.filter(r=>r.retiro&&r.devolucion&&r.retiro<iso&&r.devolucion>iso);
+    const retiros=rem.filter(r=>r.retiro===iso&&(r.estado||'borrador')!=='borrador');
+    const devoluciones=rem.filter(r=>r.devolucion===iso&&(r.estado||'borrador')!=='borrador');
     let chips='';
     retiros.forEach(r=>chips+=`<div class="cal-chip retiro" onclick="showCalDetail('${r.numero}')" title="${r.cliente}">↑ ${r.numero}</div>`);
     devoluciones.forEach(r=>chips+=`<div class="cal-chip devolucion" onclick="showCalDetail('${r.numero}')" title="${r.cliente}">↓ ${r.numero}</div>`);
-    activos.slice(0,2).forEach(r=>chips+=`<div class="cal-chip activo" onclick="showCalDetail('${r.numero}')" title="${r.cliente}">${r.numero}</div>`);
-    if(activos.length>2)chips+=`<div style="font-size:9px;color:var(--mut);">+${activos.length-2} más</div>`;
     html+=`<div class="cal-day${isToday?' today':''}"><div class="cal-day-num">${d}</div>${chips}</div>`;
   }
   // Completar grid
@@ -1061,9 +1062,9 @@ function renderCalSem(rem){
     const iso=d.toISOString().slice(0,10);
     const evs=[];
     rem.forEach(r=>{
+      if((r.estado||'borrador')==='borrador')return;
       if(r.retiro===iso)evs.push({tipo:'retiro',r,color:'var(--abg)',tc:'var(--atx)'});
       if(r.devolucion===iso)evs.push({tipo:'devolucion',r,color:'var(--gbg)',tc:'var(--gtx)'});
-      else if(r.retiro&&r.devolucion&&r.retiro<=iso&&r.devolucion>=iso&&r.retiro!==iso)evs.push({tipo:'activo',r,color:'var(--bbg)',tc:'var(--btx)'});
     });
     rows.push({di,evs});
   });
@@ -1140,15 +1141,24 @@ function filterH(){
 // ESTADÍSTICAS
 function renderEst(){
   const iC={},cT={},cI={},catT={},factT={};
+  const mesT={};
   getAllR().forEach(r=>{
     const c=r.cliente.split('-')[0].trim();
     const fact=r.facturador||'Sin asignar';
+    const esBorrador=(r.estado||'borrador')==='borrador';
     r.items.forEach(i=>{
       iC[i.desc]=(iC[i.desc]||0)+1;
-      cT[c]=(cT[c]||0)+(i.alq||0);cI[c]=(cI[c]||0)+1;
-      const s=STOCK.find(x=>x.cod===i.cod);const cat=s?s.cat:'Otros';
-      catT[cat]=(catT[cat]||0)+(i.alq||0);
-      factT[fact]=(factT[fact]||0)+(i.alq||0);
+      if(!esBorrador){
+        cT[c]=(cT[c]||0)+(i.alq||0);cI[c]=(cI[c]||0)+1;
+        const s=STOCK.find(x=>x.cod===i.cod);const cat=s?s.cat:'Otros';
+        catT[cat]=(catT[cat]||0)+(i.alq||0);
+        factT[fact]=(factT[fact]||0)+(i.alq||0);
+        // Por mes — usar fecha de retiro
+        if(r.retiro){
+          const mes=r.retiro.slice(0,7);// YYYY-MM
+          mesT[mes]=(mesT[mes]||0)+(i.alq||0);
+        }
+      }
     });
   });
   $('top-i').innerHTML=Object.entries(iC).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([n,c],i)=>`<div class="srow"><div style="display:flex;gap:8px;align-items:center;flex:1;min-width:0;"><span style="font-size:11px;color:var(--mut);width:14px;">${i+1}</span><span style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${n}</span></div><span class="badge bgr">${c}x</span></div>`).join('');
@@ -1157,6 +1167,17 @@ function renderEst(){
   $('top-cat').innerHTML=Object.entries(catT).sort((a,b)=>b[1]-a[1]).slice(0,12).map(([cat,t])=>`<div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;"><span>${cat}</span><span style="font-weight:500;">${fmt(t)} <span style="color:var(--mut);font-weight:400;">(${Math.round(t/tot*100)}%)</span></span></div><div class="barbg"><div class="barfill" style="width:${Math.round(t/tot*100)}%;"></div></div></div>`).join('');
   const totF=Object.values(factT).reduce((s,v)=>s+v,0);
   $('top-fact').innerHTML=Object.entries(factT).sort((a,b)=>b[1]-a[1]).map(([fact,t])=>`<div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;"><span style="font-weight:500;">${fact}</span><span style="font-weight:500;">${fmt(t)} <span style="color:var(--mut);font-weight:400;">(${Math.round(t/totF*100)}%)</span></span></div><div class="barbg"><div class="barfill" style="width:${Math.round(t/totF*100)}%;"></div></div></div>`).join('');
+  // Recaudacion por mes
+  const meses={'01':'Enero','02':'Febrero','03':'Marzo','04':'Abril','05':'Mayo','06':'Junio','07':'Julio','08':'Agosto','09':'Septiembre','10':'Octubre','11':'Noviembre','12':'Diciembre'};
+  const totMes=Object.values(mesT).reduce((s,v)=>s+v,0)||1;
+  const mesHtml=Object.entries(mesT).sort((a,b)=>b[0].localeCompare(a[0])).map(([mes,t])=>{
+    const [anio,m]=mes.split('-');
+    return`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--bor);font-size:13px;">
+      <span style="font-weight:500;">${meses[m]||m} ${anio}</span>
+      <span style="font-weight:500;color:var(--coral);">${fmt(t)}</span>
+    </div>`;
+  }).join('');
+  $('top-mes').innerHTML=mesHtml||'<div style="font-size:13px;color:var(--mut);">Sin datos</div>';
 }
 
 function openM(id){$(id).classList.add('open');}
