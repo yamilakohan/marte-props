@@ -170,7 +170,7 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
     <h2>Editar remito</h2>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.9rem;margin-bottom:1rem;">
       <div><label>Número</label><input id="en" type="text"/></div>
-      <div><label>Cliente / Productora</label><input id="ec" type="text"/></div>
+      <div><label>Nombre del cliente</label><input id="ec" type="text"/></div>
       <div><label>Facturado por</label>
         <select id="efact">
           <option value="">— Sin asignar —</option>
@@ -178,6 +178,11 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
           <option value="Yami">Yami</option>
         </select>
       </div>
+      <div><label>Productora</label><input id="eprod" type="text"/></div>
+      <div><label>Proyecto</label><input id="eproy" type="text"/></div>
+      <div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.9rem;margin-bottom:1rem;">
       <div><label>Retiro</label><input id="er" type="date"/></div>
       <div><label>Devolución</label><input id="ed2" type="date"/></div>
       <div><label>Estado del remito</label>
@@ -286,7 +291,7 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
       <div class="card" style="margin-bottom:1.25rem;">
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem;margin-bottom:.9rem;">
           <div><label>Número</label><input id="nr-n" type="text" placeholder="11-1236"/></div>
-          <div><label>Cliente / Productora</label><input id="nr-c" type="text" placeholder="Nombre - Productora"/></div>
+          <div><label>Nombre del cliente</label><input id="nr-c" type="text" placeholder="Nombre y apellido"/></div>
           <div><label>Facturado por</label>
             <select id="nr-fact">
               <option value="">— Sin asignar —</option>
@@ -294,6 +299,11 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
               <option value="Yami">Yami</option>
             </select>
           </div>
+          <div><label>Productora</label><input id="nr-prod" type="text" placeholder="Nombre de la productora"/></div>
+          <div><label>Proyecto / Producción</label><input id="nr-proy" type="text" placeholder="Nombre del proyecto"/></div>
+          <div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem;margin-bottom:.9rem;">
           <div><label>Fecha de retiro</label><input id="nr-r" type="date" onchange="renderIS()"/></div>
           <div><label>Fecha de devolución</label><input id="nr-d" type="date" onchange="renderIS()"/></div>
           <div><label>Estado inicial</label>
@@ -477,14 +487,30 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
       <p class="stitle">Estadísticas</p>
       <div class="g2" style="margin-bottom:1.25rem;">
         <div class="card"><div style="font-weight:500;font-size:14px;margin-bottom:.9rem;">Items más alquilados</div><div id="top-i"></div></div>
-        <div class="card"><div style="font-weight:500;font-size:14px;margin-bottom:.9rem;">Mejores clientes</div><div id="top-c"></div></div>
+        <div class="card">
+          <div style="display:flex;gap:8px;margin-bottom:.9rem;">
+            <button class="btn bs bsm" id="top-c-btn-cli" onclick="setTopCVista('cli')" style="background:var(--coral);color:#fff;font-size:11px;">Clientes</button>
+            <button class="btn bs bsm" id="top-c-btn-prod" onclick="setTopCVista('prod')" style="font-size:11px;">Productoras</button>
+          </div>
+          <div id="top-c"></div>
+        </div>
       </div>
       <div class="g2">
         <div class="card"><div style="font-weight:500;font-size:14px;margin-bottom:.9rem;">Recaudación por categoría</div><div id="top-cat"></div></div>
         <div class="card"><div style="font-weight:500;font-size:14px;margin-bottom:.9rem;">Facturación por persona</div><div id="top-fact"></div></div>
       </div>
-      <div class="card" style="margin-top:1rem;"><div style="font-weight:500;font-size:14px;margin-bottom:.9rem;">Recaudación por mes</div><div id="top-mes"></div></div>
-      <div class="card" style="margin-top:1rem;"><div style="font-weight:500;font-size:14px;margin-bottom:.9rem;">Recaudación por mes</div><div id="top-mes"></div></div>
+      <div class="card" style="margin-top:1rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.9rem;">
+          <div style="font-weight:500;font-size:14px;">Actividad por mes</div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn bs bsm" id="mes-btn-rec" onclick="setMesVista('rec')" style="background:var(--coral);color:#fff;">Recaudación</button>
+            <button class="btn bs bsm" id="mes-btn-items" onclick="setMesVista('items')">Items</button>
+            <button class="btn bs bsm" id="mes-btn-alq" onclick="setMesVista('alq')">Alquileres</button>
+          </div>
+        </div>
+        <div id="top-mes"></div>
+      </div>
+
     </div>
 
   </main>
@@ -835,7 +861,9 @@ function saveAndView(){
   if(!num){alert('Ingresá el número de remito (solo números y guiones, ej: 11-1236).');return;}
   if(!cli){alert('Ingresá el nombre del cliente.');return;}
   const ret=$('nr-r').value,dev=$('nr-d').value;
-  const remitoData={numero:num,cliente:cli,retiro:ret,devolucion:dev,
+  const prod=($('nr-prod')||{value:''}).value.trim();
+  const proy=($('nr-proy')||{value:''}).value.trim();
+  const remitoData={numero:num,cliente:cli,productora:prod,proyecto:proy,retiro:ret,devolucion:dev,
     fecha:new Date().toISOString().slice(0,10),
     items:SEL.map(i=>({cod:i.cod,desc:i.nombre,alq:i.alq,gtia:i.gtia,foto:i.foto,conflicto:i.conflicto||false})),
     pago:RL[num]?RL[num].pago:'pendiente',
@@ -868,13 +896,13 @@ function filterR(){
     const est=r.estado||'borrador';const pago=r.pago||'pendiente';
     return`<tr>
       <td style="font-weight:500;">${r.numero}</td>
-      <td><span class="chip">${r.cliente.split('-')[0].trim()}</span></td>
+      <td><div style="font-size:13px;">${r.cliente.split('-')[0].trim()}</div>${r.productora?`<div style="font-size:11px;color:var(--mut);">${r.productora}</div>`:''}</td>
       <td>${fD(r.retiro)}</td><td>${fD(r.devolucion)}</td>
       <td>${r.items.length}</td>
       <td style="font-weight:500;">${fmt(tot)}</td>
       <td><button class="estbtn ${EST_CLASS[est]}" onclick="avEst('${r.numero}')">${EST_LABEL[est]}</button></td>
       <td><button class="pbtn ${PAGO_CLASS[pago]}" onclick="avPago('${r.numero}')">${PAGO_LABEL[pago]}</button></td>
-      <td style="font-size:12px;color:var(--mut);">${r.facturador||'—'}</td>
+      <td><button onclick="cycleFacturador('${r.numero}')" style="background:none;border:0.5px solid var(--bor);border-radius:12px;padding:2px 9px;font-size:11px;cursor:pointer;font-family:inherit;color:var(--txt);">${r.facturador||'—'}</button></td>
       <td style="white-space:nowrap;">
         <button class="btn bsm bs" onclick="abrirEdit('${r.numero}')" style="margin-right:4px;">✏</button>
         <button class="btn bsm bs" onclick="verPrevTab('${r.numero}')">Ver</button>
@@ -953,6 +981,7 @@ function abrirEdit(num){
   ensureLocal(num);editKey=num;editItems=JSON.parse(JSON.stringify(RL[num].items||[]));
   $('en').value=RL[num].numero;$('ec').value=RL[num].cliente;
   $('er').value=RL[num].retiro||'';$('ed2').value=RL[num].devolucion||'';
+  $('eprod').value=RL[num].productora||'';$('eproy').value=RL[num].proyecto||'';
   $('eest').value=RL[num].estado||'borrador';
   $('efact').value=RL[num].facturador||'';
   $('egtipo').value=RL[num].gtipo||'';
@@ -980,7 +1009,9 @@ function saveEdit(){
   const pago=RL[editKey]?RL[editKey].pago:'pendiente';
   const fecha=RL[editKey]?RL[editKey].fecha:new Date().toISOString().slice(0,10);
   if(editKey!==num)delete RL[editKey];
-  const editedRemito={numero:num,cliente:cli,retiro:$('er').value,devolucion:$('ed2').value,fecha,items:editItems,pago,
+  const editedRemito={numero:num,cliente:cli,
+    productora:$('eprod').value.trim(),proyecto:$('eproy').value.trim(),
+    retiro:$('er').value,devolucion:$('ed2').value,fecha,items:editItems,pago,
     estado:$('eest').value,facturador:$('efact').value,gtipo:$('egtipo').value,gref:$('egref').value};
   RL[num]=editedRemito;
   saveRL();
@@ -1162,9 +1193,12 @@ function renderEst(){
     });
   });
   $('top-i').innerHTML=Object.entries(iC).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([n,c],i)=>`<div class="srow"><div style="display:flex;gap:8px;align-items:center;flex:1;min-width:0;"><span style="font-size:11px;color:var(--mut);width:14px;">${i+1}</span><span style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${n}</span></div><span class="badge bgr">${c}x</span></div>`).join('');
-  $('top-c').innerHTML=Object.entries(cT).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([c,t],i)=>`<div class="srow"><div style="display:flex;gap:8px;align-items:center;flex:1;min-width:0;"><span style="font-size:11px;color:var(--mut);width:14px;">${i+1}</span><span style="font-size:12px;">${c}</span></div><div style="text-align:right;"><div style="font-size:12px;font-weight:500;">${fmt(t)}</div><div style="font-size:10px;color:var(--mut);">${cI[c]} items</div></div></div>`).join('');
   const tot=Object.values(catT).reduce((s,v)=>s+v,0);
   $('top-cat').innerHTML=Object.entries(catT).sort((a,b)=>b[1]-a[1]).slice(0,12).map(([cat,t])=>`<div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;"><span>${cat}</span><span style="font-weight:500;">${fmt(t)} <span style="color:var(--mut);font-weight:400;">(${Math.round(t/tot*100)}%)</span></span></div><div class="barbg"><div class="barfill" style="width:${Math.round(t/tot*100)}%;"></div></div></div>`).join('');
+  window._topCData={cT,cI,prodT,prodI};
+  renderTopC('cli');
+  window._mesData=mesT;
+  renderMesChart(_mesVista||'rec');
   const totF=Object.values(factT).reduce((s,v)=>s+v,0);
   $('top-fact').innerHTML=Object.entries(factT).sort((a,b)=>b[1]-a[1]).map(([fact,t])=>`<div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;"><span style="font-weight:500;">${fact}</span><span style="font-weight:500;">${fmt(t)} <span style="color:var(--mut);font-weight:400;">(${Math.round(t/totF*100)}%)</span></span></div><div class="barbg"><div class="barfill" style="width:${Math.round(t/totF*100)}%;"></div></div></div>`).join('');
   // Recaudacion por mes
@@ -1296,6 +1330,63 @@ function patchRemitoFotos(){
       td.appendChild(img);
     }
   });
+}
+
+function setTopCVista(v){
+  ['cli','prod'].forEach(function(k){
+    var btn=$('top-c-btn-'+k);
+    if(btn){btn.style.background=k===v?'var(--coral)':'';btn.style.color=k===v?'#fff':'';}
+  });
+  renderTopC(v);
+}
+function renderTopC(v){
+  var d=window._topCData||{cT:{},cI:{},prodT:{},prodI:{}};
+  var data=v==='cli'?d.cT:d.prodT;
+  var cnt=v==='cli'?d.cI:d.prodI;
+  $('top-c').innerHTML=Object.entries(data).sort(function(a,b){return b[1]-a[1];}).slice(0,10).map(function(entry,i){
+    var name=entry[0],t=entry[1];
+    return'<div class="srow"><div style="display:flex;gap:8px;align-items:center;flex:1;min-width:0;"><span style="font-size:11px;color:var(--mut);width:14px;">'+(i+1)+'</span><span style="font-size:12px;">'+name+'</span></div><div style="text-align:right;"><div style="font-size:12px;font-weight:500;">'+fmt(t)+'</div><div style="font-size:10px;color:var(--mut);">'+(cnt[name]||0)+' items</div></div></div>';
+  }).join('');
+}
+
+function cycleFacturador(num){
+  ensureLocal(num);
+  var opts=['','Ed','Yami'];
+  var cur=RL[num].facturador||'';
+  var idx=opts.indexOf(cur);
+  RL[num].facturador=opts[(idx+1)%opts.length];
+  saveRL();
+  postToSheet({action:'updateFacturador',numero:num,valor:RL[num].facturador}).catch(function(){});
+  filterR();
+  if($('section-dashboard').classList.contains('active'))renderDash();
+}
+
+
+var _mesVista='rec';
+function setMesVista(v){
+  _mesVista=v;
+  ['rec','items','alq'].forEach(function(k){
+    var btn=document.getElementById('mes-btn-'+k);
+    if(btn){btn.style.background=k===v?'var(--coral)':'';btn.style.color=k===v?'#fff':'';}
+  });
+  renderMesChart(v);
+}
+function renderMesChart(v){
+  var mesT=window._mesData||{};
+  var meses_es=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  var entries=Object.entries(mesT).sort(function(a,b){return a[0].localeCompare(b[0]);});
+  var maxVal=Math.max.apply(null,entries.map(function(e){return e[1][v]||0;}).concat([1]));
+  var el=document.getElementById('top-mes');
+  if(!el)return;
+  el.innerHTML=entries.map(function(entry){
+    var mes=entry[0],d=entry[1];
+    var parts=mes.split('-');
+    var label=meses_es[parseInt(parts[1])-1]+' '+parts[0];
+    var val=d[v]||0;
+    var display=v==='rec'?'$ '+Math.round(val).toLocaleString('es-AR'):val+(v==='items'?' items':' alquileres');
+    var pct=Math.round(val/maxVal*100);
+    return '<div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;"><span>'+label+'</span><span style="font-weight:500;">'+display+'</span></div><div class="barbg"><div class="barfill" style="width:'+pct+'%;"></div></div></div>';
+  }).join('');
 }
 
 function toggleNav(){
