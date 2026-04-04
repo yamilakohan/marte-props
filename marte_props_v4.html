@@ -553,6 +553,7 @@ function loadRemitosFromSheet(){
     remitos.forEach(function(r){
       var num=String(r.numero||'').trim();
       if(!num||num.includes('GMT'))return;
+      // Sheet always wins - overwrite localStorage with Sheet data
       RL[num]={
         numero:num,
         cliente:String(r.cliente||''),
@@ -564,7 +565,9 @@ function loadRemitosFromSheet(){
         estado:String(r.estado||'borrador'),
         facturador:String(r.facturador||''),
         gtipo:String(r.gtipo||''),
-        gref:String(r.gref||'')
+        gref:String(r.gref||''),
+        productora:String(r.productora||''),
+        proyecto:String(r.proyecto||'')
       };
       changed=true;
     });
@@ -768,7 +771,13 @@ function avPago(num){
   if($('section-dashboard').classList.contains('active'))renderDash();
 }
 function ensureLocal(num){
-  if(!RL[num]){const b=getAllR().find(r=>r.numero===num);if(b)RL[num]=JSON.parse(JSON.stringify(b));}
+  if(!RL[num]){
+    const b=getAllR().find(r=>r.numero===num);
+    if(b)RL[num]=JSON.parse(JSON.stringify(b));
+  }
+  // Make sure productora/proyecto fields exist
+  if(RL[num]&&!RL[num].productora)RL[num].productora='';
+  if(RL[num]&&!RL[num].proyecto)RL[num].proyecto='';
 }
 
 function renderDash(){
