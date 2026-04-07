@@ -971,9 +971,44 @@ function buildRemito(r){
           <td style="padding:8px 10px;font-size:13px;text-align:center;">1</td>
           <td style="padding:8px 10px;font-size:13px;text-align:right;">${i.gtia?fmt(i.gtia):'—'}</td>
           <td style="padding:8px 10px;font-size:13px;font-weight:500;text-align:right;">${fmt(alqFinal)}</td>
-        </tr>`;}).join('')
+        </tr>`;}).join('')}
+      </tbody>
+    </table>
+    ${tieneRecargo?`<div style="background:var(--coral-lt);border:1px solid var(--coral);border-radius:8px;padding:10px 14px;margin-bottom:1rem;font-size:11px;color:var(--coral-dk);line-height:1.7;">
+      <strong>Nota sobre el recargo por duración:</strong> El precio base de alquiler corresponde a una semana (7 días). 
+      Este pedido tiene una duración de <strong>${dias} días</strong> (${semanasExtra} semana${semanasExtra>1?'s':''} adicional${semanasExtra>1?'es':''}), 
+      por lo que se aplica un recargo del <strong>${semanasExtra*50}%</strong> sobre el precio base según nuestra política de alquileres extendidos.
+    </div>`:''}
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-top:1rem;border-top:0.5px solid var(--bor);">
+      <div style="font-size:10px;color:var(--mut);line-height:2;max-width:400px;">
+        — De cancelar con menos de 24hs del retiro, se cobrará el 50% del alquiler.<br>
+        — Validez del presupuesto 15 días. El valor del alquiler es por una semana.<br>
+        — Para confirmar un alquiler, hacerlo vía mail.<br>
+        — Pagos con más de 7 días de demora tendrán recarga del 20%.<br>
+        — Por favor devolver los elementos embalados.
+        ${gtiaStr?`<br>— Garantía: ${gtiaStr}`:''}
+      </div>
+      <div style="text-align:right;min-width:220px;">
+        ${tieneRecargo?`
+          <div style="font-size:11px;color:var(--mut);">Alquiler base (1 semana)</div>
+          <div style="font-size:16px;text-decoration:line-through;color:var(--mut);">${fmt(totBase)}</div>
+          <div style="font-size:11px;color:var(--coral);margin-top:4px;">Recargo: +${fmt(tot-totBase)} (${semanasExtra} sem. extra × 50%)</div>
+          <div style="border-top:1px solid var(--bor);margin:8px 0;"></div>
+          <div style="font-size:11px;color:var(--mut);">Total alquiler</div>
+          <div style="font-size:28px;font-family:'DM Serif Display',serif;">${fmt(tot)}</div>
+        `:`
+          <div style="font-size:11px;color:var(--mut);">Alquiler (1 semana)</div>
+          <div style="font-size:28px;font-family:'DM Serif Display',serif;">${fmt(tot)}</div>
+        `}
+        <div style="font-size:11px;color:var(--mut);margin-top:6px;">Diferido 30 días (+20%)</div>
+        <div style="font-size:16px;">${fmt(Math.round(tot*1.2))}</div>
+        ${tg?`<div style="font-size:11px;color:var(--mut);margin-top:8px;padding-top:8px;border-top:0.5px solid var(--bor);">Total garantía (cheque)</div><div style="font-size:16px;font-weight:500;">${fmt(tg)}</div>`:''}
+      </div>
+    </div>
+  </div>`;
+  if(loaded)setTimeout(patchRemitoFotos,50);
 }
-  `;
+
   // Eventos por día
   const rows=[];
   weekDays.forEach((d,di)=>{
