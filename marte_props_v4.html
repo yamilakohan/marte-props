@@ -1009,29 +1009,64 @@ function buildRemito(r){
   if(loaded)setTimeout(patchRemitoFotos,50);
 }
 
-  // Eventos por día
-  const rows=[];
-  weekDays.forEach((d,di)=>{
-    const iso=d.toISOString().slice(0,10);
-    const evs=[];
-    rem.forEach(r=>{
-      if((r.estado||'borrador')==='borrador')return;
-      if(r.retiro===iso)evs.push({tipo:'retiro',r,color:'var(--abg)',tc:'var(--atx)'});
-      if(r.devolucion===iso)evs.push({tipo:'devolucion',r,color:'var(--gbg)',tc:'var(--gtx)'});
-    });
-    rows.push({di,evs});
-  });
-  const maxEvs=Math.max(...rows.map(r=>r.evs.length),1);
-  for(let row=0;row<maxEvs;row++){
-    html+=`<div class="week-time"></div>`;
-    weekDays.forEach((_,di)=>{
-      const ev=rows[di].evs[row];
-      html+=`<div class="week-cell">${ev?`<div class="week-event" style="background:${ev.color};color:${ev.tc};cursor:pointer;" onclick="showCalDetail('${ev.r.numero}')">${ev.tipo==='retiro'?'↑':ev.tipo==='devolucion'?'↓':'·'} ${ev.r.numero} — ${ev.r.cliente.split('-')[0].trim().slice(0,12)}</div>`:'&nbsp;'}</div>`;
-    });
-  }
-  html+='</div>';
-  $('cal-container').innerHTML=html;
+// CALENDARIO
+var calVista='mes';
+var calDate=new Date();
+
+function calPrev(){
+  if(calVista==='mes'){calDate=new Date(calDate.getFullYear(),calDate.getMonth()-1,1);}
+  else{calDate=new Date(calDate.getTime()-7*86400000);}
+  renderCal();
 }
+function calNext(){
+  if(calVista==='mes'){calDate=new Date(calDate.getFullYear(),calDate.getMonth()+1,1);}
+  else{calDate=new Date(calDate.getTime()+7*86400000);}
+  renderCal();
+}
+function calHoy(){calDate=new Date();renderCal();}
+function setCalVista(v){
+  calVista=v;
+  $('cal-btn-mes').className='btn bsm'+(v==='mes'?' bp':' bs');
+  $('cal-btn-sem').className='btn bsm'+(v==='semana'?' bp':' bs');
+  renderCal();
+}
+function renderCal(){
+  var rem=getAllR();
+  if(calVista==='mes')renderCalMes(rem);
+  else renderCalSem(rem);
+}
+function renderCalMes(rem){
+  var y=calDate.getFullYear(),m=calDate.getMonth();
+  var meses=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  $('cal-label').textContent=meses[m]+' '+y;
+  var firstDay=new Date(y,m,1);
+  var lastDay=new Date(y,m+1,0);
+  var startDow=firstDay.getDay();
+  var dias=['Do','Lu','Ma','Mi','Ju','Vi','Sa'];
+  var today=new Date();today.setHours(0,0,0,0);
+  var html=dias.map(function(d){return'<div class="cal-day-name">'+d+'</div>';}).join('');
+  for(var i=0;i<startDow;i++){
+    var d=new Date(y,m,-(startDow-1-i));
+    html+='<div class="cal-day other-month"><div class="cal-day-num">'+d.getDate()+'</div></div>';
+  }
+  for(var day=1;day<=lastDay.getDate();day++){
+    var date=new Date(y,m,day);date.setHours(0,0,0,0);
+    var iso=y+'-'+String(m+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
+    var isToday=date.getTime()===today.getTime();
+    var retiros=rem.filter(function(r){return r.retiro===iso&&(r.estado||'borrador')!=='borrador';});
+    var devols=rem.filter(function(r){return r.devolucion===iso&&(r.estado||'borrador')!=='borrador';});
+    var chips='';
+    retiros.forEach(function(r){chips+='<div class="cal-chip retiro" onclick="showCalDetail(''+r.numero+'')" title="'+r.cliente+'">↑ '+r.numero+' '+r.cliente.split('-')[0].trim().slice(0,10)+'</div>';});
+    devols.forEach(function(r){chips+='<div class="cal-chip devolucion" onclick="showCalDetail(''+r.numero+'')" title="'+r.cliente+'">↓ '+r.numero+' '+r.cliente.split('-')[0].trim().slice(0,10)+'</div>';});
+    html+='<div class="cal-day'+(isToday?' today':'')+'" ><div class="cal-day-num">'+day+'</div>'+chips+'</div>';
+  }
+  var total=startDow+lastDay.getDate();
+  var remaining=(7-total%7)%7;
+  for(var j=1;j<=remaining;j++)html+='<div class="cal-day other-month"><div class="cal-day-num">'+j+'</div></div>';
+  $('cal-container').innerHTML='<div class="cal-grid">'+html+'</div>';
+}
+
+
 function showCalDetail(num){
   const r=getAllR().find(x=>x.numero===num);if(!r)return;
   const tot=r.items.reduce((s,i)=>s+(i.alq||0),0);
@@ -1316,6 +1351,25 @@ function renderMesChart(v){
   }).join('');
 }
 
+
+function saveEdit(){
+  const num=String($('en').value||'').trim().replace(/[^0-9\-a-zA-Z]/g,'');
+  const cli=$('ec').value.trim();
+  if(!num||!cli){alert('Completá número y cliente.');return;}
+  const pago=RL[editKey]?RL[editKey].pago:'pendiente';
+  const fecha=RL[editKey]?RL[editKey].fecha:new Date().toISOString().slice(0,10);
+  if(editKey!==num)delete RL[editKey];
+  const editedRemito={numero:num,cliente:cli,
+    productora:$('eprod')?$('eprod').value.trim():'',
+    proyecto:$('eproy')?$('eproy').value.trim():'',
+    retiro:$('er').value,devolucion:$('ed2').value,fecha,items:editItems,pago,
+    estado:$('eest').value,facturador:$('efact').value,
+    gtipo:$('egtipo').value,gref:$('egref').value};
+  RL[num]=editedRemito;
+  saveRL();
+  postToSheet({action:'saveRemito',remito:editedRemito}).catch(function(){});
+  closeM('m-edit');renderRemitos();
+}
 function toggleNav(){
   const nav=document.querySelector('nav');
   const overlay=$('nav-overlay');
@@ -1335,4 +1389,46 @@ document.querySelectorAll('.ni').forEach(n=>{
 });
 </script>
 </body>
-</html>
+</html
+function renderCalSem(rem){
+  var dow=calDate.getDay();
+  var weekStart=new Date(calDate.getTime()-dow*86400000);weekStart.setHours(0,0,0,0);
+  var dias=['Do','Lu','Ma','Mi','Ju','Vi','Sa'];
+  var meses=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  var weekDays=Array.from({length:7},function(_,i){var d=new Date(weekStart.getTime()+i*86400000);return d;});
+  var startStr=weekDays[0].toLocaleDateString('es-AR',{day:'numeric',month:'short'});
+  var endStr=weekDays[6].toLocaleDateString('es-AR',{day:'numeric',month:'short'});
+  $('cal-label').textContent=startStr+' — '+endStr;
+  var today=new Date();today.setHours(0,0,0,0);
+  var html='<div class="week-grid"><div class="week-header"></div>';
+  weekDays.forEach(function(d){
+    var isToday=d.getTime()===today.getTime();
+    html+='<div class="week-header'+(isToday?' today':'')+'"><div>'+dias[d.getDay()]+'</div><div style="font-size:15px;font-weight:500;">'+d.getDate()+'</div><div style="font-size:10px;color:var(--mut);">'+meses[d.getMonth()]+'</div></div>';
+  });
+  var rows=[];
+  weekDays.forEach(function(d,di){
+    var iso=d.toISOString().slice(0,10);
+    var evs=[];
+    rem.filter(function(r){return(r.estado||'borrador')!=='borrador';}).forEach(function(r){
+      if(r.retiro===iso)evs.push({tipo:'retiro',r,color:'var(--abg)',tc:'var(--atx)'});
+      if(r.devolucion===iso)evs.push({tipo:'devolucion',r,color:'var(--gbg)',tc:'var(--gtx)'});
+    });
+    rows.push({di:di,evs:evs});
+  });
+  var maxEvs=Math.max.apply(null,rows.map(function(r){return r.evs.length;}).concat([1]));
+  for(var row=0;row<maxEvs;row++){
+    html+='<div class="week-time"></div>';
+    weekDays.forEach(function(_,di){
+      var ev=rows[di].evs[row];
+      if(ev){
+        html+='<div class="week-cell"><div class="week-event" style="background:'+ev.color+';color:'+ev.tc+';cursor:pointer;" onclick="showCalDetail(''+ev.r.numero+'')">'+
+          (ev.tipo==='retiro'?'↑':'↓')+' '+ev.r.numero+' — '+ev.r.cliente.split('-')[0].trim().slice(0,12)+'</div></div>';
+      } else {
+        html+='<div class="week-cell">&nbsp;</div>';
+      }
+    });
+  }
+  html+='</div>';
+  $('cal-container').innerHTML=html;
+}
+>
