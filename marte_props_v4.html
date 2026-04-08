@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>â˜… Marte Props â€” v3</title>
+<title>★ Marte Props — v3</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -146,7 +146,7 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
       <span style="display:block;width:20px;height:2px;background:#fff;border-radius:1px;"></span>
       <span style="display:block;width:20px;height:2px;background:#fff;border-radius:1px;"></span>
     </button>
-    <h1>â˜… Marte Props</h1>
+    <h1>★ Marte Props</h1>
   </div>
   <span style="font-size:12px;opacity:.8;display:flex;align-items:center;"><span class="dot" id="sdot"></span><span id="stxt">Conectando...</span></span>
 </header>
@@ -155,7 +155,7 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
 <!-- MODAL OCUPADO -->
 <div class="mbg" id="m-ocup">
   <div class="modal" style="max-width:460px;">
-    <h2>âš  Item no disponible</h2>
+    <h2>⚠ Item no disponible</h2>
     <p id="m-ocup-msg" style="font-size:14px;line-height:1.7;color:var(--mut);margin-bottom:1.5rem;"></p>
     <div style="display:flex;gap:8px;">
       <button class="btn bd" onclick="confirmOcup()">Agregar igual (con advertencia)</button>
@@ -169,11 +169,11 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
   <div class="modal" style="max-width:760px;">
     <h2>Editar remito</h2>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.9rem;margin-bottom:1rem;">
-      <div><label>NÃºmero</label><input id="en" type="text"/></div>
+      <div><label>Número</label><input id="en" type="text"/></div>
       <div><label>Nombre del cliente</label><input id="ec" type="text"/></div>
       <div><label>Facturado por</label>
         <select id="efact">
-          <option value="">â€” Sin asignar â€”</option>
+          <option value="">— Sin asignar —</option>
           <option value="Ed">Ed</option>
           <option value="Yami">Yami</option>
         </select>
@@ -184,28 +184,28 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.9rem;margin-bottom:1rem;">
       <div><label>Retiro</label><input id="er" type="date"/></div>
-      <div><label>DevoluciÃ³n</label><input id="ed2" type="date"/></div>
+      <div><label>Devolución</label><input id="ed2" type="date"/></div>
       <div><label>Estado del remito</label>
         <select id="eest">
           <option value="borrador">Borrador</option>
           <option value="confirmado">Confirmado</option>
           <option value="entregado">Entregado</option>
           <option value="devuelto">Devuelto</option>
-          <option value="finalizado">Finalizado âœ“</option>
+          <option value="finalizado">Finalizado ✓</option>
         </select>
       </div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-bottom:1rem;">
-      <div><label>GarantÃ­a â€” tipo</label>
+      <div><label>Garantía — tipo</label>
         <select id="egtipo">
-          <option value="">â€” Sin garantÃ­a â€”</option>
+          <option value="">— Sin garantía —</option>
           <option value="cheque">Cheque</option>
           <option value="transferencia">Transferencia</option>
           <option value="efectivo">Efectivo</option>
           <option value="otro">Otro</option>
         </select>
       </div>
-      <div><label>NÃºmero / referencia de garantÃ­a</label><input id="egref" type="text" placeholder="Ej: NÂº 00123456 o CBU..."/></div>
+      <div><label>Número / referencia de garantía</label><input id="egref" type="text" placeholder="Ej: Nº 00123456 o CBU..."/></div>
     </div>
     <div style="font-size:12px;color:var(--mut);margin-bottom:6px;">Items en el remito</div>
     <div id="eil" style="max-height:180px;overflow-y:auto;border:0.5px solid var(--bor);border-radius:8px;margin-bottom:1rem;"></div>
@@ -235,11 +235,11 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
   <div class="modal" style="max-width:520px;">
     <h2 id="m-item-title">Nuevo item</h2>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-bottom:1rem;">
-      <div><label>CÃ³digo</label><input id="mi-cod" type="text" placeholder="Ej: 15071"/></div>
-      <div><label>CategorÃ­a</label><input id="mi-cat" type="text" placeholder="Ej: MOCHILAS"/></div>
-      <div style="grid-column:1/-1;"><label>Nombre del item</label><input id="mi-nombre" type="text" placeholder="Nombre completo del artÃ­culo"/></div>
+      <div><label>Código</label><input id="mi-cod" type="text" placeholder="Ej: 15071"/></div>
+      <div><label>Categoría</label><input id="mi-cat" type="text" placeholder="Ej: MOCHILAS"/></div>
+      <div style="grid-column:1/-1;"><label>Nombre del item</label><input id="mi-nombre" type="text" placeholder="Nombre completo del artículo"/></div>
       <div><label>Alquiler por semana ($)</label><input id="mi-alq" type="number" placeholder="0"/></div>
-      <div><label>Valor garantÃ­a ($)</label><input id="mi-gtia" type="number" placeholder="0"/></div>
+      <div><label>Valor garantía ($)</label><input id="mi-gtia" type="number" placeholder="0"/></div>
       <div style="grid-column:1/-1;"><label>URL de la foto (opcional)</label><input id="mi-foto" type="text" placeholder="https://static.wixstatic.com/..."/></div>
       <div style="grid-column:1/-1;"><label>Medidas (opcional)</label><input id="mi-medidas" type="text" placeholder="Ej: 30x25x10cm"/></div>
     </div>
@@ -253,19 +253,19 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
 <div class="layout">
   <nav>
     <div class="ns">Principal</div>
-    <div class="ni active" onclick="goSec('dashboard')">â—ˆ Dashboard</div>
+    <div class="ni active" onclick="goSec('dashboard')">◈ Dashboard</div>
     <div class="ns">Remitos</div>
-    <div class="ni" onclick="goSec('nuevo-remito')">ï¼‹ Nuevo remito</div>
-    <div class="ni" onclick="goSec('remitos')">â—» Ver remitos</div>
+    <div class="ni" onclick="goSec('nuevo-remito')">＋ Nuevo remito</div>
+    <div class="ni" onclick="goSec('remitos')">◻ Ver remitos</div>
     <div class="ns">Calendario</div>
-    <div class="ni" onclick="goSec('calendario')">â—· Calendario</div>
+    <div class="ni" onclick="goSec('calendario')">◷ Calendario</div>
     <div class="ns">Inventario</div>
-    <div class="ni" onclick="goSec('disponibilidad')">â—Ž Disponibilidad</div>
-    <div class="ni" onclick="goSec('stock')">â–£ Stock completo</div>
-    <div class="ni" onclick="goSec('stock-editor')">âœŽ Editar stock</div>
-    <div class="ns">AnÃ¡lisis</div>
-    <div class="ni" onclick="goSec('historial')">âŠ¡ Historial</div>
-    <div class="ni" onclick="goSec('estadisticas')">â—ˆ EstadÃ­sticas</div>
+    <div class="ni" onclick="goSec('disponibilidad')">◎ Disponibilidad</div>
+    <div class="ni" onclick="goSec('stock')">▣ Stock completo</div>
+    <div class="ni" onclick="goSec('stock-editor')">✎ Editar stock</div>
+    <div class="ns">Análisis</div>
+    <div class="ni" onclick="goSec('historial')">⊡ Historial</div>
+    <div class="ni" onclick="goSec('estadisticas')">◈ Estadísticas</div>
   </nav>
   <main>
 
@@ -273,16 +273,16 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
     <div id="section-dashboard" class="sec active">
       <p class="stitle">Dashboard</p>
       <div class="g4" style="margin-bottom:1.25rem;">
-        <div class="metric"><div class="ml">Items en catÃ¡logo</div><div class="mv" id="m-s">â€”</div></div>
-        <div class="metric"><div class="ml">Remitos totales</div><div class="mv" id="m-r">â€”</div></div>
-        <div class="metric"><div class="ml">Clientes Ãºnicos</div><div class="mv" id="m-c">â€”</div></div>
-        <div class="metric"><div class="ml">RecaudaciÃ³n total</div><div class="mv" id="m-t">â€”</div></div>
+        <div class="metric"><div class="ml">Items en catálogo</div><div class="mv" id="m-s">—</div></div>
+        <div class="metric"><div class="ml">Remitos totales</div><div class="mv" id="m-r">—</div></div>
+        <div class="metric"><div class="ml">Clientes únicos</div><div class="mv" id="m-c">—</div></div>
+        <div class="metric"><div class="ml">Recaudación total</div><div class="mv" id="m-t">—</div></div>
       </div>
       <div class="g2" style="margin-bottom:1rem;">
         <div class="card"><div style="font-weight:500;font-size:14px;margin-bottom:.9rem;">Remitos recientes</div><div id="d-rem"></div></div>
         <div class="card"><div style="font-weight:500;font-size:14px;margin-bottom:.9rem;">Estado de pagos</div><div id="d-pago"></div></div>
       </div>
-      <div class="card"><div style="font-weight:500;font-size:14px;margin-bottom:.9rem;">PrÃ³ximos retiros y devoluciones</div><div id="d-proximos"></div></div>
+      <div class="card"><div style="font-weight:500;font-size:14px;margin-bottom:.9rem;">Próximos retiros y devoluciones</div><div id="d-proximos"></div></div>
     </div>
 
     <!-- NUEVO REMITO -->
@@ -290,22 +290,22 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
       <p class="stitle">Nuevo remito</p>
       <div class="card" style="margin-bottom:1.25rem;">
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem;margin-bottom:.9rem;">
-          <div><label>NÃºmero</label><input id="nr-n" type="text" placeholder="11-1236"/></div>
+          <div><label>Número</label><input id="nr-n" type="text" placeholder="11-1236"/></div>
           <div><label>Nombre del cliente</label><input id="nr-c" type="text" placeholder="Nombre y apellido"/></div>
           <div><label>Facturado por</label>
             <select id="nr-fact">
-              <option value="">â€” Sin asignar â€”</option>
+              <option value="">— Sin asignar —</option>
               <option value="Ed">Ed</option>
               <option value="Yami">Yami</option>
             </select>
           </div>
           <div><label>Productora</label><input id="nr-prod" type="text" placeholder="Nombre de la productora"/></div>
-          <div><label>Proyecto / ProducciÃ³n</label><input id="nr-proy" type="text" placeholder="Nombre del proyecto"/></div>
+          <div><label>Proyecto / Producción</label><input id="nr-proy" type="text" placeholder="Nombre del proyecto"/></div>
           <div></div>
         </div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem;margin-bottom:.9rem;">
           <div><label>Fecha de retiro</label><input id="nr-r" type="date" onchange="renderIS()"/></div>
-          <div><label>Fecha de devoluciÃ³n</label><input id="nr-d" type="date" onchange="renderIS()"/></div>
+          <div><label>Fecha de devolución</label><input id="nr-d" type="date" onchange="renderIS()"/></div>
           <div><label>Estado inicial</label>
             <select id="nr-est">
               <option value="borrador">Borrador</option>
@@ -314,23 +314,23 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:.9rem;">
-          <div><label>GarantÃ­a â€” tipo</label>
+          <div><label>Garantía — tipo</label>
             <select id="nr-gtipo">
-              <option value="">â€” Sin garantÃ­a â€”</option>
+              <option value="">— Sin garantía —</option>
               <option value="cheque">Cheque</option>
               <option value="transferencia">Transferencia</option>
               <option value="efectivo">Efectivo</option>
               <option value="otro">Otro</option>
             </select>
           </div>
-          <div><label>NÃºmero / referencia de garantÃ­a</label><input id="nr-gref" type="text" placeholder="Ej: NÂº 00123456"/></div>
+          <div><label>Número / referencia de garantía</label><input id="nr-gref" type="text" placeholder="Ej: Nº 00123456"/></div>
         </div>
       </div>
-      <div id="av-fechas" class="warn" style="display:none;">âš  IngresÃ¡ las fechas de retiro y devoluciÃ³n para ver disponibilidad en tiempo real.</div>
+      <div id="av-fechas" class="warn" style="display:none;">⚠ Ingresá las fechas de retiro y devolución para ver disponibilidad en tiempo real.</div>
       <div class="rbuilder">
         <div>
           <div class="sbar">
-            <input id="nr-s" type="text" placeholder="Buscar por nombre o cÃ³digo..." oninput="renderIS()"/>
+            <input id="nr-s" type="text" placeholder="Buscar por nombre o código..." oninput="renderIS()"/>
             <select id="nr-cat" onchange="renderIS()" style="width:auto;min-width:140px;"></select>
           </div>
           <div id="isel" class="isel"><div class="ldg"><span class="spin"></span>Cargando items...</div></div>
@@ -343,12 +343,12 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
             <div id="r-items" style="max-height:260px;overflow-y:auto;"></div>
             <div style="padding-top:10px;margin-top:4px;border-top:0.5px solid var(--bor);">
               <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span style="color:var(--mut);">Alquiler 1 semana</span><span id="t-alq" style="font-weight:500;">$ 0</span></div>
-              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span style="color:var(--mut);">+ 20% diferido 30 dÃ­as</span><span id="t-30">$ 0</span></div>
-              <div style="display:flex;justify-content:space-between;font-size:12px;padding-top:8px;border-top:0.5px solid var(--bor);"><span style="color:var(--mut);">GarantÃ­a total</span><span id="t-gtia" style="font-weight:500;">$ 0</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span style="color:var(--mut);">+ 20% diferido 30 días</span><span id="t-30">$ 0</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;padding-top:8px;border-top:0.5px solid var(--bor);"><span style="color:var(--mut);">Garantía total</span><span id="t-gtia" style="font-weight:500;">$ 0</span></div>
             </div>
             <div style="margin-top:.9rem;display:flex;flex-direction:column;gap:7px;">
-              <button class="btn bp" onclick="saveAndView()" style="width:100%;justify-content:center;">Guardar y ver remito â†’</button>
-              <button class="btn bs bsm" onclick="clearSel()" style="width:100%;justify-content:center;">Limpiar selecciÃ³n</button>
+              <button class="btn bp" onclick="saveAndView()" style="width:100%;justify-content:center;">Guardar y ver remito →</button>
+              <button class="btn bs bsm" onclick="clearSel()" style="width:100%;justify-content:center;">Limpiar selección</button>
             </div>
           </div>
         </div>
@@ -364,7 +364,7 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
       </div>
       <div id="tab-lista-div">
         <div class="sbar">
-          <input id="sr" type="text" placeholder="Buscar por nÃºmero, cliente o facturador..." oninput="filterR()"/>
+          <input id="sr" type="text" placeholder="Buscar por número, cliente o facturador..." oninput="filterR()"/>
           <select id="fil-est" onchange="filterR()" style="width:auto;min-width:140px;">
             <option value="">Todos los estados</option>
             <option value="borrador">Borrador</option>
@@ -376,8 +376,8 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
         </div>
         <div class="card" style="padding:0;overflow:auto;">
           <table><thead><tr>
-            <th>NÂ° Remito</th><th>Cliente</th><th>Retiro</th><th>DevoluciÃ³n</th>
-            <th>Items</th><th>Total</th><th>Estado remito</th><th>Pago</th><th>FacturÃ³</th><th>Acciones</th>
+            <th>N° Remito</th><th>Cliente</th><th>Retiro</th><th>Devolución</th>
+            <th>Items</th><th>Total</th><th>Estado remito</th><th>Pago</th><th>Facturó</th><th>Acciones</th>
           </tr></thead>
           <tbody id="r-table"></tbody></table>
         </div>
@@ -385,7 +385,7 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
       <div id="tab-preview-div" style="display:none;">
         <div id="rcontrols" style="margin-bottom:.9rem;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
           <select id="sel-prev" style="width:auto;min-width:260px;" onchange="renderPrev()"><option value="">Seleccionar remito...</option></select>
-          <button class="btn bsm bs" onclick="window.print()">ðŸ–¨ Imprimir / PDF</button>
+          <button class="btn bsm bs" onclick="window.print()">🖨 Imprimir / PDF</button>
         </div>
         <div id="prev-content"></div>
       </div>
@@ -396,9 +396,9 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
       <p class="stitle">Calendario</p>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px;">
         <div style="display:flex;gap:8px;align-items:center;">
-          <button class="btn bs bsm" onclick="calPrev()">â†</button>
+          <button class="btn bs bsm" onclick="calPrev()">←</button>
           <span id="cal-label" style="font-weight:500;font-size:15px;min-width:160px;text-align:center;"></span>
-          <button class="btn bs bsm" onclick="calNext()">â†’</button>
+          <button class="btn bs bsm" onclick="calNext()">→</button>
           <button class="btn bs bsm" onclick="calHoy()">Hoy</button>
         </div>
         <div style="display:flex;gap:6px;">
@@ -408,7 +408,7 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
       </div>
       <div style="display:flex;gap:12px;margin-bottom:1rem;font-size:12px;">
         <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:var(--abg);display:inline-block;"></span>Retiro</span>
-        <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:var(--gbg);display:inline-block;"></span>DevoluciÃ³n</span>
+        <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:var(--gbg);display:inline-block;"></span>Devolución</span>
       </div>
       <div class="card" style="padding:.9rem;">
         <div id="cal-container"></div>
@@ -422,7 +422,7 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
         <div style="display:flex;gap:.9rem;align-items:flex-end;flex-wrap:wrap;">
           <div style="flex:1;min-width:150px;"><label>Desde</label><input type="date" id="dd"/></div>
           <div style="flex:1;min-width:150px;"><label>Hasta</label><input type="date" id="dh"/></div>
-          <div style="flex:1;min-width:140px;"><label>CategorÃ­a</label><select id="dcat"><option value="">Todas</option></select></div>
+          <div style="flex:1;min-width:140px;"><label>Categoría</label><select id="dcat"><option value="">Todas</option></select></div>
           <button class="btn bp" onclick="checkDisp()">Consultar</button>
         </div>
       </div>
@@ -437,7 +437,7 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
         <select id="scat" onchange="filterS()" style="width:auto;min-width:140px;"><option value="">Todas</option></select>
       </div>
       <div class="card" style="padding:0;overflow:hidden;">
-        <table><thead><tr><th style="width:56px;">Foto</th><th>CÃ³digo</th><th>Nombre</th><th>CategorÃ­a</th><th>GarantÃ­a</th><th>Alquiler/sem</th></tr></thead>
+        <table><thead><tr><th style="width:56px;">Foto</th><th>Código</th><th>Nombre</th><th>Categoría</th><th>Garantía</th><th>Alquiler/sem</th></tr></thead>
         <tbody id="s-table"><tr><td colspan="6" class="ldg"><span class="spin"></span>Cargando...</td></tr></tbody></table>
       </div>
     </div>
@@ -445,20 +445,20 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
     <!-- HISTORIAL -->
     <div id="section-historial" class="sec">
       <p class="stitle">Historial</p>
-      <div class="sbar"><input id="sh" type="text" placeholder="Buscar por cliente o artÃ­culo..." oninput="filterH()"/></div>
+      <div class="sbar"><input id="sh" type="text" placeholder="Buscar por cliente o artículo..." oninput="filterH()"/></div>
       <div class="card" style="padding:0;overflow:hidden;">
-        <table><thead><tr><th>Remito</th><th>Fecha</th><th>Cliente</th><th>Retiro</th><th>DevoluciÃ³n</th><th>ArtÃ­culo</th><th>Alquiler</th></tr></thead>
+        <table><thead><tr><th>Remito</th><th>Fecha</th><th>Cliente</th><th>Retiro</th><th>Devolución</th><th>Artículo</th><th>Alquiler</th></tr></thead>
         <tbody id="h-table"></tbody></table>
       </div>
     </div>
 
-    <!-- ESTADÃSTICAS -->
+    <!-- ESTADÍSTICAS -->
     <!-- EDITOR DE STOCK -->
     <div id="section-stock-editor" class="sec">
       <p class="stitle">Editar stock</p>
       <div class="card" style="margin-bottom:1.25rem;background:var(--coral-lt);border-color:var(--coral);">
         <div style="font-size:13px;color:var(--coral-dk);line-height:1.7;">
-          âœŽ Los cambios se guardan localmente en esta app. Para que aparezcan en la versiÃ³n de tu socia, ambas deben hacer los mismos cambios, o actualizarlos en el Google Sheet original.
+          ✎ Los cambios se guardan localmente en esta app. Para que aparezcan en la versión de tu socia, ambas deben hacer los mismos cambios, o actualizarlos en el Google Sheet original.
         </div>
       </div>
       <div style="display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap;">
@@ -472,11 +472,11 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
       <div class="card" style="padding:0;overflow:hidden;">
         <div style="display:grid;grid-template-columns:44px 70px 1fr 110px 110px 90px 60px;gap:0;background:var(--bg);border-bottom:0.5px solid var(--bor);">
           <div style="padding:9px 8px;font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:var(--mut);">Foto</div>
-          <div style="padding:9px 8px;font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:var(--mut);">CÃ³digo</div>
+          <div style="padding:9px 8px;font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:var(--mut);">Código</div>
           <div style="padding:9px 8px;font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:var(--mut);">Nombre</div>
           <div style="padding:9px 8px;font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:var(--mut);">Alq./sem</div>
-          <div style="padding:9px 8px;font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:var(--mut);">GarantÃ­a</div>
-          <div style="padding:9px 8px;font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:var(--mut);">CategorÃ­a</div>
+          <div style="padding:9px 8px;font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:var(--mut);">Garantía</div>
+          <div style="padding:9px 8px;font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:var(--mut);">Categoría</div>
           <div style="padding:9px 8px;font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:var(--mut);"></div>
         </div>
         <div id="ses-list"></div>
@@ -484,9 +484,9 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
     </div>
 
     <div id="section-estadisticas" class="sec">
-      <p class="stitle">EstadÃ­sticas</p>
+      <p class="stitle">Estadísticas</p>
       <div class="g2" style="margin-bottom:1.25rem;">
-        <div class="card"><div style="font-weight:500;font-size:14px;margin-bottom:.9rem;">Items mÃ¡s alquilados</div><div id="top-i"></div></div>
+        <div class="card"><div style="font-weight:500;font-size:14px;margin-bottom:.9rem;">Items más alquilados</div><div id="top-i"></div></div>
         <div class="card">
           <div style="display:flex;gap:8px;margin-bottom:.9rem;">
             <button class="btn bs bsm" id="top-c-btn-cli" onclick="setTopCVista('cli')" style="background:var(--coral);color:#fff;font-size:11px;">Clientes</button>
@@ -496,14 +496,14 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
         </div>
       </div>
       <div class="g2">
-        <div class="card"><div style="font-weight:500;font-size:14px;margin-bottom:.9rem;">RecaudaciÃ³n por categorÃ­a</div><div id="top-cat"></div></div>
-        <div class="card"><div style="font-weight:500;font-size:14px;margin-bottom:.9rem;">FacturaciÃ³n por persona</div><div id="top-fact"></div></div>
+        <div class="card"><div style="font-weight:500;font-size:14px;margin-bottom:.9rem;">Recaudación por categoría</div><div id="top-cat"></div></div>
+        <div class="card"><div style="font-weight:500;font-size:14px;margin-bottom:.9rem;">Facturación por persona</div><div id="top-fact"></div></div>
       </div>
       <div class="card" style="margin-top:1rem;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.9rem;">
           <div style="font-weight:500;font-size:14px;">Actividad por mes</div>
           <div style="display:flex;gap:6px;">
-            <button class="btn bs bsm" id="mes-btn-rec" onclick="setMesVista('rec')" style="background:var(--coral);color:#fff;">RecaudaciÃ³n</button>
+            <button class="btn bs bsm" id="mes-btn-rec" onclick="setMesVista('rec')" style="background:var(--coral);color:#fff;">Recaudación</button>
             <button class="btn bs bsm" id="mes-btn-items" onclick="setMesVista('items')">Items</button>
             <button class="btn bs bsm" id="mes-btn-alq" onclick="setMesVista('alq')">Alquileres</button>
           </div>
@@ -587,8 +587,8 @@ function loadRemitosFromSheet(){
 // Auto-sync every 60 seconds
 setInterval(loadRemitosFromSheet, 60000);
 const $=id=>document.getElementById(id);
-const fmt=n=>{if(!n&&n!==0)return'â€”';return'$\u00A0'+Math.round(n).toLocaleString('es-AR');};
-const fD=d=>d?d.split('-').reverse().join('/'):'â€”';
+const fmt=n=>{if(!n&&n!==0)return'—';return'$\u00A0'+Math.round(n).toLocaleString('es-AR');};
+const fD=d=>d?d.split('-').reverse().join('/'):'—';
 
 // CLAVE: extrae URL de =IMAGE("url";2) o =IMAGE("url") o url directa
 function exUrl(raw){
@@ -598,7 +598,7 @@ function exUrl(raw){
   if(s.startsWith('http')){
     return cleanWixUrl(s);
   }
-  // =IMAGE("https://...";2) â€” formato europeo Google Sheets
+  // =IMAGE("https://...";2) — formato europeo Google Sheets
   const m=s.match(/=IMAGE\s*\(\s*"(https?:\/\/[^"]+)"/i);
   if(m) return cleanWixUrl(m[1]);
   // Comilla simple
@@ -610,7 +610,7 @@ function exUrl(raw){
 }
 function cleanWixUrl(url){
   if(!url)return'';
-  // Wix sirve imÃ¡genes en /media/ID~mv2.jpg/v1/fill/w_X,h_Y,.../ID~mv2.jpg
+  // Wix sirve imágenes en /media/ID~mv2.jpg/v1/fill/w_X,h_Y,.../ID~mv2.jpg
   // Extraemos la URL base limpia: https://static.wixstatic.com/media/ID~mv2.jpg
   const wix=url.match(/(https?:\/\/[^/]+\/media\/[^/~]+~mv2\.[a-z]+)/i);
   if(wix) return wix[1];
@@ -618,13 +618,13 @@ function cleanWixUrl(url){
 }
 function pNum(v){if(!v&&v!==0)return 0;return parseFloat(String(v).replace(/[^\d.,]/g,'').replace(',','.'))||0;}
 function imgT(url,sz=44){
-  if(!url)return`<div style="width:${sz}px;height:${sz}px;border-radius:6px;background:var(--tag);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--mut);">â€”</div>`;
+  if(!url)return`<div style="width:${sz}px;height:${sz}px;border-radius:6px;background:var(--tag);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--mut);">—</div>`;
   return`<img src="${url}" style="width:${sz}px;height:${sz}px;object-fit:cover;border-radius:6px;flex-shrink:0;" onerror="this.style.visibility='hidden'"/>`;
 }
 
 // ESTADOS REMITO
 const EST_ORDER=['borrador','confirmado','entregado','devuelto','finalizado'];
-const EST_LABEL={borrador:'Borrador',confirmado:'Confirmado',entregado:'Entregado',devuelto:'Devuelto',finalizado:'Finalizado âœ“'};
+const EST_LABEL={borrador:'Borrador',confirmado:'Confirmado',entregado:'Entregado',devuelto:'Devuelto',finalizado:'Finalizado ✓'};
 const EST_CLASS={borrador:'est-borrador',confirmado:'est-confirmado',entregado:'est-entregado',devuelto:'est-devuelto',finalizado:'est-finalizado'};
 function nextEst(e){const i=EST_ORDER.indexOf(e);return EST_ORDER[(i+1)%EST_ORDER.length];}
 
@@ -635,20 +635,20 @@ const PAGO_CLASS={pendiente:'p-pendiente',facturado:'p-facturado',pagado:'p-paga
 function nextPago(p){const i=PAGO_ORDER.indexOf(p||'pendiente');return PAGO_ORDER[(i+1)%PAGO_ORDER.length];}
 
 const HB=[
-  {n:"11-1217",f:"2025-12-19",c:"Camila Colauti - Moria - About Ent.",r:"2025-12-17",dv:"2025-12-23",it:[{a:20001,d:"FASANO",p:11500},{a:20002,d:"CARTERA PARMA",p:10500},{a:20021,d:"CARTERA RITA",p:12500},{a:20022,d:"CARTERA SOLAR",p:12500},{a:20023,d:"CARTERA MOSS",p:10500},{a:20029,d:"CARTERA BRIGITTE",p:11500},{a:20031,d:"CARTERA MERLINA",p:12500},{a:20036,d:"SARITA",p:14500},{a:20045,d:"CARTERA BERTA",p:10500},{a:20049,d:"CARTERA BARBARA",p:9500},{a:20052,d:"CARTERA XL CUERO",p:14500},{a:35006,d:"RIÃ‘ONERA NEGRA SAMSONITE",p:9500}]},
+  {n:"11-1217",f:"2025-12-19",c:"Camila Colauti - Moria - About Ent.",r:"2025-12-17",dv:"2025-12-23",it:[{a:20001,d:"FASANO",p:11500},{a:20002,d:"CARTERA PARMA",p:10500},{a:20021,d:"CARTERA RITA",p:12500},{a:20022,d:"CARTERA SOLAR",p:12500},{a:20023,d:"CARTERA MOSS",p:10500},{a:20029,d:"CARTERA BRIGITTE",p:11500},{a:20031,d:"CARTERA MERLINA",p:12500},{a:20036,d:"SARITA",p:14500},{a:20045,d:"CARTERA BERTA",p:10500},{a:20049,d:"CARTERA BARBARA",p:9500},{a:20052,d:"CARTERA XL CUERO",p:14500},{a:35006,d:"RIÑONERA NEGRA SAMSONITE",p:9500}]},
   {n:"11-1218",f:"2026-01-06",c:"Ana Arenas - Corto Enerc",r:"2026-01-06",dv:"2026-01-12",it:[{a:25300,d:"CARRO DE LIMPIEZA + BALDE",p:16500}]},
-  {n:"11-1219",f:"2026-01-06",c:"24/7 - Ann Altmark / Malen Cortes",r:"2026-01-05",dv:"2026-01-12",it:[{a:25001,d:"MALETIN PORTAFOLIO NEGRO",p:18500},{a:25008,d:"MALETIN MARRON MADRID",p:16500},{a:25009,d:"MALETÃN PORTFOLIO ZUELA",p:16500},{a:25012,d:"MALETÃN BORDEAUX",p:16500},{a:15035,d:"MOCHILA NEGRA UNICROSS",p:10500},{a:15063,d:"MOCHILA MR. TRAVOLTA",p:10500},{a:36500,d:"LLAVERO EFRAÃM CUERO",p:6500}]},
-  {n:"11-1220",f:"2026-01-21",c:"Luli Kohn",r:"2026-01-19",dv:"2026-01-26",it:[{a:1024,d:"CARRY ON IT LUGGAGE PLATA",p:16500},{a:1009,d:"CARRY ON DUDLEY NEGRA",p:15000},{a:1002,d:"CARRY ON AMAYRA NUDE",p:16500},{a:1011,d:"CARRY ON RÃGIDA BLACK",p:15000},{a:1025,d:"CARRY ON FONDA",p:19500},{a:1013,d:"CARRY ON UNICROSS PELTRE",p:15000}]},
-  {n:"11-1224",f:"2026-02-10",c:"Loreta Palombo - Labhouse - Lacoste",r:"2026-02-06",dv:"2026-02-09",it:[{a:11014,d:"BOLSO PIED DE POUL BLAQUE",p:16500},{a:11032,d:"BOLSO LEBOWSKI",p:14500},{a:15006,d:"MOCHILA GABARDINA MARRON",p:10500},{a:20002,d:"CARTERA PARMA",p:10500},{a:25002,d:"MALETIN PORTAFOLIO CUERO",p:18500},{a:25009,d:"MALETÃN PORTFOLIO ZUELA",p:16500}]},
-  {n:"11-1225",f:"2026-02-04",c:"Paz Miqueles Echarri - Not Normal",r:"2026-02-18",dv:"2026-02-20",it:[{a:15006,d:"MOCHILA GABARDINA MARRON",p:10500},{a:15043,d:"MOCHILA AVELLANA GORRION",p:13500},{a:15052,d:"MOCHILA VILLICUM",p:10500},{a:36201,d:"CÃMARA ROLLO RACHELE",p:12000}]},
-  {n:"11-1226",f:"2026-02-04",c:"Natalia Atencio - 24/7 - DELL",r:"2026-02-05",dv:"2026-02-09",it:[{a:36502,d:"LLAVERO SALA GRANDE",p:8500},{a:36500,d:"LLAVERO EFRAÃM CUERO",p:8500}]},
-  {n:"11-1227",f:"2026-02-04",c:"Sofia BenseÃ±or - Casta Diva",r:"2026-02-09",dv:"2026-02-13",it:[{a:35100,d:"PORTAPAPELES VACAVALIENTE JENGIBRE",p:14500},{a:35101,d:"SOBRE VACAVALIENTE JENGIBRE",p:12500},{a:15026,d:"MOCHILA AZUL COLLEGE",p:10500},{a:15065,d:"MOCHILA TURQUEZA AVIADOR",p:14500},{a:20012,d:"CANASTA CHANIA",p:14500},{a:30032,d:"BOLSA RAYADA AZUL Y BLANCA",p:10500}]},
+  {n:"11-1219",f:"2026-01-06",c:"24/7 - Ann Altmark / Malen Cortes",r:"2026-01-05",dv:"2026-01-12",it:[{a:25001,d:"MALETIN PORTAFOLIO NEGRO",p:18500},{a:25008,d:"MALETIN MARRON MADRID",p:16500},{a:25009,d:"MALETÍN PORTFOLIO ZUELA",p:16500},{a:25012,d:"MALETÍN BORDEAUX",p:16500},{a:15035,d:"MOCHILA NEGRA UNICROSS",p:10500},{a:15063,d:"MOCHILA MR. TRAVOLTA",p:10500},{a:36500,d:"LLAVERO EFRAÍM CUERO",p:6500}]},
+  {n:"11-1220",f:"2026-01-21",c:"Luli Kohn",r:"2026-01-19",dv:"2026-01-26",it:[{a:1024,d:"CARRY ON IT LUGGAGE PLATA",p:16500},{a:1009,d:"CARRY ON DUDLEY NEGRA",p:15000},{a:1002,d:"CARRY ON AMAYRA NUDE",p:16500},{a:1011,d:"CARRY ON RÍGIDA BLACK",p:15000},{a:1025,d:"CARRY ON FONDA",p:19500},{a:1013,d:"CARRY ON UNICROSS PELTRE",p:15000}]},
+  {n:"11-1224",f:"2026-02-10",c:"Loreta Palombo - Labhouse - Lacoste",r:"2026-02-06",dv:"2026-02-09",it:[{a:11014,d:"BOLSO PIED DE POUL BLAQUE",p:16500},{a:11032,d:"BOLSO LEBOWSKI",p:14500},{a:15006,d:"MOCHILA GABARDINA MARRON",p:10500},{a:20002,d:"CARTERA PARMA",p:10500},{a:25002,d:"MALETIN PORTAFOLIO CUERO",p:18500},{a:25009,d:"MALETÍN PORTFOLIO ZUELA",p:16500}]},
+  {n:"11-1225",f:"2026-02-04",c:"Paz Miqueles Echarri - Not Normal",r:"2026-02-18",dv:"2026-02-20",it:[{a:15006,d:"MOCHILA GABARDINA MARRON",p:10500},{a:15043,d:"MOCHILA AVELLANA GORRION",p:13500},{a:15052,d:"MOCHILA VILLICUM",p:10500},{a:36201,d:"CÁMARA ROLLO RACHELE",p:12000}]},
+  {n:"11-1226",f:"2026-02-04",c:"Natalia Atencio - 24/7 - DELL",r:"2026-02-05",dv:"2026-02-09",it:[{a:36502,d:"LLAVERO SALA GRANDE",p:8500},{a:36500,d:"LLAVERO EFRAÍM CUERO",p:8500}]},
+  {n:"11-1227",f:"2026-02-04",c:"Sofia Benseñor - Casta Diva",r:"2026-02-09",dv:"2026-02-13",it:[{a:35100,d:"PORTAPAPELES VACAVALIENTE JENGIBRE",p:14500},{a:35101,d:"SOBRE VACAVALIENTE JENGIBRE",p:12500},{a:15026,d:"MOCHILA AZUL COLLEGE",p:10500},{a:15065,d:"MOCHILA TURQUEZA AVIADOR",p:14500},{a:20012,d:"CANASTA CHANIA",p:14500},{a:30032,d:"BOLSA RAYADA AZUL Y BLANCA",p:10500}]},
   {n:"11-1228",f:"2026-02-05",c:"Daniela Bracamonte",r:"2026-02-06",dv:"2026-02-10",it:[{a:15034,d:"MOCHILA CAMPING 60LT BEIGE",p:20000}]},
-  {n:"11-1229",f:"2026-02-13",c:"Malen Motzo",r:"2026-02-13",dv:"2026-02-18",it:[{a:36500,d:"LLAVERO EFRAÃM CUERO",p:8500},{a:35100,d:"PORTAPAPELES VACAVALIENTE",p:14500},{a:15063,d:"MOCHILA MR. TRAVOLTA",p:10500},{a:15065,d:"MOCHILA TURQUEZA AVIADOR",p:14500}]},
+  {n:"11-1229",f:"2026-02-13",c:"Malen Motzo",r:"2026-02-13",dv:"2026-02-18",it:[{a:36500,d:"LLAVERO EFRAÍM CUERO",p:8500},{a:35100,d:"PORTAPAPELES VACAVALIENTE",p:14500},{a:15063,d:"MOCHILA MR. TRAVOLTA",p:10500},{a:15065,d:"MOCHILA TURQUEZA AVIADOR",p:14500}]},
   {n:"11-1230",f:"2026-02-24",c:"Julieta Figallo",r:"2026-02-24",dv:"2026-02-26",it:[{a:1022,d:"CARRY ON AMAYRA ROSE GOLD",p:16500}]},
-  {n:"11-1232",f:"2026-03-11",c:"Ann Altmark 24.7",r:"2026-03-13",dv:"2026-03-18",it:[{a:1023,d:"CARRY ON BLANCO IT",p:15000},{a:2005,d:"VALIJA GRANDE BLANCO IT",p:14500},{a:1029,d:"CARRY ON BRETÃ“N",p:16500},{a:30611,d:"MATE TÃ‰RMICO DISCOVERY",p:12500},{a:30602,d:"CANASTA MATERA CUERO",p:12500},{a:11033,d:"BOLSO TRAVEL FONDA",p:14500}]},
-  {n:"11-1233",f:"2026-03-16",c:"Mec Barbero - 24/7",r:"2026-03-17",dv:"2026-03-25",it:[{a:15006,d:"MOCHILA GABARDINA MARRON",p:10500},{a:25364,d:"TABLERO DE DIBUJO TECNICO",p:8000},{a:11018,d:"BOLSO CUERO DE DESCARNE",p:16500},{a:11024,d:"BOLSO SIMIL CUERO MARRON",p:14500},{a:20010,d:"FLOWERS FLOWERS",p:10500},{a:1015,d:"CARRY ON UNICROSS AZUL OSCURO",p:15000},{a:1025,d:"CARRY ON FONDA",p:19500},{a:35515,d:"NECESSAIRE TRAVEL FONDA",p:6500},{a:30030,d:"BOLSA DE TELA ARIZONA",p:8500},{a:25003,d:"MALETIN CUERO TRAMA",p:18500},{a:25013,d:"MALETÃN GEORGE",p:16500},{a:25008,d:"MALETIN MARRON MADRID",p:16500},{a:20045,d:"CARTERA BERTA",p:10500},{a:25012,d:"MALETÃN CUERO BORDEAUX",p:16500},{a:15001,d:"MORRAL VERDE MILITAR",p:12500},{a:25002,d:"MALETIN PORTAFOLIO CUERO",p:18500},{a:25001,d:"MALETIN PORTAFOLIO PLASTICAS",p:18500},{a:25009,d:"MALETÃN PORTFOLIO ZUELA",p:16500},{a:25004,d:"PORTA NOTEBOOK HP NEGRO",p:14500},{a:15043,d:"MOCHILA AVELLANA GORRION",p:13500},{a:15044,d:"MOCHILA LONA ESCOSESA",p:10500},{a:15065,d:"MOCHILA TURQUEZA AVIADOR",p:14500},{a:15060,d:"MOCHILAS OXIDO CELESTE Y BLANCA",p:14500},{a:15042,d:"MOCHILA FLORES RAQUEL GORRION",p:16500}]},
-  {n:"11-1234",f:"2026-03-13",c:"Antonella Casarotti - Lab House",r:"2026-03-13",dv:"2026-03-16",it:[{a:2108,d:"VALIJA RÃGIDA CADENAS",p:15000},{a:2103,d:"PORTASOMBRERO FLORA",p:15000},{a:1025,d:"CARRY ON FONDA",p:19500}]},
+  {n:"11-1232",f:"2026-03-11",c:"Ann Altmark 24.7",r:"2026-03-13",dv:"2026-03-18",it:[{a:1023,d:"CARRY ON BLANCO IT",p:15000},{a:2005,d:"VALIJA GRANDE BLANCO IT",p:14500},{a:1029,d:"CARRY ON BRETÓN",p:16500},{a:30611,d:"MATE TÉRMICO DISCOVERY",p:12500},{a:30602,d:"CANASTA MATERA CUERO",p:12500},{a:11033,d:"BOLSO TRAVEL FONDA",p:14500}]},
+  {n:"11-1233",f:"2026-03-16",c:"Mec Barbero - 24/7",r:"2026-03-17",dv:"2026-03-25",it:[{a:15006,d:"MOCHILA GABARDINA MARRON",p:10500},{a:25364,d:"TABLERO DE DIBUJO TECNICO",p:8000},{a:11018,d:"BOLSO CUERO DE DESCARNE",p:16500},{a:11024,d:"BOLSO SIMIL CUERO MARRON",p:14500},{a:20010,d:"FLOWERS FLOWERS",p:10500},{a:1015,d:"CARRY ON UNICROSS AZUL OSCURO",p:15000},{a:1025,d:"CARRY ON FONDA",p:19500},{a:35515,d:"NECESSAIRE TRAVEL FONDA",p:6500},{a:30030,d:"BOLSA DE TELA ARIZONA",p:8500},{a:25003,d:"MALETIN CUERO TRAMA",p:18500},{a:25013,d:"MALETÍN GEORGE",p:16500},{a:25008,d:"MALETIN MARRON MADRID",p:16500},{a:20045,d:"CARTERA BERTA",p:10500},{a:25012,d:"MALETÍN CUERO BORDEAUX",p:16500},{a:15001,d:"MORRAL VERDE MILITAR",p:12500},{a:25002,d:"MALETIN PORTAFOLIO CUERO",p:18500},{a:25001,d:"MALETIN PORTAFOLIO PLASTICAS",p:18500},{a:25009,d:"MALETÍN PORTFOLIO ZUELA",p:16500},{a:25004,d:"PORTA NOTEBOOK HP NEGRO",p:14500},{a:15043,d:"MOCHILA AVELLANA GORRION",p:13500},{a:15044,d:"MOCHILA LONA ESCOSESA",p:10500},{a:15065,d:"MOCHILA TURQUEZA AVIADOR",p:14500},{a:15060,d:"MOCHILAS OXIDO CELESTE Y BLANCA",p:14500},{a:15042,d:"MOCHILA FLORES RAQUEL GORRION",p:16500}]},
+  {n:"11-1234",f:"2026-03-13",c:"Antonella Casarotti - Lab House",r:"2026-03-13",dv:"2026-03-16",it:[{a:2108,d:"VALIJA RÍGIDA CADENAS",p:15000},{a:2103,d:"PORTASOMBRERO FLORA",p:15000},{a:1025,d:"CARRY ON FONDA",p:19500}]},
   {n:"11-1235",f:"2026-03-13",c:"Lara Treglia - Underground",r:"2026-03-18",dv:"2026-03-20",it:[{a:1002,d:"CARRY ON AMAYRA NUDE",p:16500},{a:1009,d:"CARRY ON DUDLEY NEGRA",p:15000},{a:1024,d:"CARRY ON IT LUGGAGE PLATA",p:16500}]},
 ];
 
@@ -688,7 +688,7 @@ function processStockData(data){
       medidas:String(r.medidas||'').trim()
     })).filter(r=>r.cod>0&&r.nombre);
     loaded=true;dot.style.background='#4ade80';
-    txt.textContent=STOCK.filter(s=>s.alq>0).length+' items cargados âœ“';
+    txt.textContent=STOCK.filter(s=>s.alq>0).length+' items cargados ✓';
     initCats();renderDash();renderIS();filterS();filterH();
     if($('section-calendario').classList.contains('active'))renderCal();
       var _sp=$('sel-prev');if(_sp&&_sp.value)setTimeout(renderPrev,200);else setTimeout(patchRemitoFotos,200);
@@ -707,19 +707,19 @@ function loadStock(){
     processStockData(data);
     delete window[cb];
   };
-  // Timeout: si en 12 segundos no cargÃ³, mostrar error con instrucciones
+  // Timeout: si en 12 segundos no cargó, mostrar error con instrucciones
   const timer=setTimeout(()=>{
     if(!done){
       done=true;
       delete window[cb];
       dot.style.background='#ef4444';
-      txt.textContent='Sin conexiÃ³n al stock â€” recargÃ¡ la pÃ¡gina';
+      txt.textContent='Sin conexión al stock — recargá la página';
     }
   },12000);
   const s=document.createElement('script');
   s.onerror=()=>{
     if(!done){done=true;clearTimeout(timer);delete window[cb];
-    dot.style.background='#ef4444';txt.textContent='Error de conexiÃ³n al stock';}
+    dot.style.background='#ef4444';txt.textContent='Error de conexión al stock';}
   };
   s.src=SURL+'?callback='+cb+'&nocache='+Date.now();
   document.head.appendChild(s);
@@ -786,11 +786,11 @@ function renderDash(){
   const allI=remActivos.flatMap(r=>r.items);
   const cl=new Set(rem.map(r=>r.cliente)).size;
   const tot=allI.reduce((s,i)=>s+(i.alq||0),0);
-  $('m-s').textContent=loaded?STOCK.filter(s=>s.alq>0).length:'â€¦';
+  $('m-s').textContent=loaded?STOCK.filter(s=>s.alq>0).length:'…';
   $('m-r').textContent=rem.length;$('m-c').textContent=cl;$('m-t').textContent=fmt(tot);
   $('d-rem').innerHTML=rem.slice(0,6).map(r=>{
     const t=r.items.reduce((s,i)=>s+(i.alq||0),0);
-    return`<div class="prow"><div><div style="font-size:13px;font-weight:500;">${r.numero}</div><div style="font-size:11px;color:var(--mut);">${r.cliente.split('-')[0].trim()}</div></div><div style="text-align:right;"><div style="font-size:13px;">${fmt(t)}</div><div style="font-size:11px;color:var(--mut);">${fD(r.retiro)} â†’ ${fD(r.devolucion)}</div></div></div>`;
+    return`<div class="prow"><div><div style="font-size:13px;font-weight:500;">${r.numero}</div><div style="font-size:11px;color:var(--mut);">${r.cliente.split('-')[0].trim()}</div></div><div style="text-align:right;"><div style="font-size:13px;">${fmt(t)}</div><div style="font-size:11px;color:var(--mut);">${fD(r.retiro)} → ${fD(r.devolucion)}</div></div></div>`;
   }).join('');
   const byPago={pendiente:0,facturado:0,pagado:0};
   rem.forEach(r=>byPago[r.pago||'pendiente']=(byPago[r.pago||'pendiente']||0)+1);
@@ -799,11 +799,11 @@ function renderDash(){
     <div style="flex:1;background:var(--abg);border-radius:8px;padding:10px;"><div style="font-size:11px;color:var(--atx);">Facturados</div><div style="font-size:20px;font-weight:300;font-family:'DM Serif Display',serif;color:var(--atx);">${byPago.facturado}</div></div>
     <div style="flex:1;background:var(--gbg);border-radius:8px;padding:10px;"><div style="font-size:11px;color:var(--gtx);">Pagados</div><div style="font-size:20px;font-weight:300;font-family:'DM Serif Display',serif;color:var(--gtx);">${byPago.pagado}</div></div>
   </div>`+rem.slice(0,5).map(r=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid var(--bor);font-size:12px;gap:6px;">
-    <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.numero} â€” ${r.cliente.split('-')[0].trim()}</span>
+    <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.numero} — ${r.cliente.split('-')[0].trim()}</span>
     <button class="estbtn ${EST_CLASS[r.estado||'borrador']}" onclick="avEst('${r.numero}')" style="font-size:10px;">${EST_LABEL[r.estado||'borrador']}</button>
     <button class="pbtn ${PAGO_CLASS[r.pago||'pendiente']}" onclick="avPago('${r.numero}')" style="font-size:10px;">${PAGO_LABEL[r.pago||'pendiente']}</button>
   </div>`).join('');
-  // PrÃ³ximos
+  // Próximos
   const today=new Date();today.setHours(0,0,0,0);
   const prox=rem.filter(r=>r.retiro||r.devolucion).flatMap(r=>{
     const ev=[];
@@ -812,11 +812,11 @@ function renderDash(){
     return ev;
   }).sort((a,b)=>a.fecha.localeCompare(b.fecha)).slice(0,8);
   $('d-proximos').innerHTML=prox.length?prox.map(ev=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--bor);">
-    <span class="badge ${ev.tipo==='retiro'?'ba':'bg'}" style="flex-shrink:0;">${ev.tipo==='retiro'?'Retiro':'DevoluciÃ³n'}</span>
+    <span class="badge ${ev.tipo==='retiro'?'ba':'bg'}" style="flex-shrink:0;">${ev.tipo==='retiro'?'Retiro':'Devolución'}</span>
     <span style="font-size:13px;font-weight:500;">${fD(ev.fecha)}</span>
-    <span style="font-size:12px;color:var(--mut);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${ev.r.numero} â€” ${ev.r.cliente.split('-')[0].trim()}</span>
+    <span style="font-size:12px;color:var(--mut);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${ev.r.numero} — ${ev.r.cliente.split('-')[0].trim()}</span>
     <span class="estbtn ${EST_CLASS[ev.r.estado||'borrador']}" style="font-size:10px;">${EST_LABEL[ev.r.estado||'borrador']}</span>
-  </div>`).join(''):'<div style="font-size:13px;color:var(--mut);padding:.5rem 0;">Sin eventos prÃ³ximos</div>';
+  </div>`).join(''):'<div style="font-size:13px;color:var(--mut);padding:.5rem 0;">Sin eventos próximos</div>';
 }
 
 function renderIS(){
@@ -832,7 +832,7 @@ function renderIS(){
   if(!f.length){sel.innerHTML='<div style="padding:1.5rem;text-align:center;font-size:13px;color:var(--mut);">Sin resultados</div>';return;}
   sel.innerHTML=f.map(s=>{
     const iS=SEL.find(i=>i.cod===s.cod);const isO=ocup.has(s.cod);
-    return`<div class="irow${isO?' ocup':''}">${imgT(s.foto,44)}<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:500;line-height:1.3;">${s.nombre}${isO?` <span style="font-size:10px;background:var(--abg);color:var(--atx);padding:1px 5px;border-radius:10px;">Ocupado</span>`:''}</div><div style="font-size:11px;color:var(--mut);">${s.cod} Â· ${s.cat} Â· ${fmt(s.alq)}/sem</div></div><button class="btn bsm ${iS?'bp':'bs'}" onclick="togItem(${s.cod})" style="flex-shrink:0;">${iS?'âœ“':'+'}</button></div>`;
+    return`<div class="irow${isO?' ocup':''}">${imgT(s.foto,44)}<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:500;line-height:1.3;">${s.nombre}${isO?` <span style="font-size:10px;background:var(--abg);color:var(--atx);padding:1px 5px;border-radius:10px;">Ocupado</span>`:''}</div><div style="font-size:11px;color:var(--mut);">${s.cod} · ${s.cat} · ${fmt(s.alq)}/sem</div></div><button class="btn bsm ${iS?'bp':'bs'}" onclick="togItem(${s.cod})" style="flex-shrink:0;">${iS?'✓':'+'}</button></div>`;
   }).join('');
 }
 
@@ -848,7 +848,7 @@ function togItem(cod){
       pendItemCod=cod;
       const otros=getAllR().filter(r=>r.retiro&&r.devolucion&&new Date(r.retiro)<=new Date(dev)&&new Date(r.devolucion)>=new Date(ret)&&r.items.find(i=>i.cod===cod));
       const on=otros.length?otros.map(r=>`${r.numero} (${r.cliente.split('-')[0].trim()})`).join(', '):'otro remito';
-      $('m-ocup-msg').innerHTML=`<strong>${item.nombre}</strong> ya estÃ¡ en <strong>${on}</strong> para ${fD(ret)} â†’ ${fD(dev)}.<br><br>Â¿QuerÃ©s agregarlo igual?`;
+      $('m-ocup-msg').innerHTML=`<strong>${item.nombre}</strong> ya está en <strong>${on}</strong> para ${fD(ret)} → ${fD(dev)}.<br><br>¿Querés agregarlo igual?`;
       openM('m-ocup');return;
     }
   }
@@ -861,14 +861,14 @@ function confirmOcup(){
 function renderRes(){
   const ta=SEL.reduce((s,i)=>s+i.alq,0),tg=SEL.reduce((s,i)=>s+i.gtia,0);
   $('nr-cnt').textContent=SEL.length;$('t-alq').textContent=fmt(ta);$('t-30').textContent=fmt(Math.round(ta*1.2));$('t-gtia').textContent=fmt(tg);
-  $('r-items').innerHTML=SEL.map(i=>{const ef=getEffectiveStock().find(s=>String(s.cod)===String(i.cod));const url=i.foto||(ef?ef.foto:'');return`<div class="ri">${imgT(url,32)}<div style="flex:1;padding:0 6px;min-width:0;"><div style="font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${i.nombre}${i.conflicto?' âš ':''}</div><div style="font-size:10px;color:var(--mut);">${fmt(i.alq)}</div></div><button class="xbtn" onclick="togItem(${i.cod})">Ã—</button></div>`;}).join('')||'<div style="font-size:12px;color:var(--mut);padding:8px 0;">NingÃºn item seleccionado</div>';
+  $('r-items').innerHTML=SEL.map(i=>{const ef=getEffectiveStock().find(s=>String(s.cod)===String(i.cod));const url=i.foto||(ef?ef.foto:'');return`<div class="ri">${imgT(url,32)}<div style="flex:1;padding:0 6px;min-width:0;"><div style="font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${i.nombre}${i.conflicto?' ⚠':''}</div><div style="font-size:10px;color:var(--mut);">${fmt(i.alq)}</div></div><button class="xbtn" onclick="togItem(${i.cod})">×</button></div>`;}).join('')||'<div style="font-size:12px;color:var(--mut);padding:8px 0;">Ningún item seleccionado</div>';
 }
 function clearSel(){SEL=[];renderIS();renderRes();}
 function saveAndView(){
-  if(!SEL.length){alert('SeleccionÃ¡ al menos un item.');return;}
+  if(!SEL.length){alert('Seleccioná al menos un item.');return;}
   const num=String($('nr-n').value||'').trim().replace(/[^0-9\-a-zA-Z]/g,''),cli=$('nr-c').value.trim();
-  if(!num){alert('IngresÃ¡ el nÃºmero de remito (solo nÃºmeros y guiones, ej: 11-1236).');return;}
-  if(!cli){alert('IngresÃ¡ el nombre del cliente.');return;}
+  if(!num){alert('Ingresá el número de remito (solo números y guiones, ej: 11-1236).');return;}
+  if(!cli){alert('Ingresá el nombre del cliente.');return;}
   const ret=$('nr-r').value,dev=$('nr-d').value;
   const prod=($('nr-prod')||{value:''}).value.trim();
   const proy=($('nr-proy')||{value:''}).value.trim();
@@ -893,7 +893,7 @@ function saveAndView(){
 
 function renderRemitos(){
   const rem=getAllR();
-  $('sel-prev').innerHTML='<option value="">Seleccionar remito...</option>'+rem.map(r=>`<option value="${r.numero}">${r.numero} â€” ${r.cliente.split('-')[0].trim()}</option>`).join('');
+  $('sel-prev').innerHTML='<option value="">Seleccionar remito...</option>'+rem.map(r=>`<option value="${r.numero}">${r.numero} — ${r.cliente.split('-')[0].trim()}</option>`).join('');
   filterR();
 }
 function filterR(){
@@ -911,9 +911,9 @@ function filterR(){
       <td style="font-weight:500;">${fmt(tot)}</td>
       <td><button class="estbtn ${EST_CLASS[est]}" onclick="avEst('${r.numero}')">${EST_LABEL[est]}</button></td>
       <td><button class="pbtn ${PAGO_CLASS[pago]}" onclick="avPago('${r.numero}')">${PAGO_LABEL[pago]}</button></td>
-      <td><button onclick="cycleFacturador('${r.numero}')" style="background:none;border:0.5px solid var(--bor);border-radius:12px;padding:2px 9px;font-size:11px;cursor:pointer;font-family:inherit;color:var(--txt);">${r.facturador||'â€”'}</button></td>
+      <td><button onclick="cycleFacturador('${r.numero}')" style="background:none;border:0.5px solid var(--bor);border-radius:12px;padding:2px 9px;font-size:11px;cursor:pointer;font-family:inherit;color:var(--txt);">${r.facturador||'—'}</button></td>
       <td style="white-space:nowrap;">
-        <button class="btn bsm bs" onclick="abrirEdit('${r.numero}')" style="margin-right:4px;">âœ</button>
+        <button class="btn bsm bs" onclick="abrirEdit('${r.numero}')" style="margin-right:4px;">✏</button>
         <button class="btn bsm bs" onclick="verPrevTab('${r.numero}')">Ver</button>
       </td>
     </tr>`;
@@ -941,25 +941,25 @@ function buildRemito(r){
   const tot=Math.round(totBase*factorRecargo);
   const tg=r.items.reduce((s,i)=>s+(i.gtia||0),0);
   const fecha=r.fecha?fD(r.fecha):new Date().toLocaleDateString('es-AR');
-  const gtiaStr=r.gtipo?`${r.gtipo.charAt(0).toUpperCase()+r.gtipo.slice(1)}${r.gref?' â€” '+r.gref:''}`:'';
+  const gtiaStr=r.gtipo?`${r.gtipo.charAt(0).toUpperCase()+r.gtipo.slice(1)}${r.gref?' — '+r.gref:''}`:'';
   $('prev-content').innerHTML=`<div style="background:#fff;border:0.5px solid var(--bor);border-radius:12px;padding:2rem;max-width:800px;">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem;padding-bottom:1.25rem;border-bottom:2px solid var(--acc);">
-      <div><div style="font-family:'DM Serif Display',serif;font-size:26px;">â˜… MARTE PROPS</div><div style="font-size:10px;letter-spacing:2px;color:var(--mut);text-transform:uppercase;margin-top:3px;">UtilerÃ­a en alquiler Â· marteprops.com.ar</div></div>
-      <div style="text-align:right;"><div style="font-size:20px;font-weight:500;font-family:'DM Serif Display',serif;">NÂ° ${r.numero}</div><div style="font-size:12px;color:var(--mut);">Fecha: ${fecha}</div>${r.facturador?`<div style="font-size:11px;color:var(--mut);">FacturÃ³: ${r.facturador}</div>`:''}</div>
+      <div><div style="font-family:'DM Serif Display',serif;font-size:26px;">★ MARTE PROPS</div><div style="font-size:10px;letter-spacing:2px;color:var(--mut);text-transform:uppercase;margin-top:3px;">Utilería en alquiler · marteprops.com.ar</div></div>
+      <div style="text-align:right;"><div style="font-size:20px;font-weight:500;font-family:'DM Serif Display',serif;">N° ${r.numero}</div><div style="font-size:12px;color:var(--mut);">Fecha: ${fecha}</div>${r.facturador?`<div style="font-size:11px;color:var(--mut);">Facturó: ${r.facturador}</div>`:''}</div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
       <div><div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);">Cliente</div><div style="font-size:14px;font-weight:500;margin-top:2px;">${r.cliente}</div></div>
       <div><div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);">Retiro</div><div style="font-size:14px;font-weight:500;margin-top:2px;">${fD(r.retiro)}</div></div>
-      <div><div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);">DevoluciÃ³n</div><div style="font-size:14px;font-weight:500;margin-top:2px;">${fD(r.devolucion)}</div></div>
-      <div><div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);">DÃ­as</div><div style="font-size:14px;font-weight:500;margin-top:2px;">${dias!==null?dias+' dÃ­as':'â€”'}</div></div>
+      <div><div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);">Devolución</div><div style="font-size:14px;font-weight:500;margin-top:2px;">${fD(r.devolucion)}</div></div>
+      <div><div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);">Días</div><div style="font-size:14px;font-weight:500;margin-top:2px;">${dias!==null?dias+' días':'—'}</div></div>
     </div>
     <table style="width:100%;border-collapse:collapse;margin-bottom:1.5rem;">
       <thead><tr style="background:var(--bg);">
         <th style="padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);border-bottom:0.5px solid var(--bor);">Foto</th>
         <th style="padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);border-bottom:0.5px solid var(--bor);">Art.</th>
-        <th style="padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);border-bottom:0.5px solid var(--bor);">DescripciÃ³n</th>
+        <th style="padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);border-bottom:0.5px solid var(--bor);">Descripción</th>
         <th style="padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);border-bottom:0.5px solid var(--bor);text-align:center;">Cant.</th>
-        <th style="padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);border-bottom:0.5px solid var(--bor);text-align:right;">GarantÃ­a</th>
+        <th style="padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);border-bottom:0.5px solid var(--bor);text-align:right;">Garantía</th>
         <th style="padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);border-bottom:0.5px solid var(--bor);text-align:right;">Alq./sem</th>
       </tr></thead>
       <tbody>${r.items.map(i=>{
@@ -967,32 +967,32 @@ function buildRemito(r){
           return`<tr style="border-bottom:0.5px solid var(--bor);">
           <td style="padding:8px 10px;">${(()=>{const ef=getEffectiveStock().find(s=>String(s.cod)===String(i.cod));const url=i.foto||(ef?ef.foto:'');return url?`<img src="${url}" style="width:56px;height:56px;object-fit:cover;border-radius:6px;" onerror="this.style.visibility='hidden'"/>`:`<div data-cod="${i.cod}" style="width:56px;height:56px;background:var(--tag);border-radius:6px;"></div>`;})()}</td>
           <td style="padding:8px 10px;font-size:12px;color:var(--mut);">${i.cod}</td>
-          <td style="padding:8px 10px;font-size:13px;">${i.desc}${i.conflicto?' <span style="font-size:10px;color:var(--atx);">âš </span>':''}${tieneRecargo?`<div style="font-size:10px;color:var(--coral);">base ${fmt(i.alq)} + ${semanasExtra*50}% recargo</div>`:''}</td>
+          <td style="padding:8px 10px;font-size:13px;">${i.desc}${i.conflicto?' <span style="font-size:10px;color:var(--atx);">⚠</span>':''}${tieneRecargo?`<div style="font-size:10px;color:var(--coral);">base ${fmt(i.alq)} + ${semanasExtra*50}% recargo</div>`:''}</td>
           <td style="padding:8px 10px;font-size:13px;text-align:center;">1</td>
-          <td style="padding:8px 10px;font-size:13px;text-align:right;">${i.gtia?fmt(i.gtia):'â€”'}</td>
+          <td style="padding:8px 10px;font-size:13px;text-align:right;">${i.gtia?fmt(i.gtia):'—'}</td>
           <td style="padding:8px 10px;font-size:13px;font-weight:500;text-align:right;">${fmt(alqFinal)}</td>
         </tr>`;}).join('')}
       </tbody>
     </table>
     ${tieneRecargo?`<div style="background:var(--coral-lt);border:1px solid var(--coral);border-radius:8px;padding:10px 14px;margin-bottom:1rem;font-size:11px;color:var(--coral-dk);line-height:1.7;">
-      <strong>Nota sobre el recargo por duraciÃ³n:</strong> El precio base de alquiler corresponde a una semana (7 dÃ­as). 
-      Este pedido tiene una duraciÃ³n de <strong>${dias} dÃ­as</strong> (${semanasExtra} semana${semanasExtra>1?'s':''} adicional${semanasExtra>1?'es':''}), 
-      por lo que se aplica un recargo del <strong>${semanasExtra*50}%</strong> sobre el precio base segÃºn nuestra polÃ­tica de alquileres extendidos.
+      <strong>Nota sobre el recargo por duración:</strong> El precio base de alquiler corresponde a una semana (7 días). 
+      Este pedido tiene una duración de <strong>${dias} días</strong> (${semanasExtra} semana${semanasExtra>1?'s':''} adicional${semanasExtra>1?'es':''}), 
+      por lo que se aplica un recargo del <strong>${semanasExtra*50}%</strong> sobre el precio base según nuestra política de alquileres extendidos.
     </div>`:''}
     <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-top:1rem;border-top:0.5px solid var(--bor);">
       <div style="font-size:10px;color:var(--mut);line-height:2;max-width:400px;">
-        â€” De cancelar con menos de 24hs del retiro, se cobrarÃ¡ el 50% del alquiler.<br>
-        â€” Validez del presupuesto 15 dÃ­as. El valor del alquiler es por una semana.<br>
-        â€” Para confirmar un alquiler, hacerlo vÃ­a mail.<br>
-        â€” Pagos con mÃ¡s de 7 dÃ­as de demora tendrÃ¡n recarga del 20%.<br>
-        â€” Por favor devolver los elementos embalados.
-        ${gtiaStr?`<br>â€” GarantÃ­a: ${gtiaStr}`:''}
+        — De cancelar con menos de 24hs del retiro, se cobrará el 50% del alquiler.<br>
+        — Validez del presupuesto 15 días. El valor del alquiler es por una semana.<br>
+        — Para confirmar un alquiler, hacerlo vía mail.<br>
+        — Pagos con más de 7 días de demora tendrán recarga del 20%.<br>
+        — Por favor devolver los elementos embalados.
+        ${gtiaStr?`<br>— Garantía: ${gtiaStr}`:''}
       </div>
       <div style="text-align:right;min-width:220px;">
         ${tieneRecargo?`
           <div style="font-size:11px;color:var(--mut);">Alquiler base (1 semana)</div>
           <div style="font-size:16px;text-decoration:line-through;color:var(--mut);">${fmt(totBase)}</div>
-          <div style="font-size:11px;color:var(--coral);margin-top:4px;">Recargo: +${fmt(tot-totBase)} (${semanasExtra} sem. extra Ã— 50%)</div>
+          <div style="font-size:11px;color:var(--coral);margin-top:4px;">Recargo: +${fmt(tot-totBase)} (${semanasExtra} sem. extra × 50%)</div>
           <div style="border-top:1px solid var(--bor);margin:8px 0;"></div>
           <div style="font-size:11px;color:var(--mut);">Total alquiler</div>
           <div style="font-size:28px;font-family:'DM Serif Display',serif;">${fmt(tot)}</div>
@@ -1000,9 +1000,9 @@ function buildRemito(r){
           <div style="font-size:11px;color:var(--mut);">Alquiler (1 semana)</div>
           <div style="font-size:28px;font-family:'DM Serif Display',serif;">${fmt(tot)}</div>
         `}
-        <div style="font-size:11px;color:var(--mut);margin-top:6px;">Diferido 30 dÃ­as (+20%)</div>
+        <div style="font-size:11px;color:var(--mut);margin-top:6px;">Diferido 30 días (+20%)</div>
         <div style="font-size:16px;">${fmt(Math.round(tot*1.2))}</div>
-        ${tg?`<div style="font-size:11px;color:var(--mut);margin-top:8px;padding-top:8px;border-top:0.5px solid var(--bor);">Total garantÃ­a (cheque)</div><div style="font-size:16px;font-weight:500;">${fmt(tg)}</div>`:''}
+        ${tg?`<div style="font-size:11px;color:var(--mut);margin-top:8px;padding-top:8px;border-top:0.5px solid var(--bor);">Total garantía (cheque)</div><div style="font-size:16px;font-weight:500;">${fmt(tg)}</div>`:''}
       </div>
     </div>
   </div>`;
@@ -1054,8 +1054,8 @@ function renderCalMes(rem){
     var retiros=rem.filter(function(r){return r.retiro===iso&&(r.estado||'borrador')!=='borrador';});
     var devols=rem.filter(function(r){return r.devolucion===iso&&(r.estado||'borrador')!=='borrador';});
     var chips='';
-    retiros.forEach(function(r){chips+='<div class="cal-chip retiro" onclick="showCalDetail(\''+r.numero+'\')" title="'+r.cliente+'">â†‘ '+r.numero+' '+r.cliente.split('-')[0].trim().slice(0,10)+'</div>';});
-    devols.forEach(function(r){chips+='<div class="cal-chip devolucion" onclick="showCalDetail(\''+r.numero+'\')" title="'+r.cliente+'">â†“ '+r.numero+' '+r.cliente.split('-')[0].trim().slice(0,10)+'</div>';});
+    retiros.forEach(function(r){chips+='<div class="cal-chip retiro" onclick="showCalDetail(\''+r.numero+'\')" title="'+r.cliente+'">↑ '+r.numero+' '+r.cliente.split('-')[0].trim().slice(0,10)+'</div>';});
+    devols.forEach(function(r){chips+='<div class="cal-chip devolucion" onclick="showCalDetail(\''+r.numero+'\')" title="'+r.cliente+'">↓ '+r.numero+' '+r.cliente.split('-')[0].trim().slice(0,10)+'</div>';});
     html+='<div class="cal-day'+(isToday?' today':'')+'" ><div class="cal-day-num">'+day+'</div>'+chips+'</div>';
   }
   var total=startDow+lastDay.getDate();
@@ -1072,9 +1072,9 @@ function showCalDetail(num){
   $('m-cal-content').innerHTML=`
     <div style="font-size:14px;margin-bottom:1rem;">
       <div style="margin-bottom:6px;"><strong>${r.cliente}</strong></div>
-      <div style="font-size:13px;color:var(--mut);">Retiro: ${fD(r.retiro)} Â· DevoluciÃ³n: ${fD(r.devolucion)}</div>
-      <div style="font-size:13px;color:var(--mut);">Total: ${fmt(tot)} Â· Items: ${r.items.length}</div>
-      ${r.facturador?`<div style="font-size:13px;color:var(--mut);">FacturÃ³: ${r.facturador}</div>`:''}
+      <div style="font-size:13px;color:var(--mut);">Retiro: ${fD(r.retiro)} · Devolución: ${fD(r.devolucion)}</div>
+      <div style="font-size:13px;color:var(--mut);">Total: ${fmt(tot)} · Items: ${r.items.length}</div>
+      ${r.facturador?`<div style="font-size:13px;color:var(--mut);">Facturó: ${r.facturador}</div>`:''}
     </div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;">
       <button class="estbtn ${EST_CLASS[r.estado||'borrador']}">${EST_LABEL[r.estado||'borrador']}</button>
@@ -1082,7 +1082,7 @@ function showCalDetail(num){
     </div>
     <div style="max-height:200px;overflow-y:auto;">${r.items.map(i=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--bor);font-size:12px;">${imgT(i.foto,32)}<span style="flex:1;">${i.desc}</span><span style="font-weight:500;">${fmt(i.alq)}</span></div>`).join('')}</div>
     <div style="margin-top:1rem;display:flex;gap:8px;">
-      <button class="btn bsm bp" onclick="closeM('m-cal');abrirEdit('${num}')">âœ Editar</button>
+      <button class="btn bsm bp" onclick="closeM('m-cal');abrirEdit('${num}')">✏ Editar</button>
       <button class="btn bsm bs" onclick="closeM('m-cal');verPrevTab('${num}')">Ver remito</button>
     </div>`;
   openM('m-cal');
@@ -1091,18 +1091,18 @@ function showCalDetail(num){
 // DISPONIBILIDAD
 function checkDisp(){
   const desde=$('dd').value,hasta=$('dh').value,cat=$('dcat').value;
-  if(!desde||!hasta){$('disp-res').innerHTML='<div class="warn">âš  IngresÃ¡ ambas fechas.</div>';return;}
+  if(!desde||!hasta){$('disp-res').innerHTML='<div class="warn">⚠ Ingresá ambas fechas.</div>';return;}
   const oc=getOcup(desde,hasta);
   const items=getEffectiveStock().filter(s=>s.alq>0&&(!cat||s.cat===cat));
   const dis=items.filter(s=>!oc.has(s.cod)),noD=items.filter(s=>oc.has(s.cod));
   $('disp-res').innerHTML=`<div style="margin-bottom:1rem;display:flex;gap:10px;align-items:center;">
     <span class="badge bg">${dis.length} disponibles</span>
     <span class="badge br">${noD.length} no disponibles</span>
-    <span style="font-size:12px;color:var(--mut);">${fD(desde)} â†’ ${fD(hasta)}</span>
+    <span style="font-size:12px;color:var(--mut);">${fD(desde)} → ${fD(hasta)}</span>
   </div>
   <div class="agrid">
-    ${dis.slice(0,60).map(s=>`<div class="icard">${s.foto?`<img src="${s.foto}" style="width:100%;height:110px;object-fit:cover;border-radius:6px;margin-bottom:8px;" onerror="this.style.display='none'"/>`:''}<div style="display:flex;justify-content:space-between;gap:4px;"><div><div style="font-size:12px;font-weight:500;">${s.nombre}</div><div style="font-size:10px;color:var(--mut);">${s.cod} Â· ${s.cat}</div></div><span class="badge bg" style="font-size:10px;flex-shrink:0;align-self:flex-start;">Disponible</span></div><div style="font-size:14px;font-family:'DM Serif Display',serif;margin-top:6px;">${fmt(s.alq)}<span style="font-size:10px;color:var(--mut);">/sem</span></div></div>`).join('')}
-    ${noD.slice(0,30).map(s=>`<div class="icard" style="opacity:.5;">${s.foto?`<img src="${s.foto}" style="width:100%;height:110px;object-fit:cover;border-radius:6px;margin-bottom:8px;filter:grayscale(1);" onerror="this.style.display='none'"/>`:''}<div style="display:flex;justify-content:space-between;gap:4px;"><div><div style="font-size:12px;font-weight:500;">${s.nombre}</div><div style="font-size:10px;color:var(--mut);">${s.cod} Â· ${s.cat}</div></div><span class="badge br" style="font-size:10px;flex-shrink:0;align-self:flex-start;">No disp.</span></div><div style="font-size:14px;font-family:'DM Serif Display',serif;margin-top:6px;">${fmt(s.alq)}<span style="font-size:10px;color:var(--mut);">/sem</span></div></div>`).join('')}
+    ${dis.slice(0,60).map(s=>`<div class="icard">${s.foto?`<img src="${s.foto}" style="width:100%;height:110px;object-fit:cover;border-radius:6px;margin-bottom:8px;" onerror="this.style.display='none'"/>`:''}<div style="display:flex;justify-content:space-between;gap:4px;"><div><div style="font-size:12px;font-weight:500;">${s.nombre}</div><div style="font-size:10px;color:var(--mut);">${s.cod} · ${s.cat}</div></div><span class="badge bg" style="font-size:10px;flex-shrink:0;align-self:flex-start;">Disponible</span></div><div style="font-size:14px;font-family:'DM Serif Display',serif;margin-top:6px;">${fmt(s.alq)}<span style="font-size:10px;color:var(--mut);">/sem</span></div></div>`).join('')}
+    ${noD.slice(0,30).map(s=>`<div class="icard" style="opacity:.5;">${s.foto?`<img src="${s.foto}" style="width:100%;height:110px;object-fit:cover;border-radius:6px;margin-bottom:8px;filter:grayscale(1);" onerror="this.style.display='none'"/>`:''}<div style="display:flex;justify-content:space-between;gap:4px;"><div><div style="font-size:12px;font-weight:500;">${s.nombre}</div><div style="font-size:10px;color:var(--mut);">${s.cod} · ${s.cat}</div></div><span class="badge br" style="font-size:10px;flex-shrink:0;align-self:flex-start;">No disp.</span></div><div style="font-size:14px;font-family:'DM Serif Display',serif;margin-top:6px;">${fmt(s.alq)}<span style="font-size:10px;color:var(--mut);">/sem</span></div></div>`).join('')}
   </div>`;
 }
 
@@ -1112,7 +1112,7 @@ function filterS(){
   const tb=$('s-table');if(!tb)return;
   if(!loaded){tb.innerHTML='<tr><td colspan="6" class="ldg"><span class="spin"></span>Cargando...</td></tr>';return;}
   const f=getEffectiveStock().filter(s=>(!q||s.nombre.toLowerCase().includes(q)||String(s.cod).includes(q)||s.cat.toLowerCase().includes(q))&&(!cat||s.cat===cat)).slice(0,200);
-  tb.innerHTML=f.map(s=>`<tr><td>${imgT(s.foto,42)}</td><td style="font-family:monospace;font-size:11px;color:var(--mut);">${s.cod}</td><td style="font-weight:500;">${s.nombre}</td><td><span class="badge bgr">${s.cat}</span></td><td>${fmt(s.gtia)}</td><td style="font-weight:500;">${s.alq?fmt(s.alq):'â€”'}</td></tr>`).join('');
+  tb.innerHTML=f.map(s=>`<tr><td>${imgT(s.foto,42)}</td><td style="font-family:monospace;font-size:11px;color:var(--mut);">${s.cod}</td><td style="font-weight:500;">${s.nombre}</td><td><span class="badge bgr">${s.cat}</span></td><td>${fmt(s.gtia)}</td><td style="font-weight:500;">${s.alq?fmt(s.alq):'—'}</td></tr>`).join('');
 }
 
 // HISTORIAL
@@ -1124,7 +1124,7 @@ function filterH(){
   $('h-table').innerHTML=f.slice(0,200).map(h=>`<tr><td style="font-weight:500;">${h.remito}</td><td style="color:var(--mut);">${fD(h.fecha)}</td><td><span class="chip">${h.cliente.split('-')[0].trim()}</span></td><td>${fD(h.retiro)}</td><td>${fD(h.devolucion)}</td><td>${h.desc}</td><td style="font-weight:500;">${fmt(h.alq)}</td></tr>`).join('');
 }
 
-// ESTADÃSTICAS
+// ESTADÍSTICAS
 function renderEst(){
   const iC={},cT={},cI={},catT={},factT={},mesT={},prodT={},prodI={};
   getAllR().filter(r=>(r.estado||'borrador')!=='borrador').forEach(r=>{
@@ -1350,10 +1350,100 @@ function renderMesChart(v){
 }
 
 
+function abrirEdit(num){
+  const r=getAllR().find(function(x){return x.numero===num;});
+  if(!r)return;
+  editKey=r.numero;
+  editItems=(r.items||[]).map(function(i){
+    const st=getEffectiveStock().find(function(s){return String(s.cod)===String(i.cod);});
+    return {
+      cod:i.cod,
+      desc:i.desc||(st?st.nombre:''),
+      alq:i.alq!=null?i.alq:(st?st.alq:0),
+      gtia:i.gtia!=null?i.gtia:(st?st.gtia:0),
+      foto:i.foto||(st?st.foto:'')
+    };
+  });
+  $('en').value=r.numero||'';
+  $('ec').value=r.cliente||'';
+  if($('eprod'))$('eprod').value=r.productora||'';
+  if($('eproy'))$('eproy').value=r.proyecto||'';
+  $('er').value=r.retiro||'';
+  $('ed2').value=r.devolucion||'';
+  $('eest').value=r.estado||'borrador';
+  $('efact').value=r.facturador||'';
+  $('egtipo').value=r.gtipo||'';
+  $('egref').value=r.gref||'';
+  if($('esa'))$('esa').value='';
+  renderEIL();
+  renderESR();
+  openM('m-edit');
+}
+
+function renderEIL(){
+  const el=$('eil');
+  if(!el)return;
+  if(!editItems.length){
+    el.innerHTML='<div style="padding:12px;color:var(--mut);font-size:12px;">Sin items en este remito.</div>';
+    return;
+  }
+  el.innerHTML=editItems.map(function(i){
+    return '<div class="ri">'+
+      imgT(i.foto,32)+
+      '<div style="flex:1;padding:0 6px;min-width:0;">'+
+        '<div style="font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+(i.desc||('Item '+i.cod))+'</div>'+
+        '<div style="font-size:10px;color:var(--mut);">'+i.cod+' � '+fmt(i.alq||0)+'</div>'+
+      '</div>'+
+      '<button class="xbtn" onclick="removeEditItem(\''+i.cod+'\')">�</button>'+
+    '</div>';
+  }).join('');
+}
+
+function renderESR(){
+  const el=$('esr');
+  if(!el)return;
+  const q=(($('esa')||{value:''}).value||'').toLowerCase().trim();
+  const used=new Set(editItems.map(function(i){return String(i.cod);}));
+  const items=getEffectiveStock().filter(function(s){
+    return s.alq>0 &&
+      !used.has(String(s.cod)) &&
+      (!q || s.nombre.toLowerCase().includes(q) || String(s.cod).includes(q) || (s.cat||'').toLowerCase().includes(q));
+  }).slice(0,40);
+  if(!items.length){
+    el.innerHTML='<div style="padding:12px;color:var(--mut);font-size:12px;">Sin resultados.</div>';
+    return;
+  }
+  el.innerHTML=items.map(function(s){
+    return '<div class="irow">'+
+      imgT(s.foto,32)+
+      '<div style="flex:1;min-width:0;">'+
+        '<div style="font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+s.nombre+'</div>'+
+        '<div style="font-size:10px;color:var(--mut);">'+s.cod+' � '+(s.cat||'')+' � '+fmt(s.alq||0)+'</div>'+
+      '</div>'+
+      '<button class="btn bsm bp" onclick="addEditItem('+s.cod+')">Agregar</button>'+
+    '</div>';
+  }).join('');
+}
+
+function addEditItem(cod){
+  const st=getEffectiveStock().find(function(s){return s.cod===cod;});
+  if(!st)return;
+  if(editItems.find(function(i){return String(i.cod)===String(cod);})){return;}
+  editItems.push({cod:st.cod,desc:st.nombre,alq:st.alq||0,gtia:st.gtia||0,foto:st.foto||''});
+  renderEIL();
+  renderESR();
+}
+
+function removeEditItem(cod){
+  editItems=editItems.filter(function(i){return String(i.cod)!==String(cod);});
+  renderEIL();
+  renderESR();
+}
+
 function saveEdit(){
   const num=String($('en').value||'').trim().replace(/[^0-9\-a-zA-Z]/g,'');
   const cli=$('ec').value.trim();
-  if(!num||!cli){alert('CompletÃ¡ nÃºmero y cliente.');return;}
+  if(!num||!cli){alert('Completá número y cliente.');return;}
   const pago=RL[editKey]?RL[editKey].pago:'pendiente';
   const fecha=RL[editKey]?RL[editKey].fecha:new Date().toISOString().slice(0,10);
   if(editKey!==num)delete RL[editKey];
@@ -1387,48 +1477,4 @@ document.querySelectorAll('.ni').forEach(n=>{
 });
 </script>
 </body>
-</html
-function renderCalSem(rem){
-  var dow=calDate.getDay();
-  var weekStart=new Date(calDate.getTime()-dow*86400000);weekStart.setHours(0,0,0,0);
-  var dias=['Do','Lu','Ma','Mi','Ju','Vi','Sa'];
-  var meses=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-  var weekDays=Array.from({length:7},function(_,i){var d=new Date(weekStart.getTime()+i*86400000);return d;});
-  var startStr=weekDays[0].toLocaleDateString('es-AR',{day:'numeric',month:'short'});
-  var endStr=weekDays[6].toLocaleDateString('es-AR',{day:'numeric',month:'short'});
-  $('cal-label').textContent=startStr+' â€” '+endStr;
-  var today=new Date();today.setHours(0,0,0,0);
-  var html='<div class="week-grid"><div class="week-header"></div>';
-  weekDays.forEach(function(d){
-    var isToday=d.getTime()===today.getTime();
-    html+='<div class="week-header'+(isToday?' today':'')+'"><div>'+dias[d.getDay()]+'</div><div style="font-size:15px;font-weight:500;">'+d.getDate()+'</div><div style="font-size:10px;color:var(--mut);">'+meses[d.getMonth()]+'</div></div>';
-  });
-  var rows=[];
-  weekDays.forEach(function(d,di){
-    var iso=d.toISOString().slice(0,10);
-    var evs=[];
-    rem.filter(function(r){return(r.estado||'borrador')!=='borrador';}).forEach(function(r){
-      if(r.retiro===iso)evs.push({tipo:'retiro',r,color:'var(--abg)',tc:'var(--atx)'});
-      if(r.devolucion===iso)evs.push({tipo:'devolucion',r,color:'var(--gbg)',tc:'var(--gtx)'});
-    });
-    rows.push({di:di,evs:evs});
-  });
-  var maxEvs=Math.max.apply(null,rows.map(function(r){return r.evs.length;}).concat([1]));
-  for(var row=0;row<maxEvs;row++){
-    html+='<div class="week-time"></div>';
-    weekDays.forEach(function(_,di){
-      var ev=rows[di].evs[row];
-      if(ev){
-        html+='<div class="week-cell"><div class="week-event" style="background:'+ev.color+';color:'+ev.tc+';cursor:pointer;" onclick="showCalDetail(\''+ev.r.numero+'\')">'+
-          (ev.tipo==='retiro'?'â†‘':'â†“')+' '+ev.r.numero+' â€” '+ev.r.cliente.split('-')[0].trim().slice(0,12)+'</div></div>';
-      } else {
-        html+='<div class="week-cell">&nbsp;</div>';
-      }
-    });
-  }
-  html+='</div>';
-  $('cal-container').innerHTML=html;
-}
->
-
-
+</html>
