@@ -88,6 +88,7 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
 .est-finalizado{background:var(--gbg);color:var(--gtx);}
 /* PAGO */
 .pbtn{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;border:none;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.p-na{background:var(--tag);color:var(--mut);}
 .p-pendiente{background:var(--rbg);color:var(--rtx);}
 .p-facturado{background:var(--abg);color:var(--atx);}
 .p-pagado{background:var(--gbg);color:var(--gtx);}
@@ -554,6 +555,7 @@ function loadRemitosFromSheet(){
       var num=String(r.numero||'').trim();
       if(!num||num.includes('GMT'))return;
       // Sheet always wins - overwrite localStorage with Sheet data
+      var estado=String(r.estado||'borrador');
       RL[num]={
         numero:num,
         cliente:String(r.cliente||''),
@@ -561,8 +563,8 @@ function loadRemitosFromSheet(){
         devolucion:String(r.devolucion||''),
         fecha:String(r.fecha||''),
         items:Array.isArray(r.items)?r.items:[],
-        pago:String(r.pago||'pendiente'),
-        estado:String(r.estado||'borrador'),
+        pago:defaultPago(estado,String(r.pago||'')),
+        estado:estado,
         facturador:String(r.facturador||''),
         gtipo:String(r.gtipo||''),
         gref:String(r.gref||''),
@@ -629,10 +631,14 @@ const EST_CLASS={borrador:'est-borrador',confirmado:'est-confirmado',entregado:'
 function nextEst(e){const i=EST_ORDER.indexOf(e);return EST_ORDER[(i+1)%EST_ORDER.length];}
 
 // ESTADOS PAGO
-const PAGO_ORDER=['pendiente','facturado','pagado'];
-const PAGO_LABEL={pendiente:'Pendiente',facturado:'Facturado',pagado:'Pagado'};
-const PAGO_CLASS={pendiente:'p-pendiente',facturado:'p-facturado',pagado:'p-pagado'};
-function nextPago(p){const i=PAGO_ORDER.indexOf(p||'pendiente');return PAGO_ORDER[(i+1)%PAGO_ORDER.length];}
+const PAGO_ORDER=['na','pendiente','facturado','pagado'];
+const PAGO_LABEL={na:'N/A',pendiente:'Pendiente',facturado:'Facturado',pagado:'Pagado'};
+const PAGO_CLASS={na:'p-na',pendiente:'p-pendiente',facturado:'p-facturado',pagado:'p-pagado'};
+function defaultPago(estado,pago){
+  if(pago&&PAGO_LABEL[pago])return pago;
+  return (estado||'borrador')==='borrador'?'na':'pendiente';
+}
+function nextPago(p){const cur=PAGO_LABEL[p]?p:'na';const i=PAGO_ORDER.indexOf(cur);return PAGO_ORDER[(i+1)%PAGO_ORDER.length];}
 
 const HB=[
   {n:"11-1217",f:"2025-12-19",c:"Camila Colauti - Moria - About Ent.",r:"2025-12-17",dv:"2025-12-23",it:[{a:20001,d:"FASANO",p:11500},{a:20002,d:"CARTERA PARMA",p:10500},{a:20021,d:"CARTERA RITA",p:12500},{a:20022,d:"CARTERA SOLAR",p:12500},{a:20023,d:"CARTERA MOSS",p:10500},{a:20029,d:"CARTERA BRIGITTE",p:11500},{a:20031,d:"CARTERA MERLINA",p:12500},{a:20036,d:"SARITA",p:14500},{a:20045,d:"CARTERA BERTA",p:10500},{a:20049,d:"CARTERA BARBARA",p:9500},{a:20052,d:"CARTERA XL CUERO",p:14500},{a:35006,d:"RIÑONERA NEGRA SAMSONITE",p:9500}]},
@@ -764,7 +770,7 @@ function avEst(num){
 }
 function avPago(num){
   ensureLocal(num);
-  RL[num].pago=nextPago(RL[num].pago||'pendiente');
+  RL[num].pago=nextPago(defaultPago(RL[num].estado,RL[num].pago));
   saveRL();
   postToSheet({action:'updatePago',numero:num,valor:RL[num].pago}).catch(()=>{});
   if($('section-remitos').classList.contains('active'))renderRemitos();
@@ -792,20 +798,21 @@ function renderDash(){
     const t=r.items.reduce((s,i)=>s+(i.alq||0),0);
     return`<div class="prow"><div><div style="font-size:13px;font-weight:500;">${r.numero}</div><div style="font-size:11px;color:var(--mut);">${r.cliente.split('-')[0].trim()}</div></div><div style="text-align:right;"><div style="font-size:13px;">${fmt(t)}</div><div style="font-size:11px;color:var(--mut);">${fD(r.retiro)} → ${fD(r.devolucion)}</div></div></div>`;
   }).join('');
-  const byPago={pendiente:0,facturado:0,pagado:0};
-  rem.forEach(r=>byPago[r.pago||'pendiente']=(byPago[r.pago||'pendiente']||0)+1);
+  const byPago={na:0,pendiente:0,facturado:0,pagado:0};
+  remActivos.forEach(r=>{const pago=defaultPago(r.estado,r.pago);byPago[pago]=(byPago[pago]||0)+1;});
   $('d-pago').innerHTML=`<div style="display:flex;gap:8px;margin-bottom:.9rem;">
+    <div style="flex:1;background:var(--tag);border-radius:8px;padding:10px;"><div style="font-size:11px;color:var(--mut);">N/A</div><div style="font-size:20px;font-weight:300;font-family:'DM Serif Display',serif;color:var(--mut);">${byPago.na}</div></div>
     <div style="flex:1;background:var(--rbg);border-radius:8px;padding:10px;"><div style="font-size:11px;color:var(--rtx);">Pendientes</div><div style="font-size:20px;font-weight:300;font-family:'DM Serif Display',serif;color:var(--rtx);">${byPago.pendiente}</div></div>
     <div style="flex:1;background:var(--abg);border-radius:8px;padding:10px;"><div style="font-size:11px;color:var(--atx);">Facturados</div><div style="font-size:20px;font-weight:300;font-family:'DM Serif Display',serif;color:var(--atx);">${byPago.facturado}</div></div>
     <div style="flex:1;background:var(--gbg);border-radius:8px;padding:10px;"><div style="font-size:11px;color:var(--gtx);">Pagados</div><div style="font-size:20px;font-weight:300;font-family:'DM Serif Display',serif;color:var(--gtx);">${byPago.pagado}</div></div>
-  </div>`+rem.slice(0,5).map(r=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid var(--bor);font-size:12px;gap:6px;">
+  </div>`+remActivos.slice(0,5).map(r=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid var(--bor);font-size:12px;gap:6px;">
     <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.numero} — ${r.cliente.split('-')[0].trim()}</span>
     <button class="estbtn ${EST_CLASS[r.estado||'borrador']}" onclick="avEst('${r.numero}')" style="font-size:10px;">${EST_LABEL[r.estado||'borrador']}</button>
-    <button class="pbtn ${PAGO_CLASS[r.pago||'pendiente']}" onclick="avPago('${r.numero}')" style="font-size:10px;">${PAGO_LABEL[r.pago||'pendiente']}</button>
+    <button class="pbtn ${PAGO_CLASS[defaultPago(r.estado,r.pago)]}" onclick="avPago('${r.numero}')" style="font-size:10px;">${PAGO_LABEL[defaultPago(r.estado,r.pago)]}</button>
   </div>`).join('');
   // Próximos
   const today=new Date();today.setHours(0,0,0,0);
-  const prox=rem.filter(r=>r.retiro||r.devolucion).flatMap(r=>{
+  const prox=remActivos.filter(r=>r.retiro||r.devolucion).flatMap(r=>{
     const ev=[];
     if(r.retiro){const d=new Date(r.retiro);if(d>=today)ev.push({tipo:'retiro',fecha:r.retiro,r});}
     if(r.devolucion){const d=new Date(r.devolucion);if(d>=today)ev.push({tipo:'devolucion',fecha:r.devolucion,r});}
@@ -875,8 +882,8 @@ function saveAndView(){
   const remitoData={numero:num,cliente:cli,productora:prod,proyecto:proy,retiro:ret,devolucion:dev,
     fecha:new Date().toISOString().slice(0,10),
     items:SEL.map(i=>({cod:i.cod,desc:i.nombre,alq:i.alq,gtia:i.gtia,foto:i.foto,conflicto:i.conflicto||false})),
-    pago:RL[num]?RL[num].pago:'pendiente',
     estado:$('nr-est').value||'borrador',
+    pago:RL[num]?defaultPago(RL[num].estado,RL[num].pago):defaultPago($('nr-est').value||'borrador',''),
     facturador:$('nr-fact').value||'',
     gtipo:$('nr-gtipo').value||'',
     gref:$('nr-gref').value||'',
@@ -902,7 +909,7 @@ function filterR(){
   const rem=getAllR().filter(r=>(!q||r.numero.toLowerCase().includes(q)||r.cliente.toLowerCase().includes(q)||(r.facturador||'').toLowerCase().includes(q))&&(!filEst||r.estado===filEst||(!r.estado&&filEst==='borrador')));
   $('r-table').innerHTML=rem.map(r=>{
     const tot=r.items.reduce((s,i)=>s+(i.alq||0),0);
-    const est=r.estado||'borrador';const pago=r.pago||'pendiente';
+    const est=r.estado||'borrador';const pago=defaultPago(est,r.pago);
     return`<tr>
       <td style="font-weight:500;">${r.numero}</td>
       <td><div style="font-size:13px;">${r.cliente.split('-')[0].trim()}</div>${r.productora?`<div style="font-size:11px;color:var(--mut);">${r.productora}</div>`:''}</td>
@@ -1078,7 +1085,7 @@ function showCalDetail(num){
     </div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;">
       <button class="estbtn ${EST_CLASS[r.estado||'borrador']}">${EST_LABEL[r.estado||'borrador']}</button>
-      <button class="pbtn ${PAGO_CLASS[r.pago||'pendiente']}">${PAGO_LABEL[r.pago||'pendiente']}</button>
+      <button class="pbtn ${PAGO_CLASS[defaultPago(r.estado,r.pago)]}">${PAGO_LABEL[defaultPago(r.estado,r.pago)]}</button>
     </div>
     <div style="max-height:200px;overflow-y:auto;">${r.items.map(i=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--bor);font-size:12px;">${imgT(i.foto,32)}<span style="flex:1;">${i.desc}</span><span style="font-weight:500;">${fmt(i.alq)}</span></div>`).join('')}</div>
     <div style="margin-top:1rem;display:flex;gap:8px;">
