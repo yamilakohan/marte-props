@@ -765,6 +765,9 @@ function avEst(num){
   RL[num].estado=nextEst(RL[num].estado||'borrador');
   saveRL();
   postToSheet({action:'updateEstado',numero:num,valor:RL[num].estado}).catch(()=>{});
+  if(RL[num].estado==='confirmado'){
+    postToSheet({action:'saveRemito',remito:RL[num]}).catch(()=>{});
+  }
   if($('section-remitos').classList.contains('active'))renderRemitos();
   if($('section-dashboard').classList.contains('active'))renderDash();
 }
