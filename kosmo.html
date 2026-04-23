@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KOSMO — Estudio Creativo de Espacios</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a1a18;
+    --paper: #f5f2ec;
+    --accent: #c8b89a;
+    --soft: #e8e4db;
+    --muted: #8a8478;
+    --white: #faf8f4;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Mono', monospace;
+    background: var(--paper);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 3rem;
+    background: var(--paper);
+    border-bottom: 1px solid var(--soft);
+    transition: all 0.3s ease;
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 300;
+    letter-spacing: 0.25em;
+    text-decoration: none;
+    color: var(--ink);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--muted);
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--ink); }
+
+  /* HERO / HOME */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8rem 3rem 4rem;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 8vw, 7rem);
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--muted);
+  }
+
+  .hero-sub {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 5rem;
+  }
+
+  .hero-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    max-width: 900px;
+  }
+
+  .hero-card {
+    border: 1px solid var(--ink);
+    padding: 3rem 2.5rem;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--ink);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    background: var(--white);
+  }
+
+  .hero-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--ink);
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.76, 0, 0.24, 1);
+    z-index: 0;
+  }
+
+  .hero-card:hover::before { transform: translateY(0); }
+
+  .hero-card:hover .card-title,
+  .hero-card:hover .card-desc,
+  .hero-card:hover .card-cta { color: var(--paper); }
+
+  .card-tag {
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+    transition: color 0.3s;
+  }
+
+  .hero-card:hover .card-tag { color: var(--accent); }
+
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem;
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+    transition: color 0.3s;
+  }
+
+  .card-desc {
+    font-size: 0.65rem;
+    line-height: 1.8;
+    color: var(--muted);
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 1;
+    transition: color 0.3s;
+  }
+
+  .card-cta {
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .card-cta::after {
+    content: '→';
+    transition: transform 0.2s;
+  }
+
+  .hero-card:hover .card-cta::after { transform: translateX(4px); }
+
+  /* PAGES */
+  .page { display: none; min-height: 100vh; padding: 7rem 3rem 4rem; }
+  .page.active { display: block; }
+
+  /* QUIENES SOMOS */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    max-width: 1000px;
+    margin: 4rem 0;
+  }
+
+  .about-text h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    font-weight: 300;
+    margin-bottom: 2rem;
+    line-height: 1.1;
+  }
+
+  .about-text p {
+    font-size: 0.7rem;
+    line-height: 2;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .about-clients h3 {
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2rem;
+  }
+
+  .client-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .client-list li {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 300;
+    border-bottom: 1px solid var(--soft);
+    padding-bottom: 0.8rem;
+    color: var(--muted);
+  }
+
+  /* AMBIENTACIONES */
+  .ambientacion-hero {
+    max-width: 700px;
+    margin-bottom: 5rem;
+  }
+
+  .ambientacion-hero h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 300;
+    line-height: 1.05;
+    margin-bottom: 1.5rem;
+  }
+
+  .ambientacion-hero p {
+    font-size: 0.7rem;
+    line-height: 2;
+    color: var(--muted);
+  }
+
+  .trabajos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-bottom: 5rem;
+  }
+
+  .trabajo-card {
+    border: 1px solid var(--soft);
+    padding: 2rem;
+    background: var(--white);
+  }
+
+  .trabajo-card .trabajo-cliente {
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .trabajo-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 300;
+    margin-bottom: 0.8rem;
+  }
+
+  .trabajo-card p {
+    font-size: 0.62rem;
+    line-height: 1.8;
+    color: var(--muted);
+  }
+
+  .contacto-bloque {
+    border: 1px solid var(--ink);
+    padding: 3rem;
+    max-width: 600px;
+    background: var(--white);
+  }
+
+  .contacto-bloque h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 300;
+    margin-bottom: 1rem;
+  }
+
+  .contacto-bloque p {
+    font-size: 0.65rem;
+    line-height: 1.8;
+    color: var(--muted);
+    margin-bottom: 2rem;
+  }
+
+  /* RENTAL / CATÁLOGO */
+  .catalog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+
+  .catalog-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    font-weight: 300;
+  }
+
+  .catalog-controls {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .search-input {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    border: 1px solid var(--ink);
+    background: var(--white);
+    padding: 0.6rem 1rem;
+    width: 220px;
+    outline: none;
+    color: var(--ink);
+  }
+
+  .search-input::placeholder { color: var(--muted); }
+
+  .filter-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 1px solid var(--soft);
+    background: transparent;
+    padding: 0.6rem 1rem;
+    cursor: pointer;
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+
+  .filter-btn:hover, .filter-btn.active {
+    border-color: var(--ink);
+    color: var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  /* CATALOG GRID */
+  .catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .item-card {
+    background: var(--white);
+    border: 1px solid var(--soft);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+  }
+
+  .item-card:hover {
+    border-color: var(--ink);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  }
+
+  .item-card.selected {
+    border-color: var(--ink);
+    background: var(--ink);
+  }
+
+  .item-card.selected .item-name,
+  .item-card.selected .item-price,
+  .item-card.selected .item-cat { color: var(--paper); }
+
+  .item-check {
+    position: absolute;
+    top: 0.8rem; right: 0.8rem;
+    width: 20px; height: 20px;
+    border: 1px solid var(--soft);
+    background: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .item-card:hover .item-check,
+  .item-card.selected .item-check { opacity: 1; }
+  .item-card.selected .item-check { background: var(--accent); border-color: var(--accent); color: var(--ink); }
+
+  .item-img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    display: block;
+    background: var(--soft);
+  }
+
+  .item-img-placeholder {
+    width: 100%;
+    aspect-ratio: 1;
+    background: var(--soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .item-info {
+    padding: 1rem;
+  }
+
+  .item-cat {
+    font-size: 0.55rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+    transition: color 0.2s;
+  }
+
+  .item-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
+    transition: color 0.2s;
+  }
+
+  .item-price {
+    font-size: 0.65rem;
+    color: var(--muted);
+    transition: color 0.2s;
+  }
+
+  /* PRESUPUESTO PANEL */
+  .presupuesto-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 1rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.76, 0, 0.24, 1);
+    z-index: 99;
+  }
+
+  .presupuesto-bar.visible { transform: translateY(0); }
+
+  .presupuesto-info {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .presupuesto-count {
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+  }
+
+  .presupuesto-total {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 300;
+  }
+
+  .presupuesto-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .btn-clear {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: var(--paper);
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-clear:hover { border-color: var(--paper); }
+
+  .btn-presupuesto {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--accent);
+    border: none;
+    color: var(--ink);
+    padding: 0.7rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-presupuesto:hover { background: var(--paper); }
+
+  /* MODAL PRESUPUESTO */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26,26,24,0.7);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    width: 100%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 3rem;
+  }
+
+  .modal h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 300;
+    margin-bottom: 0.5rem;
+  }
+
+  .modal-subtitle {
+    font-size: 0.62rem;
+    color: var(--muted);
+    margin-bottom: 2rem;
+    line-height: 1.8;
+  }
+
+  .modal-items {
+    border-top: 1px solid var(--soft);
+    margin-bottom: 2rem;
+  }
+
+  .modal-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--soft);
+    gap: 1rem;
+  }
+
+  .modal-item-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    flex: 1;
+  }
+
+  .modal-item-price {
+    font-size: 0.65rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .modal-item-remove {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1;
+    padding: 0.2rem;
+    transition: color 0.2s;
+  }
+
+  .modal-item-remove:hover { color: var(--ink); }
+
+  .modal-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+  }
+
+  .modal-total-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .modal-total-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 300;
+  }
+
+  .modal-price-note {
+    font-size: 0.6rem;
+    color: var(--muted);
+    margin-bottom: 2rem;
+    line-height: 1.8;
+  }
+
+  .form-group {
+    margin-bottom: 1.2rem;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    border: 1px solid var(--soft);
+    background: var(--white);
+    padding: 0.7rem 0.8rem;
+    outline: none;
+    color: var(--ink);
+    transition: border-color 0.2s;
+    resize: vertical;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus { border-color: var(--ink); }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+  .btn-send {
+    width: 100%;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: var(--ink);
+    border: none;
+    color: var(--paper);
+    padding: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 0.5rem;
+  }
+
+  .btn-send:hover { background: #333; }
+
+  .btn-modal-close {
+    position: absolute;
+    top: 1.5rem; right: 1.5rem;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--muted);
+  }
+
+  /* CONTACTO PAGE */
+  .contacto-page-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    max-width: 900px;
+    margin-top: 3rem;
+  }
+
+  .contacto-info h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    font-weight: 300;
+    margin-bottom: 2rem;
+    line-height: 1.1;
+  }
+
+  .contacto-info p {
+    font-size: 0.65rem;
+    line-height: 2;
+    color: var(--muted);
+    margin-bottom: 2rem;
+  }
+
+  .contacto-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .contacto-detail a {
+    font-size: 0.65rem;
+    color: var(--muted);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    transition: color 0.2s;
+  }
+
+  .contacto-detail a:hover { color: var(--ink); }
+
+  /* LOADING */
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .no-results {
+    text-align: center;
+    padding: 5rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+
+  /* PAGE HEADER */
+  .page-header {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--soft);
+  }
+
+  .page-header .breadcrumb {
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    cursor: pointer;
+  }
+
+  .page-header .breadcrumb:hover { color: var(--ink); }
+
+  /* BTN GENERAL */
+  .btn {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid var(--ink);
+    padding: 0.8rem 1.8rem;
+    color: var(--ink);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn:hover { background: var(--ink); color: var(--paper); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--soft);
+    padding: 2rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 4rem;
+  }
+
+  footer span {
+    font-size: 0.6rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  footer a {
+    font-size: 0.6rem;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    transition: color 0.2s;
+  }
+
+  footer a:hover { color: var(--ink); }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { gap: 1.5rem; }
+    .hero { padding: 6rem 1.5rem 3rem; }
+    .hero-cards { grid-template-columns: 1fr; }
+    .page { padding: 6rem 1.5rem 3rem; }
+    .about-grid, .contacto-page-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .trabajos-grid { grid-template-columns: 1fr; }
+    .catalog-header { flex-direction: column; align-items: flex-start; }
+    .presupuesto-bar { padding: 1rem 1.5rem; flex-direction: column; gap: 1rem; }
+    footer { flex-direction: column; gap: 1rem; text-align: center; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo" onclick="showPage('home')">KOSMO</a>
+  <ul class="nav-links">
+    <li><a href="#" onclick="showPage('about')">Quiénes somos</a></li>
+    <li><a href="#" onclick="showPage('ambientacion')">Ambientaciones</a></li>
+    <li><a href="#" onclick="showPage('rental')">Rental</a></li>
+    <li><a href="#" onclick="showPage('contacto')">Contacto</a></li>
+  </ul>
+</nav>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <section class="hero">
+    <h1 class="hero-title">Estudio<br><em>creativo</em><br>de espacios</h1>
+    <p class="hero-sub">Buenos Aires — Ambientaciones & Rental</p>
+    <div class="hero-cards">
+      <a class="hero-card" href="#" onclick="showPage('ambientacion')">
+        <div class="item-check"></div>
+        <p class="card-tag">Servicio</p>
+        <h2 class="card-title">Ambientaciones</h2>
+        <p class="card-desc">Diseñamos y construimos espacios para producciones audiovisuales y eventos. Cada proyecto es único.</p>
+        <span class="card-cta">Conocé el servicio</span>
+      </a>
+      <a class="hero-card" href="#" onclick="showPage('rental')">
+        <div class="item-check"></div>
+        <p class="card-tag">Catálogo</p>
+        <h2 class="card-title">Rental</h2>
+        <p class="card-desc">Más de 400 props disponibles — equipaje, bolsos, utilería de oficio y más. Armá tu presupuesto online.</p>
+        <span class="card-cta">Ver catálogo</span>
+      </a>
+    </div>
+  </section>
+  <footer>
+    <span>© 2025 KOSMO</span>
+    <a href="https://instagram.com" target="_blank">@kosmo.estudio</a>
+  </footer>
+</div>
+
+<!-- QUIÉNES SOMOS -->
+<div id="page-about" class="page">
+  <div class="page-header">
+    <p class="breadcrumb" onclick="showPage('home')">← Inicio</p>
+  </div>
+  <div class="about-grid">
+    <div class="about-text">
+      <h2>Somos KOSMO</h2>
+      <p>Somos un estudio creativo de espacios basado en Buenos Aires. Trabajamos con productoras, agencias y marcas para crear ambientaciones y proveer utilería para producciones audiovisuales y eventos.</p>
+      <p>Nacimos como Marte Props, un rental de valijas, bolsos y accesorios para cine y publicidad. Hoy evolucionamos a KOSMO: sumamos el servicio de ambientación completa, manteniendo la misma dedicación y criterio estético de siempre.</p>
+      <p>Cada detalle importa. Cada espacio cuenta una historia.</p>
+    </div>
+    <div class="about-clients">
+      <h3>Algunos clientes</h3>
+      <ul class="client-list">
+        <li>ESPN</li>
+        <li>24/7</li>
+        <li>Lab House</li>
+        <li>Pampa Films</li>
+        <li>PRIMO</li>
+        <li>Oruga</li>
+      </ul>
+    </div>
+  </div>
+  <footer>
+    <span>© 2025 KOSMO</span>
+    <a href="https://instagram.com" target="_blank">@kosmo.estudio</a>
+  </footer>
+</div>
+
+<!-- AMBIENTACIONES -->
+<div id="page-ambientacion" class="page">
+  <div class="page-header">
+    <p class="breadcrumb" onclick="showPage('home')">← Inicio</p>
+  </div>
+  <div class="ambientacion-hero">
+    <h2>Ambientamos<br><em>tu espacio</em></h2>
+    <p>Diseñamos y ejecutamos ambientaciones para producciones audiovisuales, publicidades y eventos corporativos. Desde la conceptualización hasta la instalación, nos encargamos de todo.</p>
+  </div>
+
+  <div class="trabajos-grid">
+    <div class="trabajo-card">
+      <p class="trabajo-cliente">ESPN</p>
+      <h3>Ambientación deportiva</h3>
+      <p>Ambientación completa con utilería deportiva y elementos de set para producción de contenido de la señal.</p>
+    </div>
+    <div class="trabajo-card">
+      <p class="trabajo-cliente">Eventos corporativos</p>
+      <h3>Pérgolas & estructuras</h3>
+      <p>Diseño y construcción de pérgolas de madera personalizadas para eventos al aire libre y producciones.</p>
+    </div>
+    <div class="trabajo-card">
+      <p class="trabajo-cliente">Producciones audiovisuales</p>
+      <h3>Utilería & dressing</h3>
+      <p>Selección y coordinación de props, mobiliario y accesorios para series, publicidades y contenido digital.</p>
+    </div>
+  </div>
+
+  <div class="contacto-bloque">
+    <h3>¿Tenés un proyecto?</h3>
+    <p>Contanos de qué se trata y te respondemos con una propuesta. Trabajamos con productoras, agencias y marcas.</p>
+    <a class="btn" href="#" onclick="showPage('contacto')">Escribinos</a>
+  </div>
+  <footer>
+    <span>© 2025 KOSMO</span>
+    <a href="https://instagram.com" target="_blank">@kosmo.estudio</a>
+  </footer>
+</div>
+
+<!-- RENTAL / CATÁLOGO -->
+<div id="page-rental" class="page">
+  <div class="catalog-header">
+    <div>
+      <p class="breadcrumb" onclick="showPage('home')" style="font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);cursor:pointer;margin-bottom:0.5rem;">← Inicio</p>
+      <h2>Catálogo</h2>
+    </div>
+    <div class="catalog-controls">
+      <input type="text" class="search-input" id="searchInput" placeholder="Buscar por nombre..." oninput="filterCatalog()">
+    </div>
+  </div>
+
+  <div id="categoryFilters" style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:2rem;"></div>
+
+  <div id="catalogGrid" class="catalog-grid">
+    <div class="loading">Cargando catálogo...</div>
+  </div>
+
+  <footer>
+    <span>© 2025 KOSMO</span>
+    <a href="https://instagram.com" target="_blank">@kosmo.estudio</a>
+  </footer>
+</div>
+
+<!-- CONTACTO -->
+<div id="page-contacto" class="page">
+  <div class="page-header">
+    <p class="breadcrumb" onclick="showPage('home')">← Inicio</p>
+  </div>
+  <div class="contacto-page-grid">
+    <div class="contacto-info">
+      <h2>Hablemos</h2>
+      <p>Ya sea para una ambientación, una consulta sobre el catálogo, o para contarnos de un proyecto, estamos disponibles.</p>
+      <p>Respondemos en menos de 24 horas.</p>
+      <div class="contacto-detail">
+        <a href="mailto:martealquila@gmail.com">✉ martealquila@gmail.com</a>
+        <a href="tel:+5491158488898">☎ +54 9 11 5848-8898</a>
+        <a href="https://instagram.com" target="_blank">◎ @kosmo.estudio</a>
+      </div>
+    </div>
+    <div>
+      <div class="form-group">
+        <label>Nombre</label>
+        <input type="text" placeholder="Tu nombre">
+      </div>
+      <div class="form-group">
+        <label>Mail</label>
+        <input type="email" placeholder="tu@mail.com">
+      </div>
+      <div class="form-group">
+        <label>Productora / Agencia</label>
+        <input type="text" placeholder="Opcional">
+      </div>
+      <div class="form-group">
+        <label>Mensaje</label>
+        <textarea rows="5" placeholder="Contanos de qué se trata..."></textarea>
+      </div>
+      <button class="btn-send" onclick="sendContactForm()">Enviar mensaje</button>
+    </div>
+  </div>
+  <footer>
+    <span>© 2025 KOSMO</span>
+    <a href="https://instagram.com" target="_blank">@kosmo.estudio</a>
+  </footer>
+</div>
+
+<!-- PRESUPUESTO BAR -->
+<div class="presupuesto-bar" id="presupuestoBar">
+  <div class="presupuesto-info">
+    <span class="presupuesto-count" id="presupuestoCount">0 ítems seleccionados</span>
+    <span class="presupuesto-total" id="presupuestoTotal">$0</span>
+  </div>
+  <div class="presupuesto-actions">
+    <button class="btn-clear" onclick="clearSelection()">Limpiar</button>
+    <button class="btn-presupuesto" onclick="openModal()">Ver presupuesto →</button>
+  </div>
+</div>
+
+<!-- MODAL PRESUPUESTO -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal" style="position:relative;">
+    <button class="btn-modal-close" onclick="closeModal()">✕</button>
+    <h2>Tu presupuesto</h2>
+    <p class="modal-subtitle">Completá tus datos y te respondemos con la confirmación de disponibilidad y el detalle de pago. Los precios son por una semana (hasta 7 días). Semanas adicionales: +50%.</p>
+
+    <div class="modal-items" id="modalItems"></div>
+
+    <div class="modal-total">
+      <span class="modal-total-label">Total estimado (1 semana)</span>
+      <span class="modal-total-price" id="modalTotal">$0</span>
+    </div>
+    <p class="modal-price-note">Precio orientativo. La confirmación final incluye disponibilidad y condiciones de entrega.</p>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Nombre *</label>
+        <input type="text" id="formNombre" placeholder="Tu nombre">
+      </div>
+      <div class="form-group">
+        <label>Mail *</label>
+        <input type="email" id="formMail" placeholder="tu@mail.com">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Productora / Agencia</label>
+        <input type="text" id="formProductora" placeholder="Opcional">
+      </div>
+      <div class="form-group">
+        <label>Proyecto</label>
+        <input type="text" id="formProyecto" placeholder="Nombre del proyecto">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Fecha de retiro</label>
+        <input type="date" id="formRetiro">
+      </div>
+      <div class="form-group">
+        <label>Fecha de devolución</label>
+        <input type="date" id="formDevolucion">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Notas adicionales</label>
+      <textarea id="formNotas" rows="3" placeholder="¿Algún detalle extra que quieras contarnos?"></textarea>
+    </div>
+    <button class="btn-send" onclick="sendPresupuesto()">Enviar solicitud de presupuesto</button>
+  </div>
+</div>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTTgh4S-zxHVZ4OQjPkcckFLlOXZX58b9EWTyS2LC8VC-2pGMGtrUH5CfCXbzHv1A/pub?gid=1966847769&single=true&output=csv';
+const MAIL_KOSMO = 'martealquila@gmail.com';
+
+// ─── STATE ────────────────────────────────────────────────
+let allItems = [];
+let filteredItems = [];
+let selectedItems = new Map(); // codigo -> item
+let activeCategory = 'Todos';
+
+// ─── NAVIGATION ───────────────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+  if (id === 'rental' && allItems.length === 0) loadCatalog();
+}
+
+// ─── CSV PARSER ───────────────────────────────────────────
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  if (lines.length < 2) return [];
+  // Skip instruction row (row 1) and header row (row 2)
+  // Headers: codigo, categoria_web, categoria_interna, nombre, precio_semana, medidas, observaciones, foto_url, visible
+  const dataLines = lines.slice(2);
+  return dataLines.map(line => {
+    const cols = parseCSVLine(line);
+    return {
+      codigo: cols[0]?.trim() || '',
+      categoria_web: cols[1]?.trim() || '',
+      categoria_interna: cols[2]?.trim() || '',
+      nombre: cols[3]?.trim() || '',
+      precio: parseInt(cols[4]?.replace(/[^0-9]/g, '')) || 0,
+      medidas: cols[5]?.trim() || '',
+      observaciones: cols[6]?.trim() || '',
+      foto_url: cols[7]?.trim() || '',
+      visible: cols[8]?.trim().toUpperCase() || 'SI',
+    };
+  }).filter(i => i.codigo && i.nombre && i.visible === 'SI' && i.precio > 0);
+}
+
+function parseCSVLine(line) {
+  const result = [];
+  let current = '';
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') {
+      if (inQuotes && line[i+1] === '"') { current += '"'; i++; }
+      else inQuotes = !inQuotes;
+    } else if (ch === ',' && !inQuotes) {
+      result.push(current); current = '';
+    } else {
+      current += ch;
+    }
+  }
+  result.push(current);
+  return result;
+}
+
+// ─── LOAD CATALOG ─────────────────────────────────────────
+async function loadCatalog() {
+  document.getElementById('catalogGrid').innerHTML = '<div class="loading">Cargando catálogo...</div>';
+  try {
+    const res = await fetch(CSV_URL);
+    const text = await res.text();
+    allItems = parseCSV(text);
+    filteredItems = [...allItems];
+    buildCategoryFilters();
+    renderCatalog();
+  } catch (e) {
+    document.getElementById('catalogGrid').innerHTML = '<div class="no-results">Error al cargar el catálogo. Intentá de nuevo más tarde.</div>';
+  }
+}
+
+// ─── CATEGORY FILTERS ─────────────────────────────────────
+function buildCategoryFilters() {
+  const cats = ['Todos', ...new Set(allItems.map(i => i.categoria_web))].filter(Boolean);
+  const container = document.getElementById('categoryFilters');
+  container.innerHTML = cats.map(cat => `
+    <button class="filter-btn ${cat === 'Todos' ? 'active' : ''}" onclick="setCategory('${cat}')">${cat}</button>
+  `).join('');
+}
+
+function setCategory(cat) {
+  activeCategory = cat;
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent === cat);
+  });
+  filterCatalog();
+}
+
+// ─── FILTER ───────────────────────────────────────────────
+function filterCatalog() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  filteredItems = allItems.filter(item => {
+    const matchCat = activeCategory === 'Todos' || item.categoria_web === activeCategory;
+    const matchSearch = !q || item.nombre.toLowerCase().includes(q) || item.categoria_web.toLowerCase().includes(q);
+    return matchCat && matchSearch;
+  });
+  renderCatalog();
+}
+
+// ─── RENDER ───────────────────────────────────────────────
+function renderCatalog() {
+  const grid = document.getElementById('catalogGrid');
+  if (filteredItems.length === 0) {
+    grid.innerHTML = '<div class="no-results">No se encontraron ítems con ese criterio.</div>';
+    return;
+  }
+  grid.innerHTML = filteredItems.map(item => {
+    const isSelected = selectedItems.has(item.codigo);
+    const imgHtml = item.foto_url
+      ? `<img class="item-img" src="${item.foto_url}" alt="${item.nombre}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'item-img-placeholder\\'>Sin foto</div>'">`
+      : `<div class="item-img-placeholder">Sin foto</div>`;
+    return `
+      <div class="item-card ${isSelected ? 'selected' : ''}" onclick="toggleItem('${item.codigo}')" data-cod="${item.codigo}">
+        <div class="item-check">${isSelected ? '✓' : '+'}</div>
+        ${imgHtml}
+        <div class="item-info">
+          <p class="item-cat">${item.categoria_web}</p>
+          <p class="item-name">${item.nombre}</p>
+          <p class="item-price">$${item.precio.toLocaleString('es-AR')} / semana</p>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ─── SELECTION ────────────────────────────────────────────
+function toggleItem(codigo) {
+  const item = allItems.find(i => i.codigo === codigo);
+  if (!item) return;
+  if (selectedItems.has(codigo)) {
+    selectedItems.delete(codigo);
+  } else {
+    selectedItems.set(codigo, item);
+  }
+  updatePresupuestoBar();
+  // Update card state without re-rendering all
+  const card = document.querySelector(`[data-cod="${codigo}"]`);
+  if (card) {
+    const isNowSelected = selectedItems.has(codigo);
+    card.classList.toggle('selected', isNowSelected);
+    card.querySelector('.item-check').textContent = isNowSelected ? '✓' : '+';
+  }
+}
+
+function clearSelection() {
+  selectedItems.clear();
+  updatePresupuestoBar();
+  renderCatalog();
+}
+
+function updatePresupuestoBar() {
+  const count = selectedItems.size;
+  const total = [...selectedItems.values()].reduce((s, i) => s + i.precio, 0);
+  document.getElementById('presupuestoCount').textContent = `${count} ítem${count !== 1 ? 's' : ''} seleccionado${count !== 1 ? 's' : ''}`;
+  document.getElementById('presupuestoTotal').textContent = `$${total.toLocaleString('es-AR')}`;
+  document.getElementById('presupuestoBar').classList.toggle('visible', count > 0);
+}
+
+// ─── MODAL ────────────────────────────────────────────────
+function openModal() {
+  const items = [...selectedItems.values()];
+  const total = items.reduce((s, i) => s + i.precio, 0);
+  document.getElementById('modalItems').innerHTML = items.map(item => `
+    <div class="modal-item">
+      <span class="modal-item-name">${item.nombre}</span>
+      <span class="modal-item-price">$${item.precio.toLocaleString('es-AR')}</span>
+      <button class="modal-item-remove" onclick="removeFromModal('${item.codigo}')">✕</button>
+    </div>
+  `).join('');
+  document.getElementById('modalTotal').textContent = `$${total.toLocaleString('es-AR')}`;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function removeFromModal(codigo) {
+  selectedItems.delete(codigo);
+  updatePresupuestoBar();
+  if (selectedItems.size === 0) { closeModal(); renderCatalog(); return; }
+  openModal();
+  renderCatalog();
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+// ─── SEND PRESUPUESTO ─────────────────────────────────────
+function sendPresupuesto() {
+  const nombre = document.getElementById('formNombre').value.trim();
+  const mail = document.getElementById('formMail').value.trim();
+  if (!nombre || !mail) { alert('Por favor completá nombre y mail.'); return; }
+
+  const items = [...selectedItems.values()];
+  const total = items.reduce((s, i) => s + i.precio, 0);
+  const retiro = document.getElementById('formRetiro').value;
+  const devolucion = document.getElementById('formDevolucion').value;
+  const productora = document.getElementById('formProductora').value;
+  const proyecto = document.getElementById('formProyecto').value;
+  const notas = document.getElementById('formNotas').value;
+
+  const listaItems = items.map(i => `- ${i.nombre} ($${i.precio.toLocaleString('es-AR')}/sem)`).join('\n');
+
+  const subject = encodeURIComponent(`Solicitud de presupuesto KOSMO — ${nombre}${proyecto ? ' | ' + proyecto : ''}`);
+  const body = encodeURIComponent(
+`Hola KOSMO,
+
+Nombre: ${nombre}
+Mail: ${mail}${productora ? '\nProductora/Agencia: ' + productora : ''}${proyecto ? '\nProyecto: ' + proyecto : ''}${retiro ? '\nFecha de retiro: ' + retiro : ''}${devolucion ? '\nFecha de devolución: ' + devolucion : ''}
+
+ÍTEMS SOLICITADOS:
+${listaItems}
+
+TOTAL ESTIMADO (1 semana): $${total.toLocaleString('es-AR')}${notas ? '\n\nNotas: ' + notas : ''}
+
+---
+Enviado desde kosmo.com.ar`
+  );
+
+  window.location.href = `mailto:${MAIL_KOSMO}?subject=${subject}&body=${body}`;
+}
+
+function sendContactForm() {
+  const subject = encodeURIComponent('Consulta desde kosmo.com.ar');
+  window.location.href = `mailto:${MAIL_KOSMO}?subject=${subject}`;
+}
+</script>
+</body>
+</html>
