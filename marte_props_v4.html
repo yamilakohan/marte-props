@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -842,7 +842,10 @@ function renderIS(){
   if(!f.length){sel.innerHTML='<div style="padding:1.5rem;text-align:center;font-size:13px;color:var(--mut);">Sin resultados</div>';return;}
   sel.innerHTML=f.map(s=>{
     const iS=SEL.find(i=>i.cod===s.cod);const isO=ocup.has(s.cod);
-    return`<div class="irow${isO?' ocup':''}">${imgT(s.foto,44)}<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:500;line-height:1.3;">${s.nombre}${isO?` <span style="font-size:10px;background:var(--abg);color:var(--atx);padding:1px 5px;border-radius:10px;">Ocupado</span>`:''}</div><div style="font-size:11px;color:var(--mut);">${s.cod} · ${s.cat} · ${fmt(s.alq)}/sem</div></div><button class="btn bsm ${iS?'bp':'bs'}" onclick="togItem(${s.cod})" style="flex-shrink:0;">${iS?'✓':'+'}</button></div>`;
+    const qtyCtrl=iS
+      ?`<div style="display:flex;align-items:center;gap:4px;flex-shrink:0;"><button class="btn bsm bs" onclick="changeQty(${s.cod},-1)" style="padding:4px 9px;font-size:15px;line-height:1;">−</button><span style="font-size:13px;font-weight:600;min-width:20px;text-align:center;">${iS.qty||1}</span><button class="btn bsm bp" onclick="changeQty(${s.cod},1)" style="padding:4px 9px;font-size:15px;line-height:1;">+</button></div>`
+      :`<button class="btn bsm bs" onclick="togItem(${s.cod})" style="flex-shrink:0;">+</button>`;
+    return`<div class="irow${isO?' ocup':''}">${imgT(s.foto,44)}<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:500;line-height:1.3;">${s.nombre}${isO?` <span style="font-size:10px;background:var(--abg);color:var(--atx);padding:1px 5px;border-radius:10px;">Ocupado</span>`:''}</div><div style="font-size:11px;color:var(--mut);">${s.cod} · ${s.cat} · ${fmt(s.alq)}/sem</div></div>${qtyCtrl}</div>`;
   }).join('');
 }
 
@@ -862,16 +865,27 @@ function togItem(cod){
       openM('m-ocup');return;
     }
   }
-  SEL.push(item);renderIS();renderRes();
+  SEL.push({...item,qty:1});renderIS();renderRes();
+}
+function changeQty(cod,delta){
+  const idx=SEL.findIndex(i=>i.cod===cod);if(idx<0)return;
+  const newQty=(SEL[idx].qty||1)+delta;
+  if(newQty<=0){SEL.splice(idx,1);}else{SEL[idx].qty=newQty;}
+  renderIS();renderRes();
+}
+function confirmOcup(){
+  if(pendItemCod!==null){const i=STOCK.find(s=>s.cod===pendItemCod);if(i)SEL.push({...i,qty:1,conflicto:true});pendItemCod=null;}
+  closeM('m-ocup');renderIS();renderRes();
 }
 function confirmOcup(){
   if(pendItemCod!==null){const i=STOCK.find(s=>s.cod===pendItemCod);if(i)SEL.push({...i,conflicto:true});pendItemCod=null;}
   closeM('m-ocup');renderIS();renderRes();
 }
 function renderRes(){
-  const ta=SEL.reduce((s,i)=>s+i.alq,0),tg=SEL.reduce((s,i)=>s+i.gtia,0);
-  $('nr-cnt').textContent=SEL.length;$('t-alq').textContent=fmt(ta);$('t-30').textContent=fmt(Math.round(ta*1.2));$('t-gtia').textContent=fmt(tg);
-  $('r-items').innerHTML=SEL.map(i=>{const ef=getEffectiveStock().find(s=>String(s.cod)===String(i.cod));const url=i.foto||(ef?ef.foto:'');return`<div class="ri">${imgT(url,32)}<div style="flex:1;padding:0 6px;min-width:0;"><div style="font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${i.nombre}${i.conflicto?' ⚠':''}</div><div style="font-size:10px;color:var(--mut);">${fmt(i.alq)}</div></div><button class="xbtn" onclick="togItem(${i.cod})">×</button></div>`;}).join('')||'<div style="font-size:12px;color:var(--mut);padding:8px 0;">Ningún item seleccionado</div>';
+  const ta=SEL.reduce((s,i)=>s+(i.alq||0)*(i.qty||1),0),tg=SEL.reduce((s,i)=>s+(i.gtia||0)*(i.qty||1),0);
+  const totalItems=SEL.reduce((s,i)=>s+(i.qty||1),0);
+  $('nr-cnt').textContent=totalItems;$('t-alq').textContent=fmt(ta);$('t-30').textContent=fmt(Math.round(ta*1.2));$('t-gtia').textContent=fmt(tg);
+  $('r-items').innerHTML=SEL.map(i=>{const ef=getEffectiveStock().find(s=>String(s.cod)===String(i.cod));const url=i.foto||(ef?ef.foto:'');const qty=i.qty||1;return`<div class="ri">${imgT(url,32)}<div style="flex:1;padding:0 6px;min-width:0;"><div style="font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${i.nombre}${i.conflicto?' ⚠':''}</div><div style="font-size:10px;color:var(--mut);">${qty>1?qty+' × ':''} ${fmt(i.alq)}${qty>1?' = '+fmt(i.alq*qty):''}</div></div><button class="xbtn" onclick="togItem(${i.cod})">×</button></div>`;}).join('')||'<div style="font-size:12px;color:var(--mut);padding:8px 0;">Ningún item seleccionado</div>';
 }
 function clearSel(){SEL=[];renderIS();renderRes();}
 function saveAndView(){
@@ -884,7 +898,7 @@ function saveAndView(){
   const proy=($('nr-proy')||{value:''}).value.trim();
   const remitoData={numero:num,cliente:cli,productora:prod,proyecto:proy,retiro:ret,devolucion:dev,
     fecha:new Date().toISOString().slice(0,10),
-    items:SEL.map(i=>({cod:i.cod,desc:i.nombre,alq:i.alq,gtia:i.gtia,foto:i.foto,conflicto:i.conflicto||false})),
+    items:SEL.map(i=>({cod:i.cod,desc:i.nombre,alq:i.alq,gtia:i.gtia,foto:i.foto,conflicto:i.conflicto||false,qty:i.qty||1})),
     estado:$('nr-est').value||'borrador',
     pago:RL[num]?defaultPago(RL[num].estado,RL[num].pago):defaultPago($('nr-est').value||'borrador',''),
     facturador:$('nr-fact').value||'',
@@ -947,9 +961,9 @@ function buildRemito(r){
   const factorRecargo=1+(semanasExtra*0.5);// +50% por cada semana extra
   const tieneRecargo=semanasExtra>0;
   // Calcular totales con recargo aplicado
-  const totBase=r.items.reduce((s,i)=>s+(i.alq||0),0);
+  const totBase=r.items.reduce((s,i)=>s+(i.alq||0)*(i.qty||1),0);
   const tot=Math.round(totBase*factorRecargo);
-  const tg=r.items.reduce((s,i)=>s+(i.gtia||0),0);
+  const tg=r.items.reduce((s,i)=>s+(i.gtia||0)*(i.qty||1),0);
   const fecha=r.fecha?fD(r.fecha):new Date().toLocaleDateString('es-AR');
   const gtiaStr=r.gtipo?`${r.gtipo.charAt(0).toUpperCase()+r.gtipo.slice(1)}${r.gref?' — '+r.gref:''}`:'';
   $('prev-content').innerHTML=`<div style="background:#fff;border:0.5px solid var(--bor);border-radius:12px;padding:2rem;max-width:800px;">
@@ -973,13 +987,15 @@ function buildRemito(r){
         <th style="padding:8px 10px;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);border-bottom:0.5px solid var(--bor);text-align:right;">Alq./sem</th>
       </tr></thead>
       <tbody>${r.items.map(i=>{
-          const alqFinal=Math.round((i.alq||0)*factorRecargo);
+          const qty=i.qty||1;
+          const alqFinal=Math.round((i.alq||0)*factorRecargo*qty);
+          const gtiaFinal=(i.gtia||0)*qty;
           return`<tr style="border-bottom:0.5px solid var(--bor);">
           <td style="padding:8px 10px;">${(()=>{const ef=getEffectiveStock().find(s=>String(s.cod)===String(i.cod));const url=i.foto||(ef?ef.foto:'');return url?`<img src="${url}" style="width:56px;height:56px;object-fit:cover;border-radius:6px;" onerror="this.style.visibility='hidden'"/>`:`<div data-cod="${i.cod}" style="width:56px;height:56px;background:var(--tag);border-radius:6px;"></div>`;})()}</td>
           <td style="padding:8px 10px;font-size:12px;color:var(--mut);">${i.cod}</td>
-          <td style="padding:8px 10px;font-size:13px;">${i.desc}${i.conflicto?' <span style="font-size:10px;color:var(--atx);">⚠</span>':''}${tieneRecargo?`<div style="font-size:10px;color:var(--coral);">base ${fmt(i.alq)} + ${semanasExtra*50}% recargo</div>`:''}</td>
-          <td style="padding:8px 10px;font-size:13px;text-align:center;">1</td>
-          <td style="padding:8px 10px;font-size:13px;text-align:right;">${i.gtia?fmt(i.gtia):'—'}</td>
+          <td style="padding:8px 10px;font-size:13px;">${i.desc}${i.conflicto?' <span style="font-size:10px;color:var(--atx);">⚠</span>':''}${qty>1?`<div style="font-size:10px;color:var(--mut);">${qty} unidades × ${fmt(i.alq)}</div>`:''}${tieneRecargo?`<div style="font-size:10px;color:var(--coral);">base ${fmt(i.alq)} + ${semanasExtra*50}% recargo</div>`:''}</td>
+          <td style="padding:8px 10px;font-size:13px;text-align:center;">${qty}</td>
+          <td style="padding:8px 10px;font-size:13px;text-align:right;">${gtiaFinal?fmt(gtiaFinal):'—'}</td>
           <td style="padding:8px 10px;font-size:13px;font-weight:500;text-align:right;">${fmt(alqFinal)}</td>
         </tr>`;}).join('')}
       </tbody>
@@ -1398,16 +1414,23 @@ function renderEIL(){
     return;
   }
   el.innerHTML=editItems.map(function(i){
+    var qty=i.qty||1;
     return '<div class="ri">'+
       imgT(i.foto,32)+
       '<div style="flex:1;padding:0 6px;min-width:0;">'+
         '<div style="font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+(i.desc||('Item '+i.cod))+'</div>'+
-        '<div style="font-size:10px;color:var(--mut);">'+i.cod+' � '+fmt(i.alq||0)+'</div>'+
+        '<div style="font-size:10px;color:var(--mut);">'+i.cod+' · '+fmt(i.alq||0)+'</div>'+
       '</div>'+
-      '<button class="xbtn" onclick="removeEditItem(\''+i.cod+'\')">�</button>'+
+      '<div style="display:flex;align-items:center;gap:4px;">'+
+        '<button class="xbtn" style="font-size:15px;padding:0 6px;" onclick="changeEditQty(\''+(i.cod)+'\',-1)">-</button>'+
+        '<span style="font-size:13px;font-weight:600;min-width:18px;text-align:center;">'+qty+'</span>'+
+        '<button class="xbtn" style="font-size:15px;padding:0 6px;color:var(--coral);" onclick="changeEditQty(\''+(i.cod)+'\',1)">+</button>'+
+        '<button class="xbtn" onclick="removeEditItem(\''+(i.cod)+'\')">×</button>'+
+      '</div>'+
     '</div>';
   }).join('');
 }
+
 
 function renderESR(){
   const el=$('esr');
@@ -1439,13 +1462,22 @@ function addEditItem(cod){
   const st=getEffectiveStock().find(function(s){return s.cod===cod;});
   if(!st)return;
   if(editItems.find(function(i){return String(i.cod)===String(cod);})){return;}
-  editItems.push({cod:st.cod,desc:st.nombre,alq:st.alq||0,gtia:st.gtia||0,foto:st.foto||''});
+  editItems.push({cod:st.cod,desc:st.nombre,alq:st.alq||0,gtia:st.gtia||0,foto:st.foto||'',qty:1});
   renderEIL();
   renderESR();
 }
 
 function removeEditItem(cod){
   editItems=editItems.filter(function(i){return String(i.cod)!==String(cod);});
+
+function changeEditQty(cod,delta){
+  var idx=editItems.findIndex(function(i){return String(i.cod)===String(cod);});
+  if(idx<0)return;
+  var newQty=(editItems[idx].qty||1)+delta;
+  if(newQty<=0){editItems.splice(idx,1);}else{editItems[idx].qty=newQty;}
+  renderEIL();
+  renderESR();
+}
   renderEIL();
   renderESR();
 }
