@@ -1407,30 +1407,39 @@ function abrirEdit(num){
 }
 
 function renderEIL(){
-  const el=$('eil');
+  var el=$('eil');
   if(!el)return;
   if(!editItems.length){
     el.innerHTML='<div style="padding:12px;color:var(--mut);font-size:12px;">Sin items en este remito.</div>';
     return;
   }
-  el.innerHTML=editItems.map(function(i){
+  var html=editItems.map(function(i){
     var qty=i.qty||1;
-    return '<div class="ri">'+
+    return '<div class="ri" data-cod="'+i.cod+'">'+
       imgT(i.foto,32)+
       '<div style="flex:1;padding:0 6px;min-width:0;">'+
         '<div style="font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+(i.desc||('Item '+i.cod))+'</div>'+
-        '<div style="font-size:10px;color:var(--mut);">'+i.cod+' · '+fmt(i.alq||0)+'</div>'+
+        '<div style="font-size:10px;color:var(--mut);">'+i.cod+' · '+fmt(i.alq||0)+(qty>1?' × '+qty+' = '+fmt((i.alq||0)*qty):'')+' </div>'+
       '</div>'+
       '<div style="display:flex;align-items:center;gap:4px;">'+
-        '<button class="xbtn" style="font-size:15px;padding:0 6px;" onclick="changeEditQty(\''+(i.cod)+'\',-1)">-</button>'+
-        '<span style="font-size:13px;font-weight:600;min-width:18px;text-align:center;">'+qty+'</span>'+
-        '<button class="xbtn" style="font-size:15px;padding:0 6px;color:var(--coral);" onclick="changeEditQty(\''+(i.cod)+'\',1)">+</button>'+
-        '<button class="xbtn" onclick="removeEditItem(\''+(i.cod)+'\')">×</button>'+
+        '<button class="xbtn eil-minus" data-cod="'+i.cod+'" style="font-size:15px;padding:0 8px;">&#8722;</button>'+
+        '<span class="eil-qty" style="font-size:13px;font-weight:600;min-width:18px;text-align:center;">'+qty+'</span>'+
+        '<button class="xbtn eil-plus" data-cod="'+i.cod+'" style="font-size:15px;padding:0 8px;color:var(--coral);">+</button>'+
+        '<button class="xbtn eil-del" data-cod="'+i.cod+'">×</button>'+
       '</div>'+
     '</div>';
   }).join('');
+  el.innerHTML=html;
+  el.querySelectorAll('.eil-minus').forEach(function(btn){
+    btn.onclick=function(){changeEditQty(this.getAttribute('data-cod'),-1);};
+  });
+  el.querySelectorAll('.eil-plus').forEach(function(btn){
+    btn.onclick=function(){changeEditQty(this.getAttribute('data-cod'),1);};
+  });
+  el.querySelectorAll('.eil-del').forEach(function(btn){
+    btn.onclick=function(){removeEditItem(this.getAttribute('data-cod'));};
+  });
 }
-
 
 function renderESR(){
   const el=$('esr');
