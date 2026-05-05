@@ -794,11 +794,11 @@ function renderDash(){
   const remActivos=rem.filter(r=>(r.estado||'borrador')!=='borrador');
   const allI=remActivos.flatMap(r=>r.items);
   const cl=new Set(rem.map(r=>r.cliente)).size;
-  const tot=allI.reduce((s,i)=>s+(i.alq||0),0);
+  const tot=allI.reduce((s,i)=>s+(i.alq||0)*(i.qty||1),0);
   $('m-s').textContent=loaded?STOCK.filter(s=>s.alq>0).length:'…';
   $('m-r').textContent=rem.length;$('m-c').textContent=cl;$('m-t').textContent=fmt(tot);
   $('d-rem').innerHTML=rem.slice(0,6).map(r=>{
-    const t=r.items.reduce((s,i)=>s+(i.alq||0),0);
+    const t=r.items.reduce((s,i)=>s+(i.alq||0)*(i.qty||1),0);
     return`<div class="prow"><div><div style="font-size:13px;font-weight:500;">${r.numero}</div><div style="font-size:11px;color:var(--mut);">${r.cliente.split('-')[0].trim()}</div></div><div style="text-align:right;"><div style="font-size:13px;">${fmt(t)}</div><div style="font-size:11px;color:var(--mut);">${fD(r.retiro)} → ${fD(r.devolucion)}</div></div></div>`;
   }).join('');
   const byPago={na:0,pendiente:0,facturado:0,pagado:0};
@@ -925,7 +925,7 @@ function filterR(){
   const filEst=($('fil-est')||{value:''}).value;
   const rem=getAllR().filter(r=>(!q||r.numero.toLowerCase().includes(q)||r.cliente.toLowerCase().includes(q)||(r.facturador||'').toLowerCase().includes(q))&&(!filEst||r.estado===filEst||(!r.estado&&filEst==='borrador')));
   $('r-table').innerHTML=rem.map(r=>{
-    const tot=r.items.reduce((s,i)=>s+(i.alq||0),0);
+    const tot=r.items.reduce((s,i)=>s+(i.alq||0)*(i.qty||1),0);
     const est=r.estado||'borrador';const pago=defaultPago(est,r.pago);
     return`<tr>
       <td style="font-weight:500;">${r.numero}</td>
@@ -1093,7 +1093,7 @@ function renderCalMes(rem){
 
 function showCalDetail(num){
   const r=getAllR().find(x=>x.numero===num);if(!r)return;
-  const tot=r.items.reduce((s,i)=>s+(i.alq||0),0);
+  const tot=r.items.reduce((s,i)=>s+(i.alq||0)*(i.qty||1),0);
   $('m-cal-title').textContent=`Remito ${r.numero}`;
   $('m-cal-content').innerHTML=`
     <div style="font-size:14px;margin-bottom:1rem;">
@@ -1166,13 +1166,13 @@ function renderEst(){
     }
     r.items.forEach(i=>{
       iC[i.desc]=(iC[i.desc]||0)+1;
-      cT[c]=(cT[c]||0)+(i.alq||0);cI[c]=(cI[c]||0)+1;
-      prodT[prod]=(prodT[prod]||0)+(i.alq||0);prodI[prod]=(prodI[prod]||0)+1;
+      cT[c]=(cT[c]||0)+(i.alq||0)*(i.qty||1);cI[c]=(cI[c]||0)+1;
+      prodT[prod]=(prodT[prod]||0)+(i.alq||0)*(i.qty||1);prodI[prod]=(prodI[prod]||0)+1;
       const s=getEffectiveStock().find(x=>String(x.cod)===String(i.cod));
       const cat=s?s.cat:'Otros';
-      catT[cat]=(catT[cat]||0)+(i.alq||0);
-      factT[fact]=(factT[fact]||0)+(i.alq||0);
-      if(r.retiro){const mes=r.retiro.slice(0,7);if(mesT[mes])mesT[mes].rec=(mesT[mes].rec||0)+(i.alq||0);}
+      catT[cat]=(catT[cat]||0)+(i.alq||0)*(i.qty||1);
+      factT[fact]=(factT[fact]||0)+(i.alq||0)*(i.qty||1);
+      if(r.retiro){const mes=r.retiro.slice(0,7);if(mesT[mes])mesT[mes].rec=(mesT[mes].rec||0)+(i.alq||0)*(i.qty||1);}
     });
     // Contar alquileres por mes (1 por remito)
     if(r.retiro){const mes=r.retiro.slice(0,7);if(mesT[mes])mesT[mes].alq=(mesT[mes].alq||0)+1;}
