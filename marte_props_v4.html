@@ -587,7 +587,7 @@ function loadRemitosFromSheet(){
 }
 
 // Auto-sync every 60 seconds
-setInterval(loadRemitosFromSheet, 60000);
+setInterval(loadRemitosFromSheet, 300000);
 const $=id=>document.getElementById(id);
 const fmt=n=>{if(!n&&n!==0)return'—';return'$\u00A0'+Math.round(n).toLocaleString('es-AR');};
 const fD=d=>d?d.split('-').reverse().join('/'):'—';
@@ -1026,7 +1026,7 @@ function buildRemito(r){
           <div style="font-size:11px;color:var(--mut);">Alquiler (1 semana)</div>
           <div style="font-size:28px;font-family:'DM Serif Display',serif;">${fmt(tot)}</div>
         `}
-        <div style="font-size:11px;color:var(--mut);margin-top:6px;">Diferido 30 días (+20%)</div>
+        <div style="font-size:11px;color:var(--mut);margin-top:6px;">Diferido 15 días (+20%)</div>
         <div style="font-size:16px;">${fmt(Math.round(tot*1.2))}</div>
         ${tg?`<div style="font-size:11px;color:var(--mut);margin-top:8px;padding-top:8px;border-top:0.5px solid var(--bor);">Total garantía (cheque)</div><div style="font-size:16px;font-weight:500;">${fmt(tg)}</div>`:''}
       </div>
@@ -1460,7 +1460,7 @@ function renderESR(){
       imgT(s.foto,32)+
       '<div style="flex:1;min-width:0;">'+
         '<div style="font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+s.nombre+'</div>'+
-        '<div style="font-size:10px;color:var(--mut);">'+s.cod+' � '+(s.cat||'')+' � '+fmt(s.alq||0)+'</div>'+
+        '<div style="font-size:10px;color:var(--mut);">'+s.cod+'   '+(s.cat||'')+'   '+fmt(s.alq||0)+'</div>'+
       '</div>'+
       '<button class="btn bsm bp" onclick="addEditItem('+s.cod+')">Agregar</button>'+
     '</div>';
