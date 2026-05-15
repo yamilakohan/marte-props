@@ -6,850 +6,201 @@
 <title>KOSMO — Estudio Creativo de Espacios</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --ink: #1a1a18;
-    --paper: #f5f2ec;
-    --accent: #c8b89a;
-    --soft: #e8e4db;
-    --muted: #8a8478;
-    --white: #faf8f4;
+    --ink: #1a1a18; --paper: #f5f2ec; --accent: #c8b89a;
+    --soft: #e8e4db; --muted: #8a8478; --white: #faf8f4;
   }
-
   html { scroll-behavior: smooth; }
-
-  body {
-    font-family: 'DM Mono', monospace;
-    background: var(--paper);
-    color: var(--ink);
-    overflow-x: hidden;
-  }
+  body { font-family: 'DM Mono', monospace; background: var(--paper); color: var(--ink); overflow-x: hidden; }
 
   /* NAV */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.2rem 3rem;
-    background: var(--paper);
-    border-bottom: 1px solid var(--soft);
-    transition: all 0.3s ease;
-  }
-
-  .nav-logo {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.8rem;
-    font-weight: 300;
-    letter-spacing: 0.25em;
-    text-decoration: none;
-    color: var(--ink);
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 2.5rem;
-    list-style: none;
-  }
-
-  .nav-links a {
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    text-decoration: none;
-    color: var(--muted);
-    transition: color 0.2s;
-  }
-
-  .nav-links a:hover { color: var(--ink); }
-
-  /* HERO / HOME */
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 8rem 3rem 4rem;
-  }
-
-  .hero-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(3rem, 8vw, 7rem);
-    font-weight: 300;
-    line-height: 1;
-    letter-spacing: -0.02em;
-    margin-bottom: 1rem;
-  }
-
-  .hero-title em {
-    font-style: italic;
-    color: var(--muted);
-  }
-
-  .hero-sub {
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 5rem;
-  }
-
-  .hero-cards {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    max-width: 900px;
-  }
-
-  .hero-card {
-    border: 1px solid var(--ink);
-    padding: 3rem 2.5rem;
-    cursor: pointer;
-    text-decoration: none;
-    color: var(--ink);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    background: var(--white);
-  }
-
-  .hero-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: var(--ink);
-    transform: translateY(100%);
-    transition: transform 0.4s cubic-bezier(0.76, 0, 0.24, 1);
-    z-index: 0;
-  }
-
-  .hero-card:hover::before { transform: translateY(0); }
-
-  .hero-card:hover .card-title,
-  .hero-card:hover .card-desc,
-  .hero-card:hover .card-cta { color: var(--paper); }
-
-  .card-tag {
-    font-size: 0.6rem;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 1.5rem;
-    position: relative;
-    z-index: 1;
-    transition: color 0.3s;
-  }
-
-  .hero-card:hover .card-tag { color: var(--accent); }
-
-  .card-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 2.2rem;
-    font-weight: 300;
-    line-height: 1.1;
-    margin-bottom: 1rem;
-    position: relative;
-    z-index: 1;
-    transition: color 0.3s;
-  }
-
-  .card-desc {
-    font-size: 0.65rem;
-    line-height: 1.8;
-    color: var(--muted);
-    margin-bottom: 2rem;
-    position: relative;
-    z-index: 1;
-    transition: color 0.3s;
-  }
-
-  .card-cta {
-    font-size: 0.6rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    position: relative;
-    z-index: 1;
-    transition: color 0.3s;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .card-cta::after {
-    content: '→';
-    transition: transform 0.2s;
-  }
-
-  .hero-card:hover .card-cta::after { transform: translateX(4px); }
+  nav { position: fixed; top:0; left:0; right:0; z-index:100; display:flex; justify-content:space-between; align-items:center; padding:1.2rem 3rem; background:var(--paper); border-bottom:1px solid var(--soft); }
+  .nav-logo { font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:300; letter-spacing:0.25em; text-decoration:none; color:var(--ink); }
+  .nav-links { display:flex; gap:2.5rem; list-style:none; }
+  .nav-links a { font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; text-decoration:none; color:var(--muted); transition:color 0.2s; }
+  .nav-links a:hover { color:var(--ink); }
 
   /* PAGES */
-  .page { display: none; min-height: 100vh; padding: 7rem 3rem 4rem; }
-  .page.active { display: block; }
+  .page { display:none; min-height:100vh; padding:7rem 3rem 4rem; }
+  .page.active { display:block; }
+  .breadcrumb { font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); cursor:pointer; display:inline-block; margin-bottom:2rem; }
+  .breadcrumb:hover { color:var(--ink); }
 
-  /* QUIENES SOMOS */
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6rem;
-    max-width: 1000px;
-    margin: 4rem 0;
-  }
+  /* HOME */
+  .hero { min-height:100vh; display:flex; flex-direction:column; justify-content:center; padding:8rem 3rem 4rem; }
+  .hero-title { font-family:'Cormorant Garamond',serif; font-size:clamp(3rem,8vw,7rem); font-weight:300; line-height:1; letter-spacing:-0.02em; margin-bottom:1rem; }
+  .hero-title em { font-style:italic; color:var(--muted); }
+  .hero-sub { font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); margin-bottom:5rem; }
+  .hero-cards { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; max-width:900px; }
+  .hero-card { border:1px solid var(--ink); padding:3rem 2.5rem; cursor:pointer; text-decoration:none; color:var(--ink); position:relative; overflow:hidden; background:var(--white); }
+  .hero-card::before { content:''; position:absolute; inset:0; background:var(--ink); transform:translateY(100%); transition:transform 0.4s cubic-bezier(0.76,0,0.24,1); z-index:0; }
+  .hero-card:hover::before { transform:translateY(0); }
+  .hero-card:hover .card-title, .hero-card:hover .card-desc, .hero-card:hover .card-cta { color:var(--paper); }
+  .card-tag { font-size:0.6rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--muted); margin-bottom:1.5rem; position:relative; z-index:1; transition:color 0.3s; }
+  .hero-card:hover .card-tag { color:var(--accent); }
+  .card-title { font-family:'Cormorant Garamond',serif; font-size:2.2rem; font-weight:300; line-height:1.1; margin-bottom:1rem; position:relative; z-index:1; transition:color 0.3s; }
+  .card-desc { font-size:0.65rem; line-height:1.8; color:var(--muted); margin-bottom:2rem; position:relative; z-index:1; transition:color 0.3s; }
+  .card-cta { font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; position:relative; z-index:1; transition:color 0.3s; display:flex; align-items:center; gap:0.5rem; }
+  .card-cta::after { content:'→'; transition:transform 0.2s; }
+  .hero-card:hover .card-cta::after { transform:translateX(4px); }
 
-  .about-text h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 3rem;
-    font-weight: 300;
-    margin-bottom: 2rem;
-    line-height: 1.1;
-  }
+  /* ABOUT */
+  .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:6rem; max-width:1000px; margin:4rem 0; }
+  .about-text h2 { font-family:'Cormorant Garamond',serif; font-size:3rem; font-weight:300; margin-bottom:2rem; line-height:1.1; }
+  .about-text p { font-size:0.7rem; line-height:2; color:var(--muted); margin-bottom:1.5rem; }
+  .about-clients h3 { font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); margin-bottom:2rem; }
+  .client-list { list-style:none; display:flex; flex-direction:column; gap:0.8rem; }
+  .client-list li { font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:300; border-bottom:1px solid var(--soft); padding-bottom:0.8rem; color:var(--muted); }
 
-  .about-text p {
-    font-size: 0.7rem;
-    line-height: 2;
-    color: var(--muted);
-    margin-bottom: 1.5rem;
-  }
+  /* AMBIENTACION */
+  .ambientacion-hero { max-width:700px; margin-bottom:5rem; }
+  .ambientacion-hero h2 { font-family:'Cormorant Garamond',serif; font-size:clamp(2.5rem,5vw,4.5rem); font-weight:300; line-height:1.05; margin-bottom:1.5rem; }
+  .ambientacion-hero p { font-size:0.7rem; line-height:2; color:var(--muted); }
+  .trabajos-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2rem; margin-bottom:5rem; }
+  .trabajo-card { border:1px solid var(--soft); padding:2rem; background:var(--white); }
+  .trabajo-cliente { font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--accent); margin-bottom:0.5rem; }
+  .trabajo-card h3 { font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:300; margin-bottom:0.8rem; }
+  .trabajo-card p { font-size:0.62rem; line-height:1.8; color:var(--muted); }
+  .contacto-bloque { border:1px solid var(--ink); padding:3rem; max-width:600px; background:var(--white); }
+  .contacto-bloque h3 { font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:300; margin-bottom:1rem; }
+  .contacto-bloque p { font-size:0.65rem; line-height:1.8; color:var(--muted); margin-bottom:2rem; }
 
-  .about-clients h3 {
-    font-size: 0.6rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 2rem;
-  }
-
-  .client-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-  }
-
-  .client-list li {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.4rem;
-    font-weight: 300;
-    border-bottom: 1px solid var(--soft);
-    padding-bottom: 0.8rem;
-    color: var(--muted);
-  }
-
-  /* AMBIENTACIONES */
-  .ambientacion-hero {
-    max-width: 700px;
-    margin-bottom: 5rem;
-  }
-
-  .ambientacion-hero h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(2.5rem, 5vw, 4.5rem);
-    font-weight: 300;
-    line-height: 1.05;
-    margin-bottom: 1.5rem;
-  }
-
-  .ambientacion-hero p {
-    font-size: 0.7rem;
-    line-height: 2;
-    color: var(--muted);
-  }
-
-  .trabajos-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    margin-bottom: 5rem;
-  }
-
-  .trabajo-card {
-    border: 1px solid var(--soft);
-    padding: 2rem;
-    background: var(--white);
-  }
-
-  .trabajo-card .trabajo-cliente {
-    font-size: 0.6rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 0.5rem;
-  }
-
-  .trabajo-card h3 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.4rem;
-    font-weight: 300;
-    margin-bottom: 0.8rem;
-  }
-
-  .trabajo-card p {
-    font-size: 0.62rem;
-    line-height: 1.8;
-    color: var(--muted);
-  }
-
-  .contacto-bloque {
-    border: 1px solid var(--ink);
-    padding: 3rem;
-    max-width: 600px;
-    background: var(--white);
-  }
-
-  .contacto-bloque h3 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 2rem;
-    font-weight: 300;
-    margin-bottom: 1rem;
-  }
-
-  .contacto-bloque p {
-    font-size: 0.65rem;
-    line-height: 1.8;
-    color: var(--muted);
-    margin-bottom: 2rem;
-  }
-
-  /* RENTAL / CATÁLOGO */
-  .catalog-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 3rem;
-    flex-wrap: wrap;
-    gap: 2rem;
-  }
-
-  .catalog-header h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 3rem;
-    font-weight: 300;
-  }
-
-  .catalog-controls {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-
-  .search-input {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    border: 1px solid var(--ink);
-    background: var(--white);
-    padding: 0.6rem 1rem;
-    width: 220px;
-    outline: none;
-    color: var(--ink);
-  }
-
-  .search-input::placeholder { color: var(--muted); }
-
-  .filter-btn {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    border: 1px solid var(--soft);
-    background: transparent;
-    padding: 0.6rem 1rem;
-    cursor: pointer;
-    color: var(--muted);
-    transition: all 0.2s;
-  }
-
-  .filter-btn:hover, .filter-btn.active {
-    border-color: var(--ink);
-    color: var(--ink);
-    background: var(--ink);
-    color: var(--paper);
-  }
+  /* RENTAL */
+  .catalog-header { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:2rem; flex-wrap:wrap; gap:2rem; }
+  .catalog-header h2 { font-family:'Cormorant Garamond',serif; font-size:3rem; font-weight:300; }
+  .search-input { font-family:'DM Mono',monospace; font-size:0.65rem; border:1px solid var(--ink); background:var(--white); padding:0.6rem 1rem; width:220px; outline:none; color:var(--ink); }
+  .search-input::placeholder { color:var(--muted); }
+  .filter-btn { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; border:1px solid var(--soft); background:transparent; padding:0.55rem 1rem; cursor:pointer; color:var(--muted); transition:all 0.2s; }
+  .filter-btn:hover, .filter-btn.active { border-color:var(--ink); background:var(--ink); color:var(--paper); }
 
   /* CATALOG GRID */
-  .catalog-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 3rem;
-  }
+  .catalog-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:1.5rem; margin-bottom:3rem; }
+  .item-card { background:var(--white); border:1px solid var(--soft); transition:all 0.25s; position:relative; }
+  .item-card:hover { border-color:var(--ink); transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.08); }
+  .item-card.selected { border-color:var(--ink); background:var(--ink); }
+  .item-card.selected .item-name, .item-card.selected .item-price, .item-card.selected .item-cat { color:var(--paper); }
 
-  .item-card {
-    background: var(--white);
-    border: 1px solid var(--soft);
-    cursor: pointer;
-    transition: all 0.25s ease;
-    position: relative;
-  }
+  .item-img-wrap { position:relative; overflow:hidden; cursor:pointer; }
+  .item-img-actions { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; gap:0.6rem; background:rgba(26,26,24,0.4); opacity:0; transition:opacity 0.2s; }
+  .item-img-wrap:hover .item-img-actions { opacity:1; }
+  .iab { width:38px; height:38px; border-radius:50%; border:none; cursor:pointer; font-size:1rem; display:flex; align-items:center; justify-content:center; transition:transform 0.15s; }
+  .iab:hover { transform:scale(1.1); }
+  .iab-zoom { background:var(--white); color:var(--ink); }
+  .iab-add { background:var(--accent); color:var(--ink); font-size:1.2rem; font-weight:bold; }
+  .iab-add.added { background:var(--ink); color:var(--paper); }
 
-  .item-card:hover {
-    border-color: var(--ink);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-  }
+  .item-img { width:100%; aspect-ratio:1; object-fit:cover; display:block; background:var(--soft); }
+  .item-no-photo { width:100%; aspect-ratio:1; background:var(--soft); display:flex; align-items:center; justify-content:center; font-size:0.55rem; letter-spacing:0.1em; color:var(--muted); text-transform:uppercase; }
+  .item-info { padding:1rem; cursor:pointer; }
+  .item-cat { font-size:0.55rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); margin-bottom:0.3rem; transition:color 0.2s; }
+  .item-name { font-family:'Cormorant Garamond',serif; font-size:1rem; line-height:1.3; margin-bottom:0.5rem; transition:color 0.2s; }
+  .item-price { font-size:0.65rem; color:var(--muted); transition:color 0.2s; }
 
-  .item-card.selected {
-    border-color: var(--ink);
-    background: var(--ink);
-  }
+  /* LIGHTBOX */
+  .lightbox { position:fixed; inset:0; background:rgba(8,8,6,0.93); z-index:300; display:none; align-items:center; justify-content:center; padding:1.5rem; }
+  .lightbox.open { display:flex; }
+  .lb-inner { position:relative; width:100%; max-width:820px; background:var(--paper); }
+  .lb-close { position:absolute; top:-2.2rem; right:0; background:none; border:none; color:var(--paper); font-size:1.5rem; cursor:pointer; line-height:1; }
+  .lb-img-area { position:relative; background:#111; aspect-ratio:4/3; overflow:hidden; display:flex; align-items:center; justify-content:center; }
+  .lb-img-area img { max-width:100%; max-height:100%; object-fit:contain; display:block; }
+  .lb-nav { position:absolute; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.85); border:none; width:38px; height:38px; font-size:1.2rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.2s; }
+  .lb-nav:hover { background:var(--white); }
+  .lb-nav.prev { left:0.6rem; }
+  .lb-nav.next { right:0.6rem; }
+  .lb-thumbs { display:flex; gap:0.4rem; padding:0.7rem 1rem; background:var(--soft); overflow-x:auto; }
+  .lb-thumb { width:56px; height:56px; object-fit:cover; cursor:pointer; border:2px solid transparent; opacity:0.55; flex-shrink:0; transition:all 0.2s; }
+  .lb-thumb.active { border-color:var(--ink); opacity:1; }
+  .lb-info { padding:1.2rem 1.5rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; border-top:1px solid var(--soft); }
+  .lb-name { font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:300; }
+  .lb-meta { font-size:0.6rem; color:var(--muted); margin-top:0.3rem; line-height:1.7; }
+  .lb-price { font-family:'Cormorant Garamond',serif; font-size:1.6rem; font-weight:300; white-space:nowrap; }
+  .lb-add-btn { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; border:1px solid var(--ink); background:transparent; color:var(--ink); padding:0.6rem 1.2rem; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+  .lb-add-btn:hover, .lb-add-btn.added { background:var(--ink); color:var(--paper); }
 
-  .item-card.selected .item-name,
-  .item-card.selected .item-price,
-  .item-card.selected .item-cat { color: var(--paper); }
+  /* PRESUPUESTO BAR */
+  .pbar { position:fixed; bottom:0; left:0; right:0; background:var(--ink); color:var(--paper); padding:1rem 3rem; display:flex; justify-content:space-between; align-items:center; transform:translateY(100%); transition:transform 0.4s cubic-bezier(0.76,0,0.24,1); z-index:99; }
+  .pbar.visible { transform:translateY(0); }
+  .pbar-info { display:flex; align-items:center; gap:2rem; }
+  .pbar-count { font-size:0.65rem; letter-spacing:0.1em; }
+  .pbar-total { font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:300; }
+  .pbar-actions { display:flex; gap:1rem; align-items:center; }
+  .btn-clear { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; background:transparent; border:1px solid rgba(255,255,255,0.3); color:var(--paper); padding:0.5rem 1rem; cursor:pointer; transition:border-color 0.2s; }
+  .btn-clear:hover { border-color:var(--paper); }
+  .btn-ver-ppto { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; background:var(--accent); border:none; color:var(--ink); padding:0.7rem 1.5rem; cursor:pointer; transition:background 0.2s; }
+  .btn-ver-ppto:hover { background:var(--paper); }
 
-  .item-check {
-    position: absolute;
-    top: 0.8rem; right: 0.8rem;
-    width: 20px; height: 20px;
-    border: 1px solid var(--soft);
-    background: var(--white);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.7rem;
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
+  /* MODAL */
+  .overlay { position:fixed; inset:0; background:rgba(26,26,24,0.72); z-index:200; display:none; align-items:center; justify-content:center; padding:2rem; }
+  .overlay.open { display:flex; }
+  .modal { background:var(--paper); border:1px solid var(--ink); width:100%; max-width:600px; max-height:90vh; overflow-y:auto; padding:3rem; position:relative; }
+  .modal h2 { font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:300; margin-bottom:0.5rem; }
+  .modal-sub { font-size:0.62rem; color:var(--muted); margin-bottom:2rem; line-height:1.8; }
+  .modal-items { border-top:1px solid var(--soft); margin-bottom:1.5rem; }
+  .modal-row { display:flex; justify-content:space-between; align-items:center; padding:0.75rem 0; border-bottom:1px solid var(--soft); gap:1rem; }
+  .modal-row-name { font-family:'Cormorant Garamond',serif; font-size:1rem; flex:1; }
+  .modal-row-price { font-size:0.65rem; color:var(--muted); white-space:nowrap; }
+  .modal-row-rm { background:none; border:none; cursor:pointer; color:var(--muted); font-size:0.9rem; padding:0.2rem; transition:color 0.2s; }
+  .modal-row-rm:hover { color:var(--ink); }
+  .modal-total-row { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:0.4rem; }
+  .modal-total-label { font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); }
+  .modal-total-num { font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:300; }
+  .modal-note { font-size:0.6rem; color:var(--muted); margin-bottom:2rem; line-height:1.8; }
+  .fg { margin-bottom:1.1rem; }
+  .fg label { display:block; font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); margin-bottom:0.35rem; }
+  .fg input, .fg textarea { width:100%; font-family:'DM Mono',monospace; font-size:0.7rem; border:1px solid var(--soft); background:var(--white); padding:0.7rem 0.8rem; outline:none; color:var(--ink); transition:border-color 0.2s; resize:vertical; }
+  .fg input:focus, .fg textarea:focus { border-color:var(--ink); }
+  .frow { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  .btn-send { width:100%; font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; background:var(--ink); border:none; color:var(--paper); padding:1rem; cursor:pointer; transition:background 0.2s; margin-top:0.5rem; }
+  .btn-send:hover { background:#2d2d2a; }
+  .btn-send:disabled { background:var(--muted); cursor:not-allowed; }
+  .modal-close { position:absolute; top:1.4rem; right:1.4rem; background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--muted); }
+  .send-ok { text-align:center; padding:2rem 0; }
+  .send-ok h3 { font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:300; margin-bottom:1rem; }
+  .send-ok p { font-size:0.65rem; color:var(--muted); line-height:2; }
 
-  .item-card:hover .item-check,
-  .item-card.selected .item-check { opacity: 1; }
-  .item-card.selected .item-check { background: var(--accent); border-color: var(--accent); color: var(--ink); }
+  /* CONTACTO */
+  .ctc-grid { display:grid; grid-template-columns:1fr 1fr; gap:6rem; max-width:900px; margin-top:3rem; }
+  .ctc-info h2 { font-family:'Cormorant Garamond',serif; font-size:3rem; font-weight:300; margin-bottom:2rem; line-height:1.1; }
+  .ctc-info p { font-size:0.65rem; line-height:2; color:var(--muted); margin-bottom:1rem; }
+  .ctc-links { display:flex; flex-direction:column; gap:1rem; margin-top:2rem; }
+  .ctc-links a { font-size:0.65rem; color:var(--muted); text-decoration:none; display:flex; align-items:center; gap:0.8rem; transition:color 0.2s; }
+  .ctc-links a:hover { color:var(--ink); }
 
-  .item-img {
-    width: 100%;
-    aspect-ratio: 1;
-    object-fit: cover;
-    display: block;
-    background: var(--soft);
-  }
+  .loading { display:flex; align-items:center; justify-content:center; padding:5rem; font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); }
+  .no-results { text-align:center; padding:5rem; font-size:0.65rem; color:var(--muted); }
+  .btn { display:inline-block; font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.15em; text-transform:uppercase; text-decoration:none; border:1px solid var(--ink); padding:0.8rem 1.8rem; color:var(--ink); background:transparent; cursor:pointer; transition:all 0.2s; }
+  .btn:hover { background:var(--ink); color:var(--paper); }
+  footer { border-top:1px solid var(--soft); padding:2rem 3rem; display:flex; justify-content:space-between; align-items:center; margin-top:4rem; }
+  footer span { font-size:0.6rem; color:var(--muted); letter-spacing:0.1em; }
+  footer a { font-size:0.6rem; color:var(--muted); text-decoration:none; letter-spacing:0.1em; transition:color 0.2s; }
+  footer a:hover { color:var(--ink); }
 
-  .item-img-placeholder {
-    width: 100%;
-    aspect-ratio: 1;
-    background: var(--soft);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.55rem;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
-
-  .item-info {
-    padding: 1rem;
-  }
-
-  .item-cat {
-    font-size: 0.55rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 0.3rem;
-    transition: color 0.2s;
-  }
-
-  .item-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.3;
-    margin-bottom: 0.5rem;
-    transition: color 0.2s;
-  }
-
-  .item-price {
-    font-size: 0.65rem;
-    color: var(--muted);
-    transition: color 0.2s;
-  }
-
-  /* PRESUPUESTO PANEL */
-  .presupuesto-bar {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    background: var(--ink);
-    color: var(--paper);
-    padding: 1rem 3rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transform: translateY(100%);
-    transition: transform 0.4s cubic-bezier(0.76, 0, 0.24, 1);
-    z-index: 99;
-  }
-
-  .presupuesto-bar.visible { transform: translateY(0); }
-
-  .presupuesto-info {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-  }
-
-  .presupuesto-count {
-    font-size: 0.65rem;
-    letter-spacing: 0.1em;
-  }
-
-  .presupuesto-total {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.4rem;
-    font-weight: 300;
-  }
-
-  .presupuesto-actions {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-  }
-
-  .btn-clear {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.3);
-    color: var(--paper);
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .btn-clear:hover { border-color: var(--paper); }
-
-  .btn-presupuesto {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    background: var(--accent);
-    border: none;
-    color: var(--ink);
-    padding: 0.7rem 1.5rem;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .btn-presupuesto:hover { background: var(--paper); }
-
-  /* MODAL PRESUPUESTO */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(26,26,24,0.7);
-    z-index: 200;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-  }
-
-  .modal-overlay.open { display: flex; }
-
-  .modal {
-    background: var(--paper);
-    border: 1px solid var(--ink);
-    width: 100%;
-    max-width: 600px;
-    max-height: 85vh;
-    overflow-y: auto;
-    padding: 3rem;
-  }
-
-  .modal h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 2rem;
-    font-weight: 300;
-    margin-bottom: 0.5rem;
-  }
-
-  .modal-subtitle {
-    font-size: 0.62rem;
-    color: var(--muted);
-    margin-bottom: 2rem;
-    line-height: 1.8;
-  }
-
-  .modal-items {
-    border-top: 1px solid var(--soft);
-    margin-bottom: 2rem;
-  }
-
-  .modal-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.8rem 0;
-    border-bottom: 1px solid var(--soft);
-    gap: 1rem;
-  }
-
-  .modal-item-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1rem;
-    flex: 1;
-  }
-
-  .modal-item-price {
-    font-size: 0.65rem;
-    color: var(--muted);
-    white-space: nowrap;
-  }
-
-  .modal-item-remove {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--muted);
-    font-size: 0.9rem;
-    line-height: 1;
-    padding: 0.2rem;
-    transition: color 0.2s;
-  }
-
-  .modal-item-remove:hover { color: var(--ink); }
-
-  .modal-total {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 0.5rem;
-  }
-
-  .modal-total-label {
-    font-size: 0.6rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-
-  .modal-total-price {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 2rem;
-    font-weight: 300;
-  }
-
-  .modal-price-note {
-    font-size: 0.6rem;
-    color: var(--muted);
-    margin-bottom: 2rem;
-    line-height: 1.8;
-  }
-
-  .form-group {
-    margin-bottom: 1.2rem;
-  }
-
-  .form-group label {
-    display: block;
-    font-size: 0.6rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 0.4rem;
-  }
-
-  .form-group input,
-  .form-group textarea {
-    width: 100%;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    border: 1px solid var(--soft);
-    background: var(--white);
-    padding: 0.7rem 0.8rem;
-    outline: none;
-    color: var(--ink);
-    transition: border-color 0.2s;
-    resize: vertical;
-  }
-
-  .form-group input:focus,
-  .form-group textarea:focus { border-color: var(--ink); }
-
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-
-  .btn-send {
-    width: 100%;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    background: var(--ink);
-    border: none;
-    color: var(--paper);
-    padding: 1rem;
-    cursor: pointer;
-    transition: background 0.2s;
-    margin-top: 0.5rem;
-  }
-
-  .btn-send:hover { background: #333; }
-
-  .btn-modal-close {
-    position: absolute;
-    top: 1.5rem; right: 1.5rem;
-    background: none;
-    border: none;
-    font-size: 1.2rem;
-    cursor: pointer;
-    color: var(--muted);
-  }
-
-  /* CONTACTO PAGE */
-  .contacto-page-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6rem;
-    max-width: 900px;
-    margin-top: 3rem;
-  }
-
-  .contacto-info h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 3rem;
-    font-weight: 300;
-    margin-bottom: 2rem;
-    line-height: 1.1;
-  }
-
-  .contacto-info p {
-    font-size: 0.65rem;
-    line-height: 2;
-    color: var(--muted);
-    margin-bottom: 2rem;
-  }
-
-  .contacto-detail {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-top: 2rem;
-  }
-
-  .contacto-detail a {
-    font-size: 0.65rem;
-    color: var(--muted);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    transition: color 0.2s;
-  }
-
-  .contacto-detail a:hover { color: var(--ink); }
-
-  /* LOADING */
-  .loading {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 5rem;
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-
-  .no-results {
-    text-align: center;
-    padding: 5rem;
-    font-size: 0.65rem;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-  }
-
-  /* PAGE HEADER */
-  .page-header {
-    margin-bottom: 3rem;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid var(--soft);
-  }
-
-  .page-header .breadcrumb {
-    font-size: 0.6rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 1rem;
-    cursor: pointer;
-  }
-
-  .page-header .breadcrumb:hover { color: var(--ink); }
-
-  /* BTN GENERAL */
-  .btn {
-    display: inline-block;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.62rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    text-decoration: none;
-    border: 1px solid var(--ink);
-    padding: 0.8rem 1.8rem;
-    color: var(--ink);
-    background: transparent;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .btn:hover { background: var(--ink); color: var(--paper); }
-
-  /* FOOTER */
-  footer {
-    border-top: 1px solid var(--soft);
-    padding: 2rem 3rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 4rem;
-  }
-
-  footer span {
-    font-size: 0.6rem;
-    color: var(--muted);
-    letter-spacing: 0.1em;
-  }
-
-  footer a {
-    font-size: 0.6rem;
-    color: var(--muted);
-    text-decoration: none;
-    letter-spacing: 0.1em;
-    transition: color 0.2s;
-  }
-
-  footer a:hover { color: var(--ink); }
-
-  /* RESPONSIVE */
-  @media (max-width: 768px) {
-    nav { padding: 1rem 1.5rem; }
-    .nav-links { gap: 1.5rem; }
-    .hero { padding: 6rem 1.5rem 3rem; }
-    .hero-cards { grid-template-columns: 1fr; }
-    .page { padding: 6rem 1.5rem 3rem; }
-    .about-grid, .contacto-page-grid { grid-template-columns: 1fr; gap: 3rem; }
-    .trabajos-grid { grid-template-columns: 1fr; }
-    .catalog-header { flex-direction: column; align-items: flex-start; }
-    .presupuesto-bar { padding: 1rem 1.5rem; flex-direction: column; gap: 1rem; }
-    footer { flex-direction: column; gap: 1rem; text-align: center; }
-    .form-row { grid-template-columns: 1fr; }
+  @media(max-width:768px){
+    nav{padding:1rem 1.5rem;} .nav-links{gap:1.2rem;} .nav-links a{font-size:0.55rem;}
+    .hero{padding:6rem 1.5rem 3rem;} .hero-cards{grid-template-columns:1fr;}
+    .page{padding:6rem 1.5rem 3rem;}
+    .about-grid,.ctc-grid{grid-template-columns:1fr;gap:3rem;}
+    .trabajos-grid{grid-template-columns:1fr;}
+    .catalog-header{flex-direction:column;align-items:flex-start;}
+    .pbar{padding:1rem 1.5rem;flex-direction:column;gap:1rem;}
+    footer{flex-direction:column;gap:1rem;text-align:center;}
+    .frow{grid-template-columns:1fr;}
+    .lb-inner{max-width:100%;}
   }
 </style>
 </head>
 <body>
 
 <nav>
-  <a href="#" class="nav-logo" onclick="showPage('home')">KOSMO</a>
+  <a class="nav-logo" href="#" onclick="showPage('home');return false;">KOSMO</a>
   <ul class="nav-links">
-    <li><a href="#" onclick="showPage('about')">Quiénes somos</a></li>
-    <li><a href="#" onclick="showPage('ambientacion')">Ambientaciones</a></li>
-    <li><a href="#" onclick="showPage('rental')">Rental</a></li>
-    <li><a href="#" onclick="showPage('contacto')">Contacto</a></li>
+    <li><a href="#" onclick="showPage('about');return false;">Quiénes somos</a></li>
+    <li><a href="#" onclick="showPage('ambientacion');return false;">Ambientaciones</a></li>
+    <li><a href="#" onclick="showPage('rental');return false;">Rental</a></li>
+    <li><a href="#" onclick="showPage('contacto');return false;">Contacto</a></li>
   </ul>
 </nav>
 
@@ -859,15 +210,13 @@
     <h1 class="hero-title">Estudio<br><em>creativo</em><br>de espacios</h1>
     <p class="hero-sub">Buenos Aires — Ambientaciones & Rental</p>
     <div class="hero-cards">
-      <a class="hero-card" href="#" onclick="showPage('ambientacion')">
-        <div class="item-check"></div>
+      <a class="hero-card" href="#" onclick="showPage('ambientacion');return false;">
         <p class="card-tag">Servicio</p>
         <h2 class="card-title">Ambientaciones</h2>
         <p class="card-desc">Diseñamos y construimos espacios para producciones audiovisuales y eventos. Cada proyecto es único.</p>
         <span class="card-cta">Conocé el servicio</span>
       </a>
-      <a class="hero-card" href="#" onclick="showPage('rental')">
-        <div class="item-check"></div>
+      <a class="hero-card" href="#" onclick="showPage('rental');return false;">
         <p class="card-tag">Catálogo</p>
         <h2 class="card-title">Rental</h2>
         <p class="card-desc">Más de 400 props disponibles — equipaje, bolsos, utilería de oficio y más. Armá tu presupuesto online.</p>
@@ -875,17 +224,12 @@
       </a>
     </div>
   </section>
-  <footer>
-    <span>© 2025 KOSMO</span>
-    <a href="https://instagram.com" target="_blank">@kosmo.estudio</a>
-  </footer>
+  <footer><span>© 2025 KOSMO</span><a href="https://instagram.com" target="_blank">@kosmo.estudio</a></footer>
 </div>
 
 <!-- QUIÉNES SOMOS -->
 <div id="page-about" class="page">
-  <div class="page-header">
-    <p class="breadcrumb" onclick="showPage('home')">← Inicio</p>
-  </div>
+  <p class="breadcrumb" onclick="showPage('home')">← Inicio</p>
   <div class="about-grid">
     <div class="about-text">
       <h2>Somos KOSMO</h2>
@@ -896,424 +240,401 @@
     <div class="about-clients">
       <h3>Algunos clientes</h3>
       <ul class="client-list">
-        <li>ESPN</li>
-        <li>24/7</li>
-        <li>Lab House</li>
-        <li>Pampa Films</li>
-        <li>PRIMO</li>
-        <li>Oruga</li>
+        <li>ESPN</li><li>24/7</li><li>Lab House</li><li>Pampa Films</li><li>PRIMO</li><li>Oruga</li>
       </ul>
     </div>
   </div>
-  <footer>
-    <span>© 2025 KOSMO</span>
-    <a href="https://instagram.com" target="_blank">@kosmo.estudio</a>
-  </footer>
+  <footer><span>© 2025 KOSMO</span><a href="https://instagram.com" target="_blank">@kosmo.estudio</a></footer>
 </div>
 
 <!-- AMBIENTACIONES -->
 <div id="page-ambientacion" class="page">
-  <div class="page-header">
-    <p class="breadcrumb" onclick="showPage('home')">← Inicio</p>
-  </div>
+  <p class="breadcrumb" onclick="showPage('home')">← Inicio</p>
   <div class="ambientacion-hero">
     <h2>Ambientamos<br><em>tu espacio</em></h2>
     <p>Diseñamos y ejecutamos ambientaciones para producciones audiovisuales, publicidades y eventos corporativos. Desde la conceptualización hasta la instalación, nos encargamos de todo.</p>
   </div>
-
   <div class="trabajos-grid">
-    <div class="trabajo-card">
-      <p class="trabajo-cliente">ESPN</p>
-      <h3>Ambientación deportiva</h3>
-      <p>Ambientación completa con utilería deportiva y elementos de set para producción de contenido de la señal.</p>
-    </div>
-    <div class="trabajo-card">
-      <p class="trabajo-cliente">Eventos corporativos</p>
-      <h3>Pérgolas & estructuras</h3>
-      <p>Diseño y construcción de pérgolas de madera personalizadas para eventos al aire libre y producciones.</p>
-    </div>
-    <div class="trabajo-card">
-      <p class="trabajo-cliente">Producciones audiovisuales</p>
-      <h3>Utilería & dressing</h3>
-      <p>Selección y coordinación de props, mobiliario y accesorios para series, publicidades y contenido digital.</p>
-    </div>
+    <div class="trabajo-card"><p class="trabajo-cliente">ESPN</p><h3>Ambientación deportiva</h3><p>Ambientación completa con utilería deportiva y elementos de set para producción de contenido de la señal.</p></div>
+    <div class="trabajo-card"><p class="trabajo-cliente">Eventos corporativos</p><h3>Pérgolas & estructuras</h3><p>Diseño y construcción de pérgolas de madera personalizadas para eventos al aire libre y producciones.</p></div>
+    <div class="trabajo-card"><p class="trabajo-cliente">Producciones audiovisuales</p><h3>Utilería & dressing</h3><p>Selección y coordinación de props, mobiliario y accesorios para series, publicidades y contenido digital.</p></div>
   </div>
-
   <div class="contacto-bloque">
     <h3>¿Tenés un proyecto?</h3>
     <p>Contanos de qué se trata y te respondemos con una propuesta. Trabajamos con productoras, agencias y marcas.</p>
-    <a class="btn" href="#" onclick="showPage('contacto')">Escribinos</a>
+    <a class="btn" href="#" onclick="showPage('contacto');return false;">Escribinos</a>
   </div>
-  <footer>
-    <span>© 2025 KOSMO</span>
-    <a href="https://instagram.com" target="_blank">@kosmo.estudio</a>
-  </footer>
+  <footer><span>© 2025 KOSMO</span><a href="https://instagram.com" target="_blank">@kosmo.estudio</a></footer>
 </div>
 
-<!-- RENTAL / CATÁLOGO -->
+<!-- RENTAL -->
 <div id="page-rental" class="page">
   <div class="catalog-header">
     <div>
-      <p class="breadcrumb" onclick="showPage('home')" style="font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);cursor:pointer;margin-bottom:0.5rem;">← Inicio</p>
+      <p class="breadcrumb" onclick="showPage('home')" style="margin-bottom:0.4rem;">← Inicio</p>
       <h2>Catálogo</h2>
     </div>
-    <div class="catalog-controls">
-      <input type="text" class="search-input" id="searchInput" placeholder="Buscar por nombre..." oninput="filterCatalog()">
-    </div>
+    <input type="text" class="search-input" id="searchInput" placeholder="Buscar por nombre..." oninput="filterCatalog()">
   </div>
-
   <div id="categoryFilters" style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:2rem;"></div>
-
-  <div id="catalogGrid" class="catalog-grid">
-    <div class="loading">Cargando catálogo...</div>
-  </div>
-
-  <footer>
-    <span>© 2025 KOSMO</span>
-    <a href="https://instagram.com" target="_blank">@kosmo.estudio</a>
-  </footer>
+  <div id="catalogGrid" class="catalog-grid"><div class="loading">Cargando catálogo...</div></div>
+  <footer><span>© 2025 KOSMO</span><a href="https://instagram.com" target="_blank">@kosmo.estudio</a></footer>
 </div>
 
 <!-- CONTACTO -->
 <div id="page-contacto" class="page">
-  <div class="page-header">
-    <p class="breadcrumb" onclick="showPage('home')">← Inicio</p>
-  </div>
-  <div class="contacto-page-grid">
-    <div class="contacto-info">
+  <p class="breadcrumb" onclick="showPage('home')">← Inicio</p>
+  <div class="ctc-grid">
+    <div class="ctc-info">
       <h2>Hablemos</h2>
-      <p>Ya sea para una ambientación, una consulta sobre el catálogo, o para contarnos de un proyecto, estamos disponibles.</p>
+      <p>Ya sea para una ambientación, una consulta sobre el catálogo o para contarnos de un proyecto, estamos disponibles.</p>
       <p>Respondemos en menos de 24 horas.</p>
-      <div class="contacto-detail">
-        <a href="mailto:martealquila@gmail.com">✉ martealquila@gmail.com</a>
-        <a href="tel:+5491158488898">☎ +54 9 11 5848-8898</a>
+      <div class="ctc-links">
+        <a href="mailto:kosmo.estudiocreativo@gmail.com">✉ kosmo.estudiocreativo@gmail.com</a>
         <a href="https://instagram.com" target="_blank">◎ @kosmo.estudio</a>
       </div>
     </div>
     <div>
-      <div class="form-group">
-        <label>Nombre</label>
-        <input type="text" placeholder="Tu nombre">
-      </div>
-      <div class="form-group">
-        <label>Mail</label>
-        <input type="email" placeholder="tu@mail.com">
-      </div>
-      <div class="form-group">
-        <label>Productora / Agencia</label>
-        <input type="text" placeholder="Opcional">
-      </div>
-      <div class="form-group">
-        <label>Mensaje</label>
-        <textarea rows="5" placeholder="Contanos de qué se trata..."></textarea>
-      </div>
-      <button class="btn-send" onclick="sendContactForm()">Enviar mensaje</button>
+      <div class="fg"><label>Nombre</label><input type="text" id="ctcNombre" placeholder="Tu nombre"></div>
+      <div class="fg"><label>Mail</label><input type="email" id="ctcMail" placeholder="tu@mail.com"></div>
+      <div class="fg"><label>Productora / Agencia</label><input type="text" id="ctcProductora" placeholder="Opcional"></div>
+      <div class="fg"><label>Mensaje</label><textarea id="ctcMensaje" rows="5" placeholder="Contanos de qué se trata..."></textarea></div>
+      <button class="btn-send" id="btnCtc" onclick="sendContacto()">Enviar mensaje</button>
     </div>
   </div>
-  <footer>
-    <span>© 2025 KOSMO</span>
-    <a href="https://instagram.com" target="_blank">@kosmo.estudio</a>
-  </footer>
+  <footer><span>© 2025 KOSMO</span><a href="https://instagram.com" target="_blank">@kosmo.estudio</a></footer>
 </div>
 
 <!-- PRESUPUESTO BAR -->
-<div class="presupuesto-bar" id="presupuestoBar">
-  <div class="presupuesto-info">
-    <span class="presupuesto-count" id="presupuestoCount">0 ítems seleccionados</span>
-    <span class="presupuesto-total" id="presupuestoTotal">$0</span>
+<div class="pbar" id="pbar">
+  <div class="pbar-info">
+    <span class="pbar-count" id="pbarCount">0 ítems</span>
+    <span class="pbar-total" id="pbarTotal">$0</span>
   </div>
-  <div class="presupuesto-actions">
+  <div class="pbar-actions">
     <button class="btn-clear" onclick="clearSelection()">Limpiar</button>
-    <button class="btn-presupuesto" onclick="openModal()">Ver presupuesto →</button>
+    <button class="btn-ver-ppto" onclick="openModal()">Ver presupuesto →</button>
   </div>
 </div>
 
 <!-- MODAL PRESUPUESTO -->
-<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
-  <div class="modal" style="position:relative;">
-    <button class="btn-modal-close" onclick="closeModal()">✕</button>
-    <h2>Tu presupuesto</h2>
-    <p class="modal-subtitle">Completá tus datos y te respondemos con la confirmación de disponibilidad y el detalle de pago. Los precios son por una semana (hasta 7 días). Semanas adicionales: +50%.</p>
+<div class="overlay" id="overlay" onclick="closeOverlayOutside(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modalContent">
+      <h2>Tu presupuesto</h2>
+      <p class="modal-sub">Completá tus datos y te respondemos con la confirmación de disponibilidad y el detalle de pago. Precios por una semana (hasta 7 días). Semanas adicionales: +50%.</p>
+      <div class="modal-items" id="modalItems"></div>
+      <div class="modal-total-row">
+        <span class="modal-total-label">Total estimado (1 semana)</span>
+        <span class="modal-total-num" id="modalTotal">$0</span>
+      </div>
+      <p class="modal-note">Precio orientativo. La confirmación final incluye disponibilidad y condiciones de entrega.</p>
+      <div class="frow">
+        <div class="fg"><label>Nombre *</label><input type="text" id="fNombre" placeholder="Tu nombre"></div>
+        <div class="fg"><label>Mail *</label><input type="email" id="fMail" placeholder="tu@mail.com"></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label>Productora / Agencia</label><input type="text" id="fProductora" placeholder="Opcional"></div>
+        <div class="fg"><label>Proyecto</label><input type="text" id="fProyecto" placeholder="Nombre del proyecto"></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label>Fecha de retiro</label><input type="date" id="fRetiro"></div>
+        <div class="fg"><label>Fecha de devolución</label><input type="date" id="fDevolucion"></div>
+      </div>
+      <div class="fg"><label>Notas adicionales</label><textarea id="fNotas" rows="3" placeholder="¿Algún detalle extra?"></textarea></div>
+      <button class="btn-send" id="btnEnviar" onclick="sendPresupuesto()">Enviar solicitud de presupuesto</button>
+    </div>
+  </div>
+</div>
 
-    <div class="modal-items" id="modalItems"></div>
-
-    <div class="modal-total">
-      <span class="modal-total-label">Total estimado (1 semana)</span>
-      <span class="modal-total-price" id="modalTotal">$0</span>
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLbOutside(event)">
+  <div class="lb-inner">
+    <button class="lb-close" onclick="closeLb()">✕</button>
+    <div class="lb-img-area">
+      <img id="lbImg" src="" alt="">
+      <button class="lb-nav prev" id="lbPrev" onclick="lbNav(-1)">‹</button>
+      <button class="lb-nav next" id="lbNext" onclick="lbNav(1)">›</button>
     </div>
-    <p class="modal-price-note">Precio orientativo. La confirmación final incluye disponibilidad y condiciones de entrega.</p>
-
-    <div class="form-row">
-      <div class="form-group">
-        <label>Nombre *</label>
-        <input type="text" id="formNombre" placeholder="Tu nombre">
+    <div class="lb-thumbs" id="lbThumbs"></div>
+    <div class="lb-info">
+      <div>
+        <p class="lb-name" id="lbName"></p>
+        <p class="lb-meta" id="lbMeta"></p>
       </div>
-      <div class="form-group">
-        <label>Mail *</label>
-        <input type="email" id="formMail" placeholder="tu@mail.com">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Productora / Agencia</label>
-        <input type="text" id="formProductora" placeholder="Opcional">
-      </div>
-      <div class="form-group">
-        <label>Proyecto</label>
-        <input type="text" id="formProyecto" placeholder="Nombre del proyecto">
+      <div style="display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap;">
+        <span class="lb-price" id="lbPrice"></span>
+        <button class="lb-add-btn" id="lbAddBtn" onclick="toggleFromLb()">+ Agregar al presupuesto</button>
       </div>
     </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Fecha de retiro</label>
-        <input type="date" id="formRetiro">
-      </div>
-      <div class="form-group">
-        <label>Fecha de devolución</label>
-        <input type="date" id="formDevolucion">
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Notas adicionales</label>
-      <textarea id="formNotas" rows="3" placeholder="¿Algún detalle extra que quieras contarnos?"></textarea>
-    </div>
-    <button class="btn-send" onclick="sendPresupuesto()">Enviar solicitud de presupuesto</button>
   </div>
 </div>
 
 <script>
-// ─── CONFIG ───────────────────────────────────────────────
-const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTTgh4S-zxHVZ4OQjPkcckFLlOXZX58b9EWTyS2LC8VC-2pGMGtrUH5CfCXbzHv1A/pub?gid=1966847769&single=true&output=csv';
-const MAIL_KOSMO = 'martealquila@gmail.com';
+emailjs.init('iLJJOWSuwCcw-u2uh');
+const SVC = 'service_r6acyzb';
+const TPL = 'template_k9p39s4';
+const CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTTgh4S-zxHVZ4OQjPkcckFLlOXZX58b9EWTyS2LC8VC-2pGMGtrUH5CfCXbzHv1A/pub?gid=1966847769&single=true&output=csv';
 
-// ─── STATE ────────────────────────────────────────────────
-let allItems = [];
-let filteredItems = [];
-let selectedItems = new Map(); // codigo -> item
-let activeCategory = 'Todos';
+let allItems=[], filteredItems=[], selectedItems=new Map(), activeCat='Todos';
+let lbItem=null, lbIdx=0;
 
-// ─── NAVIGATION ───────────────────────────────────────────
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
-  window.scrollTo(0, 0);
-  if (id === 'rental' && allItems.length === 0) loadCatalog();
+// NAV
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  window.scrollTo(0,0);
+  if(id==='rental'&&allItems.length===0) loadCatalog();
 }
 
-// ─── CSV PARSER ───────────────────────────────────────────
-function parseCSV(text) {
-  const lines = text.trim().split('\n');
-  if (lines.length < 2) return [];
-  // Skip instruction row (row 1) and header row (row 2)
-  // Headers: codigo, categoria_web, categoria_interna, nombre, precio_semana, medidas, observaciones, foto_url, visible
-  const dataLines = lines.slice(2);
-  return dataLines.map(line => {
-    const cols = parseCSVLine(line);
+// CSV
+function parseCSVLine(line){
+  const r=[]; let cur='',q=false;
+  for(let i=0;i<line.length;i++){
+    const ch=line[i];
+    if(ch==='"'){if(q&&line[i+1]==='"'){cur+='"';i++;}else q=!q;}
+    else if(ch===','&&!q){r.push(cur);cur='';}
+    else cur+=ch;
+  }
+  r.push(cur); return r;
+}
+
+function parseCSV(text){
+  const lines=text.trim().split('\n');
+  if(lines.length<3) return [];
+  return lines.slice(2).map(line=>{
+    const c=parseCSVLine(line);
+    const fotos=[c[7],c[9],c[10]].map(f=>f?.trim()).filter(Boolean);
     return {
-      codigo: cols[0]?.trim() || '',
-      categoria_web: cols[1]?.trim() || '',
-      categoria_interna: cols[2]?.trim() || '',
-      nombre: cols[3]?.trim() || '',
-      precio: parseInt(cols[4]?.replace(/[^0-9]/g, '')) || 0,
-      medidas: cols[5]?.trim() || '',
-      observaciones: cols[6]?.trim() || '',
-      foto_url: cols[7]?.trim() || '',
-      visible: cols[8]?.trim().toUpperCase() || 'SI',
+      codigo:c[0]?.trim()||'', categoria_web:c[1]?.trim()||'',
+      nombre:c[3]?.trim()||'', precio:parseInt(c[4]?.replace(/[^0-9]/g,'')||'0')||0,
+      medidas:c[5]?.trim()||'', observaciones:c[6]?.trim()||'',
+      fotos, foto_url:fotos[0]||'', visible:(c[8]?.trim()||'SI').toUpperCase()
     };
-  }).filter(i => i.codigo && i.nombre && i.visible === 'SI' && i.precio > 0);
+  }).filter(i=>i.codigo&&i.nombre&&i.visible==='SI'&&i.precio>0);
 }
 
-function parseCSVLine(line) {
-  const result = [];
-  let current = '';
-  let inQuotes = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (ch === '"') {
-      if (inQuotes && line[i+1] === '"') { current += '"'; i++; }
-      else inQuotes = !inQuotes;
-    } else if (ch === ',' && !inQuotes) {
-      result.push(current); current = '';
-    } else {
-      current += ch;
-    }
-  }
-  result.push(current);
-  return result;
-}
-
-// ─── LOAD CATALOG ─────────────────────────────────────────
-async function loadCatalog() {
-  document.getElementById('catalogGrid').innerHTML = '<div class="loading">Cargando catálogo...</div>';
-  try {
-    const res = await fetch(CSV_URL);
-    const text = await res.text();
-    allItems = parseCSV(text);
-    filteredItems = [...allItems];
-    buildCategoryFilters();
-    renderCatalog();
-  } catch (e) {
-    document.getElementById('catalogGrid').innerHTML = '<div class="no-results">Error al cargar el catálogo. Intentá de nuevo más tarde.</div>';
+async function loadCatalog(){
+  document.getElementById('catalogGrid').innerHTML='<div class="loading">Cargando catálogo...</div>';
+  try{
+    const res=await fetch(CSV);
+    const text=await res.text();
+    allItems=parseCSV(text);
+    filteredItems=[...allItems];
+    buildFilters(); renderCatalog();
+  }catch(e){
+    document.getElementById('catalogGrid').innerHTML='<div class="no-results">Error al cargar el catálogo. Intentá más tarde.</div>';
   }
 }
 
-// ─── CATEGORY FILTERS ─────────────────────────────────────
-function buildCategoryFilters() {
-  const cats = ['Todos', ...new Set(allItems.map(i => i.categoria_web))].filter(Boolean);
-  const container = document.getElementById('categoryFilters');
-  container.innerHTML = cats.map(cat => `
-    <button class="filter-btn ${cat === 'Todos' ? 'active' : ''}" onclick="setCategory('${cat}')">${cat}</button>
-  `).join('');
+function buildFilters(){
+  const cats=['Todos',...new Set(allItems.map(i=>i.categoria_web))].filter(Boolean);
+  document.getElementById('categoryFilters').innerHTML=cats.map(c=>
+    `<button class="filter-btn ${c==='Todos'?'active':''}" onclick="setCat('${c}')">${c}</button>`
+  ).join('');
 }
 
-function setCategory(cat) {
-  activeCategory = cat;
-  document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.textContent === cat);
-  });
+function setCat(cat){
+  activeCat=cat;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.toggle('active',b.textContent===cat));
   filterCatalog();
 }
 
-// ─── FILTER ───────────────────────────────────────────────
-function filterCatalog() {
-  const q = document.getElementById('searchInput').value.toLowerCase();
-  filteredItems = allItems.filter(item => {
-    const matchCat = activeCategory === 'Todos' || item.categoria_web === activeCategory;
-    const matchSearch = !q || item.nombre.toLowerCase().includes(q) || item.categoria_web.toLowerCase().includes(q);
-    return matchCat && matchSearch;
+function filterCatalog(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  filteredItems=allItems.filter(i=>{
+    const mc=activeCat==='Todos'||i.categoria_web===activeCat;
+    const mq=!q||i.nombre.toLowerCase().includes(q)||i.categoria_web.toLowerCase().includes(q);
+    return mc&&mq;
   });
   renderCatalog();
 }
 
-// ─── RENDER ───────────────────────────────────────────────
-function renderCatalog() {
-  const grid = document.getElementById('catalogGrid');
-  if (filteredItems.length === 0) {
-    grid.innerHTML = '<div class="no-results">No se encontraron ítems con ese criterio.</div>';
-    return;
-  }
-  grid.innerHTML = filteredItems.map(item => {
-    const isSelected = selectedItems.has(item.codigo);
-    const imgHtml = item.foto_url
-      ? `<img class="item-img" src="${item.foto_url}" alt="${item.nombre}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'item-img-placeholder\\'>Sin foto</div>'">`
-      : `<div class="item-img-placeholder">Sin foto</div>`;
-    return `
-      <div class="item-card ${isSelected ? 'selected' : ''}" onclick="toggleItem('${item.codigo}')" data-cod="${item.codigo}">
-        <div class="item-check">${isSelected ? '✓' : '+'}</div>
-        ${imgHtml}
-        <div class="item-info">
-          <p class="item-cat">${item.categoria_web}</p>
-          <p class="item-name">${item.nombre}</p>
-          <p class="item-price">$${item.precio.toLocaleString('es-AR')} / semana</p>
+function renderCatalog(){
+  const grid=document.getElementById('catalogGrid');
+  if(!filteredItems.length){grid.innerHTML='<div class="no-results">No se encontraron ítems.</div>';return;}
+  grid.innerHTML=filteredItems.map(item=>{
+    const sel=selectedItems.has(item.codigo);
+    const img=item.foto_url
+      ?`<img class="item-img" src="${item.foto_url}" alt="${item.nombre}" loading="lazy" onerror="this.outerHTML='<div class=\\'item-no-photo\\'>Sin foto</div>'">`
+      :`<div class="item-no-photo">Sin foto</div>`;
+    return `<div class="item-card ${sel?'selected':''}" data-cod="${item.codigo}">
+      <div class="item-img-wrap">
+        ${img}
+        <div class="item-img-actions">
+          <button class="iab iab-zoom" onclick="openLb('${item.codigo}')" title="Ver detalle">🔍</button>
+          <button class="iab iab-add ${sel?'added':''}" onclick="toggleItem('${item.codigo}',event)" title="${sel?'Quitar':'Agregar'}">${sel?'✓':'+'}</button>
         </div>
-      </div>`;
+      </div>
+      <div class="item-info" onclick="openLb('${item.codigo}')">
+        <p class="item-cat">${item.categoria_web}</p>
+        <p class="item-name">${item.nombre}</p>
+        <p class="item-price">$${item.precio.toLocaleString('es-AR')} / semana</p>
+      </div>
+    </div>`;
   }).join('');
 }
 
-// ─── SELECTION ────────────────────────────────────────────
-function toggleItem(codigo) {
-  const item = allItems.find(i => i.codigo === codigo);
-  if (!item) return;
-  if (selectedItems.has(codigo)) {
-    selectedItems.delete(codigo);
-  } else {
-    selectedItems.set(codigo, item);
+function toggleItem(cod,e){
+  if(e) e.stopPropagation();
+  const item=allItems.find(i=>i.codigo===cod);
+  if(!item) return;
+  if(selectedItems.has(cod)) selectedItems.delete(cod);
+  else selectedItems.set(cod,item);
+  updateBar();
+  const card=document.querySelector(`[data-cod="${cod}"]`);
+  if(card){
+    const sel=selectedItems.has(cod);
+    card.classList.toggle('selected',sel);
+    const btn=card.querySelector('.iab-add');
+    if(btn){btn.textContent=sel?'✓':'+';btn.classList.toggle('added',sel);}
   }
-  updatePresupuestoBar();
-  // Update card state without re-rendering all
-  const card = document.querySelector(`[data-cod="${codigo}"]`);
-  if (card) {
-    const isNowSelected = selectedItems.has(codigo);
-    card.classList.toggle('selected', isNowSelected);
-    card.querySelector('.item-check').textContent = isNowSelected ? '✓' : '+';
+  if(lbItem&&lbItem.codigo===cod) updateLbBtn();
+}
+
+function clearSelection(){selectedItems.clear();updateBar();renderCatalog();}
+
+function updateBar(){
+  const n=selectedItems.size;
+  const t=[...selectedItems.values()].reduce((s,i)=>s+i.precio,0);
+  document.getElementById('pbarCount').textContent=`${n} ítem${n!==1?'s':''} seleccionado${n!==1?'s':''}`;
+  document.getElementById('pbarTotal').textContent=`$${t.toLocaleString('es-AR')}`;
+  document.getElementById('pbar').classList.toggle('visible',n>0);
+}
+
+// LIGHTBOX
+function openLb(cod){
+  lbItem=allItems.find(i=>i.codigo===cod);
+  if(!lbItem) return;
+  lbIdx=0; renderLb();
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function renderLb(){
+  const fotos=lbItem.fotos.length?lbItem.fotos:[''];
+  document.getElementById('lbImg').src=fotos[lbIdx]||'';
+  document.getElementById('lbImg').alt=lbItem.nombre;
+  document.getElementById('lbName').textContent=lbItem.nombre;
+  document.getElementById('lbPrice').textContent=`$${lbItem.precio.toLocaleString('es-AR')} / sem`;
+  const meta=[lbItem.medidas,lbItem.observaciones].filter(Boolean).join(' · ');
+  document.getElementById('lbMeta').textContent=meta||lbItem.categoria_web;
+  const multi=fotos.length>1;
+  document.getElementById('lbPrev').style.display=multi?'flex':'none';
+  document.getElementById('lbNext').style.display=multi?'flex':'none';
+  const thumbsEl=document.getElementById('lbThumbs');
+  thumbsEl.style.display=multi?'flex':'none';
+  thumbsEl.innerHTML=fotos.map((f,i)=>
+    `<img class="lb-thumb ${i===lbIdx?'active':''}" src="${f}" onclick="setLbPhoto(${i})">`
+  ).join('');
+  updateLbBtn();
+}
+
+function setLbPhoto(i){
+  lbIdx=i;
+  document.getElementById('lbImg').src=lbItem.fotos[i];
+  document.querySelectorAll('.lb-thumb').forEach((t,j)=>t.classList.toggle('active',j===i));
+}
+
+function lbNav(d){
+  const total=lbItem.fotos.length;
+  lbIdx=(lbIdx+d+total)%total;
+  setLbPhoto(lbIdx);
+}
+
+function updateLbBtn(){
+  const btn=document.getElementById('lbAddBtn');
+  const sel=selectedItems.has(lbItem.codigo);
+  btn.textContent=sel?'✓ En presupuesto':'+ Agregar al presupuesto';
+  btn.classList.toggle('added',sel);
+}
+
+function toggleFromLb(){toggleItem(lbItem.codigo);}
+
+function closeLb(){document.getElementById('lightbox').classList.remove('open');document.body.style.overflow='';}
+function closeLbOutside(e){if(e.target===document.getElementById('lightbox'))closeLb();}
+
+// MODAL
+function openModal(){
+  const items=[...selectedItems.values()];
+  const total=items.reduce((s,i)=>s+i.precio,0);
+  document.getElementById('modalItems').innerHTML=items.map(item=>`
+    <div class="modal-row">
+      <span class="modal-row-name">${item.nombre}</span>
+      <span class="modal-row-price">$${item.precio.toLocaleString('es-AR')}</span>
+      <button class="modal-row-rm" onclick="removeFromModal('${item.codigo}')">✕</button>
+    </div>`).join('');
+  document.getElementById('modalTotal').textContent=`$${total.toLocaleString('es-AR')}`;
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function removeFromModal(cod){
+  selectedItems.delete(cod); updateBar();
+  if(!selectedItems.size){closeModal();renderCatalog();return;}
+  openModal(); renderCatalog();
+}
+
+function closeModal(){document.getElementById('overlay').classList.remove('open');document.body.style.overflow='';}
+function closeOverlayOutside(e){if(e.target===document.getElementById('overlay'))closeModal();}
+
+// SEND PRESUPUESTO
+async function sendPresupuesto(){
+  const nombre=document.getElementById('fNombre').value.trim();
+  const mail=document.getElementById('fMail').value.trim();
+  if(!nombre||!mail){alert('Por favor completá nombre y mail.');return;}
+  const items=[...selectedItems.values()];
+  const total=items.reduce((s,i)=>s+i.precio,0);
+  const lista=items.map(i=>`• ${i.nombre} — $${i.precio.toLocaleString('es-AR')}/sem`).join('\n');
+  const btn=document.getElementById('btnEnviar');
+  btn.disabled=true; btn.textContent='Enviando...';
+  try{
+    await emailjs.send(SVC,TPL,{
+      nombre, mail,
+      productora:document.getElementById('fProductora').value||'—',
+      proyecto:document.getElementById('fProyecto').value||'—',
+      retiro:document.getElementById('fRetiro').value||'—',
+      devolucion:document.getElementById('fDevolucion').value||'—',
+      items:lista,
+      total:`$${total.toLocaleString('es-AR')}`,
+      notas:document.getElementById('fNotas').value||'—',
+    });
+    document.getElementById('modalContent').innerHTML=`
+      <div class="send-ok">
+        <h3>¡Presupuesto enviado!</h3>
+        <p>Recibimos tu solicitud y te vamos a responder a <strong>${mail}</strong><br>en menos de 24 horas con la confirmación de disponibilidad.</p>
+        <button class="btn" onclick="closeModal();clearSelection();" style="margin-top:2rem;">Volver al catálogo</button>
+      </div>`;
+  }catch(err){
+    btn.disabled=false; btn.textContent='Enviar solicitud de presupuesto';
+    alert('Hubo un error al enviar. Escribinos a kosmo.estudiocreativo@gmail.com');
   }
 }
 
-function clearSelection() {
-  selectedItems.clear();
-  updatePresupuestoBar();
-  renderCatalog();
-}
-
-function updatePresupuestoBar() {
-  const count = selectedItems.size;
-  const total = [...selectedItems.values()].reduce((s, i) => s + i.precio, 0);
-  document.getElementById('presupuestoCount').textContent = `${count} ítem${count !== 1 ? 's' : ''} seleccionado${count !== 1 ? 's' : ''}`;
-  document.getElementById('presupuestoTotal').textContent = `$${total.toLocaleString('es-AR')}`;
-  document.getElementById('presupuestoBar').classList.toggle('visible', count > 0);
-}
-
-// ─── MODAL ────────────────────────────────────────────────
-function openModal() {
-  const items = [...selectedItems.values()];
-  const total = items.reduce((s, i) => s + i.precio, 0);
-  document.getElementById('modalItems').innerHTML = items.map(item => `
-    <div class="modal-item">
-      <span class="modal-item-name">${item.nombre}</span>
-      <span class="modal-item-price">$${item.precio.toLocaleString('es-AR')}</span>
-      <button class="modal-item-remove" onclick="removeFromModal('${item.codigo}')">✕</button>
-    </div>
-  `).join('');
-  document.getElementById('modalTotal').textContent = `$${total.toLocaleString('es-AR')}`;
-  document.getElementById('modalOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function removeFromModal(codigo) {
-  selectedItems.delete(codigo);
-  updatePresupuestoBar();
-  if (selectedItems.size === 0) { closeModal(); renderCatalog(); return; }
-  openModal();
-  renderCatalog();
-}
-
-function closeModal() {
-  document.getElementById('modalOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function closeModalOutside(e) {
-  if (e.target === document.getElementById('modalOverlay')) closeModal();
-}
-
-// ─── SEND PRESUPUESTO ─────────────────────────────────────
-function sendPresupuesto() {
-  const nombre = document.getElementById('formNombre').value.trim();
-  const mail = document.getElementById('formMail').value.trim();
-  if (!nombre || !mail) { alert('Por favor completá nombre y mail.'); return; }
-
-  const items = [...selectedItems.values()];
-  const total = items.reduce((s, i) => s + i.precio, 0);
-  const retiro = document.getElementById('formRetiro').value;
-  const devolucion = document.getElementById('formDevolucion').value;
-  const productora = document.getElementById('formProductora').value;
-  const proyecto = document.getElementById('formProyecto').value;
-  const notas = document.getElementById('formNotas').value;
-
-  const listaItems = items.map(i => `- ${i.nombre} ($${i.precio.toLocaleString('es-AR')}/sem)`).join('\n');
-
-  const subject = encodeURIComponent(`Solicitud de presupuesto KOSMO — ${nombre}${proyecto ? ' | ' + proyecto : ''}`);
-  const body = encodeURIComponent(
-`Hola KOSMO,
-
-Nombre: ${nombre}
-Mail: ${mail}${productora ? '\nProductora/Agencia: ' + productora : ''}${proyecto ? '\nProyecto: ' + proyecto : ''}${retiro ? '\nFecha de retiro: ' + retiro : ''}${devolucion ? '\nFecha de devolución: ' + devolucion : ''}
-
-ÍTEMS SOLICITADOS:
-${listaItems}
-
-TOTAL ESTIMADO (1 semana): $${total.toLocaleString('es-AR')}${notas ? '\n\nNotas: ' + notas : ''}
-
----
-Enviado desde kosmo.com.ar`
-  );
-
-  window.location.href = `mailto:${MAIL_KOSMO}?subject=${subject}&body=${body}`;
-}
-
-function sendContactForm() {
-  const subject = encodeURIComponent('Consulta desde kosmo.com.ar');
-  window.location.href = `mailto:${MAIL_KOSMO}?subject=${subject}`;
+// SEND CONTACTO
+async function sendContacto(){
+  const nombre=document.getElementById('ctcNombre').value.trim();
+  const mail=document.getElementById('ctcMail').value.trim();
+  const msg=document.getElementById('ctcMensaje').value.trim();
+  if(!nombre||!mail||!msg){alert('Por favor completá nombre, mail y mensaje.');return;}
+  const btn=document.getElementById('btnCtc');
+  btn.disabled=true; btn.textContent='Enviando...';
+  try{
+    await emailjs.send(SVC,TPL,{
+      nombre, mail,
+      productora:document.getElementById('ctcProductora').value||'—',
+      proyecto:'—', retiro:'—', devolucion:'—',
+      items:'(Consulta general)', total:'—', notas:msg,
+    });
+    btn.textContent='¡Mensaje enviado!';
+    btn.style.background='var(--accent)'; btn.style.color='var(--ink)';
+    ['ctcNombre','ctcMail','ctcProductora','ctcMensaje'].forEach(id=>document.getElementById(id).value='');
+    setTimeout(()=>{btn.disabled=false;btn.textContent='Enviar mensaje';btn.style.background='';btn.style.color='';},4000);
+  }catch(err){
+    btn.disabled=false; btn.textContent='Enviar mensaje';
+    alert('Hubo un error. Escribinos a kosmo.estudiocreativo@gmail.com');
+  }
 }
 </script>
 </body>
