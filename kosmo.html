@@ -418,7 +418,7 @@ function parseCSV(text){
 async function loadCatalog(){
   document.getElementById('catalogGrid').innerHTML='<div class="loading">Cargando catálogo...</div>';
   try{
-    const res=await fetch(CSV);
+    const res=await fetch(CSV + '&t=' + Date.now());
     const text=await res.text();
     allItems=parseCSV(text);
     filteredItems=[...allItems];
