@@ -579,13 +579,27 @@ function removeFromModal(cod){
 function closeModal(){document.getElementById('overlay').classList.remove('open');document.body.style.overflow='';}
 function closeOverlayOutside(e){if(e.target===document.getElementById('overlay'))closeModal();}
 
+// WEEK + PRICE CALCULATOR
+function calcWeeksAndTotal(retiroVal,devolucionVal,baseTotal){
+  if(!retiroVal||!devolucionVal) return {semanas:1,total:baseTotal,label:'1 semana (fechas no especificadas)'};
+  const d1=new Date(retiroVal),d2=new Date(devolucionVal);
+  const dias=Math.max(1,Math.ceil((d2-d1)/(1000*60*60*24)));
+  const semanas=Math.ceil(dias/7);
+  const total=semanas===1?baseTotal:baseTotal+(baseTotal*0.5*(semanas-1));
+  const label=semanas===1?`1 semana (${dias} días)`:`${semanas} semanas (${dias} días) — base + ${semanas-1}x50%`;
+  return {semanas,total,label};
+}
+
 // SEND PRESUPUESTO
 async function sendPresupuesto(){
   const nombre=document.getElementById('fNombre').value.trim();
   const mail=document.getElementById('fMail').value.trim();
   if(!nombre||!mail){alert('Por favor completá nombre y mail.');return;}
   const items=[...selectedItems.values()];
-  const total=items.reduce((s,i)=>s+i.precio,0);
+  const baseTotal=items.reduce((s,i)=>s+i.precio,0);
+  const retiroVal=document.getElementById('fRetiro').value;
+  const devolucionVal=document.getElementById('fDevolucion').value;
+  const {semanas,total,label}=calcWeeksAndTotal(retiroVal,devolucionVal,baseTotal);
   const lista=items.map(i=>`[${i.codigo}] ${i.nombre} — $${i.precio.toLocaleString('es-AR')}/sem`).join('\n');
   const btn=document.getElementById('btnEnviar');
   btn.disabled=true; btn.textContent='Enviando...';
@@ -597,7 +611,7 @@ async function sendPresupuesto(){
       retiro:document.getElementById('fRetiro').value||'—',
       devolucion:document.getElementById('fDevolucion').value||'—',
       items:lista,
-      total:`$${total.toLocaleString('es-AR')}`,
+      total:`$${total.toLocaleString('es-AR')} (${label})`,
       notas:document.getElementById('fNotas').value||'—',
     });
     document.getElementById('modalContent').innerHTML=`
@@ -621,11 +635,10 @@ async function sendContacto(){
   const btn=document.getElementById('btnCtc');
   btn.disabled=true; btn.textContent='Enviando...';
   try{
-    await emailjs.send(SVC,TPL,{
+    await emailjs.send(SVC,'template_vukca4c',{
       nombre, mail,
-      productora:document.getElementById('ctcProductora').value||'—',
-      proyecto:'—', retiro:'—', devolucion:'—',
-      items:'(Consulta general)', total:'—', notas:msg,
+      productora:document.getElementById('ctcProductora').value||'--',
+      mensaje:msg,
     });
     btn.textContent='¡Mensaje enviado!';
     btn.style.background='var(--accent)'; btn.style.color='var(--ink)';
