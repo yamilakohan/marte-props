@@ -389,28 +389,37 @@ function showPage(id){
 }
 
 // CSV
-function parseCSVLine(line){
-  const r=[]; let cur='',q=false;
-  for(let i=0;i<line.length;i++){
-    const ch=line[i];
-    if(ch==='"'){if(q&&line[i+1]==='"'){cur+='"';i++;}else q=!q;}
-    else if(ch===','&&!q){r.push(cur);cur='';}
-    else cur+=ch;
-  }
-  r.push(cur); return r;
-}
-
 function parseCSV(text){
-  const lines=text.trim().split('\n');
-  if(lines.length<3) return [];
-  return lines.slice(2).map(line=>{
-    const c=parseCSVLine(line);
-    const fotos=[c[7],c[9],c[10]].map(f=>f?.trim()).filter(Boolean);
+  // Parser que maneja correctamente saltos de línea dentro de celdas entre comillas
+  const rows=[];
+  let cur='', q=false, row=[];
+  for(let i=0;i<text.length;i++){
+    const ch=text[i];
+    if(ch==='"'){
+      if(q&&text[i+1]==='"'){cur+='"';i++;}
+      else q=!q;
+    } else if(ch===','&&!q){
+      row.push(cur); cur='';
+    } else if((ch==='\n'||ch==='\r')&&!q){
+      if(ch==='\r'&&text[i+1]==='\n') i++;
+      row.push(cur); cur='';
+      rows.push(row); row=[];
+    } else {
+      cur+=ch;
+    }
+  }
+  if(cur||row.length) { row.push(cur); rows.push(row); }
+
+  // Fila 0: título, Fila 1: encabezados, Fila 2+: datos
+  if(rows.length<3) return [];
+  return rows.slice(2).map(c=>{
+    const foto=c[7]?.trim()||'';
+    const fotos=foto?[foto]:[];
     return {
       codigo:c[0]?.trim()||'', categoria_web:c[1]?.trim()||'',
       nombre:c[3]?.trim()||'', precio:parseInt(c[4]?.replace(/[^0-9]/g,'')||'0')||0,
-      medidas:c[5]?.trim()||'', observaciones:c[6]?.trim()||'',
-      fotos, foto_url:fotos[0]||'', visible:(c[8]?.trim()||'SI').toUpperCase()
+      medidas:(c[5]?.trim()||'').replace(/\n/g,' '), observaciones:c[6]?.trim()||'',
+      fotos, foto_url:foto, visible:(c[8]?.trim()||'SI').toUpperCase()
     };
   }).filter(i=>i.codigo&&i.nombre&&i.visible==='SI'&&i.precio>0);
 }
