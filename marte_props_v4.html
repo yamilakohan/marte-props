@@ -344,7 +344,7 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
             <div id="r-items" style="max-height:260px;overflow-y:auto;"></div>
             <div style="padding-top:10px;margin-top:4px;border-top:0.5px solid var(--bor);">
               <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span style="color:var(--mut);">Alquiler 1 semana</span><span id="t-alq" style="font-weight:500;">$ 0</span></div>
-              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span style="color:var(--mut);">+ 20% diferido 30 días</span><span id="t-30">$ 0</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span style="color:var(--mut);">+ 20% diferido 15 días</span><span id="t-30">$ 0</span></div>
               <div style="display:flex;justify-content:space-between;font-size:12px;padding-top:8px;border-top:0.5px solid var(--bor);"><span style="color:var(--mut);">Garantía total</span><span id="t-gtia" style="font-weight:500;">$ 0</span></div>
             </div>
             <div style="margin-top:.9rem;display:flex;flex-direction:column;gap:7px;">
@@ -408,7 +408,7 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
         </div>
       </div>
       <div style="display:flex;gap:12px;margin-bottom:1rem;font-size:12px;">
-        <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:var(--abg);display:inline-block;"></span>Retiro</span>
+        <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:var(--coral-lt);display:inline-block;"></span>Retiro</span>
         <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:var(--gbg);display:inline-block;"></span>Devolución</span>
       </div>
       <div class="card" style="padding:.9rem;">
@@ -794,11 +794,11 @@ function renderDash(){
   const remActivos=rem.filter(r=>(r.estado||'borrador')!=='borrador');
   const allI=remActivos.flatMap(r=>r.items);
   const cl=new Set(rem.map(r=>r.cliente)).size;
-  const tot=allI.reduce((s,i)=>s+(i.alq||0)*(i.qty||1),0);
+  const tot=remActivos.reduce((s,r)=>s+calcRemitoTotals(r).tot,0);
   $('m-s').textContent=loaded?STOCK.filter(s=>s.alq>0).length:'…';
   $('m-r').textContent=rem.length;$('m-c').textContent=cl;$('m-t').textContent=fmt(tot);
   $('d-rem').innerHTML=rem.slice(0,6).map(r=>{
-    const t=r.items.reduce((s,i)=>s+(i.alq||0)*(i.qty||1),0);
+    const t=calcRemitoTotals(r).tot;
     return`<div class="prow"><div><div style="font-size:13px;font-weight:500;">${r.numero}</div><div style="font-size:11px;color:var(--mut);">${r.cliente.split('-')[0].trim()}</div></div><div style="text-align:right;"><div style="font-size:13px;">${fmt(t)}</div><div style="font-size:11px;color:var(--mut);">${fD(r.retiro)} → ${fD(r.devolucion)}</div></div></div>`;
   }).join('');
   const byPago={na:0,pendiente:0,facturado:0,pagado:0};
@@ -881,6 +881,15 @@ function confirmOcup(){
   if(pendItemCod!==null){const i=STOCK.find(s=>s.cod===pendItemCod);if(i)SEL.push({...i,conflicto:true});pendItemCod=null;}
   closeM('m-ocup');renderIS();renderRes();
 }
+function calcRemitoTotals(r){
+  const dias=r&&r.retiro&&r.devolucion?Math.round((new Date(r.devolucion)-new Date(r.retiro))/86400000):null;
+  const semanasExtra=dias&&dias>7?Math.ceil((dias-7)/7):0;
+  const factorRecargo=1+(semanasExtra*0.5);
+  const totBase=(r.items||[]).reduce((s,i)=>s+(i.alq||0)*(i.qty||1),0);
+  const tot=Math.round(totBase*factorRecargo);
+  const tg=(r.items||[]).reduce((s,i)=>s+(i.gtia||0)*(i.qty||1),0);
+  return {dias,semanasExtra,factorRecargo,tieneRecargo:semanasExtra>0,totBase,tot,tg};
+}
 function renderRes(){
   const ta=SEL.reduce((s,i)=>s+(i.alq||0)*(i.qty||1),0),tg=SEL.reduce((s,i)=>s+(i.gtia||0)*(i.qty||1),0);
   const totalItems=SEL.reduce((s,i)=>s+(i.qty||1),0);
@@ -925,13 +934,13 @@ function filterR(){
   const filEst=($('fil-est')||{value:''}).value;
   const rem=getAllR().filter(r=>(!q||r.numero.toLowerCase().includes(q)||r.cliente.toLowerCase().includes(q)||(r.facturador||'').toLowerCase().includes(q))&&(!filEst||r.estado===filEst||(!r.estado&&filEst==='borrador')));
   $('r-table').innerHTML=rem.map(r=>{
-    const tot=r.items.reduce((s,i)=>s+(i.alq||0)*(i.qty||1),0);
+    const {tot}=calcRemitoTotals(r);
     const est=r.estado||'borrador';const pago=defaultPago(est,r.pago);
     return`<tr>
       <td style="font-weight:500;">${r.numero}</td>
       <td><div style="font-size:13px;">${r.cliente.split('-')[0].trim()}</div>${r.productora?`<div style="font-size:11px;color:var(--mut);">${r.productora}</div>`:''}</td>
       <td>${fD(r.retiro)}</td><td>${fD(r.devolucion)}</td>
-      <td>${r.items.length}</td>
+      <td>${r.items.reduce((n,i)=>n+(i.qty||1),0)}</td>
       <td style="font-weight:500;">${fmt(tot)}</td>
       <td><button class="estbtn ${EST_CLASS[est]}" onclick="avEst('${r.numero}')">${EST_LABEL[est]}</button></td>
       <td><button class="pbtn ${PAGO_CLASS[pago]}" onclick="avPago('${r.numero}')">${PAGO_LABEL[pago]}</button></td>
@@ -954,16 +963,7 @@ function renderPrev(){
   if(loaded)setTimeout(patchRemitoFotos,50);
 }
 function buildRemito(r){
-  const dias=r.retiro&&r.devolucion?Math.round((new Date(r.devolucion)-new Date(r.retiro))/86400000):null;
-  // Calcular semanas y recargo
-  const semanasBase=1;
-  const semanasExtra=dias&&dias>7?Math.ceil((dias-7)/7):0;
-  const factorRecargo=1+(semanasExtra*0.5);// +50% por cada semana extra
-  const tieneRecargo=semanasExtra>0;
-  // Calcular totales con recargo aplicado
-  const totBase=r.items.reduce((s,i)=>s+(i.alq||0)*(i.qty||1),0);
-  const tot=Math.round(totBase*factorRecargo);
-  const tg=r.items.reduce((s,i)=>s+(i.gtia||0)*(i.qty||1),0);
+  const {dias,semanasExtra,factorRecargo,tieneRecargo,totBase,tot,tg}=calcRemitoTotals(r);
   const fecha=r.fecha?fD(r.fecha):new Date().toLocaleDateString('es-AR');
   const gtiaStr=r.gtipo?`${r.gtipo.charAt(0).toUpperCase()+r.gtipo.slice(1)}${r.gref?' — '+r.gref:''}`:'';
   $('prev-content').innerHTML=`<div style="background:#fff;border:0.5px solid var(--bor);border-radius:12px;padding:2rem;max-width:800px;">
@@ -972,7 +972,10 @@ function buildRemito(r){
       <div style="text-align:right;"><div style="font-size:20px;font-weight:500;font-family:'DM Serif Display',serif;">N° ${r.numero}</div><div style="font-size:12px;color:var(--mut);">Fecha: ${fecha}</div>${r.facturador?`<div style="font-size:11px;color:var(--mut);">Facturó: ${r.facturador}</div>`:''}</div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
-      <div><div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);">Cliente</div><div style="font-size:14px;font-weight:500;margin-top:2px;">${r.cliente}</div></div>
+      <div><div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);">Cliente</div><div style="font-size:14px;font-weight:500;margin-top:2px;">${r.cliente}</div>
+        ${r.productora?`<div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);margin-top:8px;">Productora</div><div style="font-size:13px;margin-top:2px;">${r.productora}</div>`:''}
+        ${r.proyecto?`<div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);margin-top:8px;">Proyecto</div><div style="font-size:13px;margin-top:2px;">${r.proyecto}</div>`:''}
+      </div>
       <div><div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);">Retiro</div><div style="font-size:14px;font-weight:500;margin-top:2px;">${fD(r.retiro)}</div></div>
       <div><div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);">Devolución</div><div style="font-size:14px;font-weight:500;margin-top:2px;">${fD(r.devolucion)}</div></div>
       <div><div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);">Días</div><div style="font-size:14px;font-weight:500;margin-top:2px;">${dias!==null?dias+' días':'—'}</div></div>
@@ -1011,7 +1014,8 @@ function buildRemito(r){
         — Validez del presupuesto 15 días. El valor del alquiler es por una semana.<br>
         — Para confirmar un alquiler, hacerlo vía mail.<br>
         — Pagos con más de 7 días de demora tendrán recarga del 20%.<br>
-        — Por favor devolver los elementos embalados.
+        — Por favor devolver los elementos embalados.<br>
+        — Datos para el cheque en garantía: Yamila Alejandra Kohan / 27-33004568-5
         ${gtiaStr?`<br>— Garantía: ${gtiaStr}`:''}
       </div>
       <div style="text-align:right;min-width:220px;">
@@ -1054,6 +1058,31 @@ function setCalVista(v){
   $('cal-btn-sem').className='btn bsm'+(v==='semana'?' bp':' bs');
   renderCal();
 }
+function renderCalSem(rem){
+  var start=new Date(calDate.getFullYear(),calDate.getMonth(),calDate.getDate()-calDate.getDay());
+  var end=new Date(start.getFullYear(),start.getMonth(),start.getDate()+6);
+  var mAb=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  var dNom=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  $('cal-label').textContent=start.getDate()+' '+mAb[start.getMonth()]+' – '+end.getDate()+' '+mAb[end.getMonth()]+' '+end.getFullYear();
+  var today=new Date();today.setHours(0,0,0,0);
+  var activos=rem.filter(function(r){return (r.estado||'borrador')!=='borrador';});
+  var html='';
+  for(var d=0;d<7;d++){
+    var date=new Date(start.getFullYear(),start.getMonth(),start.getDate()+d);
+    var iso=date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0');
+    var chips='';
+    function chip(r,tipo){
+      var n=(r.items||[]).reduce(function(a,i){return a+(i.qty||1);},0);
+      return '<div class="cal-chip '+tipo+'" onclick="showCalDetail(\''+r.numero+'\')" title="'+r.cliente+'" style="white-space:normal;font-size:11px;padding:4px 6px;margin-bottom:4px;">'+
+        (tipo==='retiro'?'↑ Retiro':'↓ Devolución')+'<br><strong>'+r.numero+'</strong> '+r.cliente.split('-')[0].trim()+'<br>'+n+' items</div>';
+    }
+    activos.filter(function(r){return r.retiro===iso;}).forEach(function(r){chips+=chip(r,'retiro');});
+    activos.filter(function(r){return r.devolucion===iso;}).forEach(function(r){chips+=chip(r,'devolucion');});
+    if(!chips)chips='<div style="font-size:11px;color:var(--mut);">—</div>';
+    html+='<div><div class="cal-day-name">'+dNom[d]+' '+date.getDate()+'</div><div class="cal-day'+(date.getTime()===today.getTime()?' today':'')+'" style="min-height:160px;cursor:default;">'+chips+'</div></div>';
+  }
+  $('cal-container').innerHTML='<div class="cal-grid">'+html+'</div>';
+}
 function renderCal(){
   var rem=getAllR();
   if(calVista==='mes')renderCalMes(rem);
@@ -1093,13 +1122,13 @@ function renderCalMes(rem){
 
 function showCalDetail(num){
   const r=getAllR().find(x=>x.numero===num);if(!r)return;
-  const tot=r.items.reduce((s,i)=>s+(i.alq||0)*(i.qty||1),0);
+  const tot=calcRemitoTotals(r).tot;
   $('m-cal-title').textContent=`Remito ${r.numero}`;
   $('m-cal-content').innerHTML=`
     <div style="font-size:14px;margin-bottom:1rem;">
       <div style="margin-bottom:6px;"><strong>${r.cliente}</strong></div>
       <div style="font-size:13px;color:var(--mut);">Retiro: ${fD(r.retiro)} · Devolución: ${fD(r.devolucion)}</div>
-      <div style="font-size:13px;color:var(--mut);">Total: ${fmt(tot)} · Items: ${r.items.length}</div>
+      <div style="font-size:13px;color:var(--mut);">Total: ${fmt(tot)} · Items: ${r.items.reduce((n,i)=>n+(i.qty||1),0)}</div>
       ${r.facturador?`<div style="font-size:13px;color:var(--mut);">Facturó: ${r.facturador}</div>`:''}
     </div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;">
@@ -1145,59 +1174,58 @@ function filterS(){
 function filterH(){
   const q=($('sh')||{value:''}).value.toLowerCase();
   const rows=[];
-  getAllR().forEach(r=>r.items.forEach(i=>rows.push({remito:r.numero,fecha:r.fecha,cliente:r.cliente,retiro:r.retiro,devolucion:r.devolucion,desc:i.desc,alq:i.alq})));
+  getAllR().forEach(r=>{
+    const k=calcRemitoTotals(r).factorRecargo;
+    r.items.forEach(i=>{
+      const qty=i.qty||1;
+      rows.push({remito:r.numero,fecha:r.fecha,cliente:r.cliente,retiro:r.retiro,devolucion:r.devolucion,
+        desc:i.desc+(qty>1?' ×'+qty:''),alq:Math.round((i.alq||0)*qty*k)});
+    });
+  });
   const f=rows.filter(h=>!q||h.cliente.toLowerCase().includes(q)||h.desc.toLowerCase().includes(q)||h.remito.toLowerCase().includes(q));
   $('h-table').innerHTML=f.slice(0,200).map(h=>`<tr><td style="font-weight:500;">${h.remito}</td><td style="color:var(--mut);">${fD(h.fecha)}</td><td><span class="chip">${h.cliente.split('-')[0].trim()}</span></td><td>${fD(h.retiro)}</td><td>${fD(h.devolucion)}</td><td>${h.desc}</td><td style="font-weight:500;">${fmt(h.alq)}</td></tr>`).join('');
 }
 
 // ESTADÍSTICAS
+var _topCVista='cli';
 function renderEst(){
-  const iC={},cT={},cI={},catT={},factT={},mesT={},prodT={},prodI={};
+  const iC={},iN={},cT={},cI={},catT={},factT={},mesT={},prodT={},prodI={};
+  const stockByCod={};
+  getEffectiveStock().forEach(function(x){stockByCod[String(x.cod)]=x;});
   getAllR().filter(r=>(r.estado||'borrador')!=='borrador').forEach(r=>{
-    const c=r.cliente.split('-')[0].trim();
+    const c=(r.cliente||'').split('-')[0].trim()||'Sin cliente';
     const fact=r.facturador||'Sin asignar';
     const prod=r.productora||'Sin productora';
-    // Actividad por mes
-    if(r.retiro){
-      const mes=r.retiro.slice(0,7);
+    const k=calcRemitoTotals(r).factorRecargo;   // mismo recargo que el remito impreso
+    const mes=r.retiro?String(r.retiro).slice(0,7):null;
+    if(mes){
       if(!mesT[mes])mesT[mes]={rec:0,items:0,alq:0};
-      mesT[mes].alq=mesT[mes].alq||0;// se suma 1 por remito mas abajo
-      r.items.forEach(function(){mesT[mes].items=(mesT[mes].items||0)+1;});
+      mesT[mes].alq+=1;                            // 1 alquiler por remito
     }
-    r.items.forEach(i=>{
-      iC[i.desc]=(iC[i.desc]||0)+1;
-      cT[c]=(cT[c]||0)+(i.alq||0)*(i.qty||1);cI[c]=(cI[c]||0)+1;
-      prodT[prod]=(prodT[prod]||0)+(i.alq||0)*(i.qty||1);prodI[prod]=(prodI[prod]||0)+1;
-      const s=getEffectiveStock().find(x=>String(x.cod)===String(i.cod));
+    (r.items||[]).forEach(i=>{
+      const qty=i.qty||1;                          // unidades
+      const monto=Math.round((i.alq||0)*qty*k);
+      const key=String(i.cod||i.desc);             // agrupar por código, no por descripción
+      const s=stockByCod[String(i.cod)];
+      iC[key]=(iC[key]||0)+qty;
+      if(!iN[key])iN[key]=s?s.nombre:(i.desc||('Item '+i.cod));
+      cT[c]=(cT[c]||0)+monto;cI[c]=(cI[c]||0)+qty;
+      prodT[prod]=(prodT[prod]||0)+monto;prodI[prod]=(prodI[prod]||0)+qty;
       const cat=s?s.cat:'Otros';
-      catT[cat]=(catT[cat]||0)+(i.alq||0)*(i.qty||1);
-      factT[fact]=(factT[fact]||0)+(i.alq||0)*(i.qty||1);
-      if(r.retiro){const mes=r.retiro.slice(0,7);if(mesT[mes])mesT[mes].rec=(mesT[mes].rec||0)+(i.alq||0)*(i.qty||1);}
+      catT[cat]=(catT[cat]||0)+monto;
+      factT[fact]=(factT[fact]||0)+monto;
+      if(mes){mesT[mes].items+=qty;mesT[mes].rec+=monto;}
     });
-    // Contar alquileres por mes (1 por remito)
-    if(r.retiro){const mes=r.retiro.slice(0,7);if(mesT[mes])mesT[mes].alq=(mesT[mes].alq||0)+1;}
   });
-  $('top-i').innerHTML=Object.entries(iC).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([n,c],i)=>`<div class="srow"><div style="display:flex;gap:8px;align-items:center;flex:1;min-width:0;"><span style="font-size:11px;color:var(--mut);width:14px;">${i+1}</span><span style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${n}</span></div><span class="badge bgr">${c}x</span></div>`).join('');
-  const tot=Object.values(catT).reduce((s,v)=>s+v,0);
-  $('top-cat').innerHTML=Object.entries(catT).sort((a,b)=>b[1]-a[1]).slice(0,12).map(([cat,t])=>`<div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;"><span>${cat}</span><span style="font-weight:500;">${fmt(t)} <span style="color:var(--mut);font-weight:400;">(${Math.round(t/tot*100)}%)</span></span></div><div class="barbg"><div class="barfill" style="width:${Math.round(t/tot*100)}%;"></div></div></div>`).join('');
+  $('top-i').innerHTML=Object.entries(iC).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([key,c],i)=>`<div class="srow"><div style="display:flex;gap:8px;align-items:center;flex:1;min-width:0;"><span style="font-size:11px;color:var(--mut);width:14px;">${i+1}</span><span style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${iN[key]}</span></div><span class="badge bgr">${c}x</span></div>`).join('')||'<div style="font-size:13px;color:var(--mut);">Sin datos</div>';
+  const tot=Object.values(catT).reduce((s,v)=>s+v,0)||1;
+  $('top-cat').innerHTML=Object.entries(catT).sort((a,b)=>b[1]-a[1]).slice(0,12).map(([cat,t])=>`<div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;"><span>${cat}</span><span style="font-weight:500;">${fmt(t)} <span style="color:var(--mut);font-weight:400;">(${Math.round(t/tot*100)}%)</span></span></div><div class="barbg"><div class="barfill" style="width:${Math.round(t/tot*100)}%;"></div></div></div>`).join('')||'<div style="font-size:13px;color:var(--mut);">Sin datos</div>';
+  const totF=Object.values(factT).reduce((s,v)=>s+v,0)||1;
+  $('top-fact').innerHTML=Object.entries(factT).sort((a,b)=>b[1]-a[1]).map(([fact,t])=>`<div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;"><span style="font-weight:500;">${fact}</span><span style="font-weight:500;">${fmt(t)} <span style="color:var(--mut);font-weight:400;">(${Math.round(t/totF*100)}%)</span></span></div><div class="barbg"><div class="barfill" style="width:${Math.round(t/totF*100)}%;"></div></div></div>`).join('')||'<div style="font-size:13px;color:var(--mut);">Sin datos</div>';
   window._topCData={cT,cI,prodT,prodI};
-  renderTopC('cli');
   window._mesData=mesT;
-  renderMesChart(_mesVista||'rec');
-  renderTopC(_mesVista==='cli'?'cli':'cli');
-  const totF=Object.values(factT).reduce((s,v)=>s+v,0);
-  $('top-fact').innerHTML=Object.entries(factT).sort((a,b)=>b[1]-a[1]).map(([fact,t])=>`<div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;"><span style="font-weight:500;">${fact}</span><span style="font-weight:500;">${fmt(t)} <span style="color:var(--mut);font-weight:400;">(${Math.round(t/totF*100)}%)</span></span></div><div class="barbg"><div class="barfill" style="width:${Math.round(t/totF*100)}%;"></div></div></div>`).join('');
-  // Recaudacion por mes
-  const meses={'01':'Enero','02':'Febrero','03':'Marzo','04':'Abril','05':'Mayo','06':'Junio','07':'Julio','08':'Agosto','09':'Septiembre','10':'Octubre','11':'Noviembre','12':'Diciembre'};
-  const totMes=Object.values(mesT).reduce((s,v)=>s+v,0)||1;
-  const mesHtml=Object.entries(mesT).sort((a,b)=>b[0].localeCompare(a[0])).map(([mes,t])=>{
-    const [anio,m]=mes.split('-');
-    return`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--bor);font-size:13px;">
-      <span style="font-weight:500;">${meses[m]||m} ${anio}</span>
-      <span style="font-weight:500;color:var(--coral);">${fmt(t)}</span>
-    </div>`;
-  }).join('');
-  $('top-mes').innerHTML=mesHtml||'<div style="font-size:13px;color:var(--mut);">Sin datos</div>';
+  setTopCVista(_topCVista);
+  setMesVista(_mesVista);
 }
 
 function openM(id){$(id).classList.add('open');}
@@ -1319,6 +1347,7 @@ function patchRemitoFotos(){
 }
 
 function setTopCVista(v){
+  _topCVista=v;
   ['cli','prod'].forEach(function(k){
     var btn=$('top-c-btn-'+k);
     if(btn){btn.style.background=k===v?'var(--coral)':'';btn.style.color=k===v?'#fff':'';}
@@ -1364,6 +1393,7 @@ function renderMesChart(v){
   var maxVal=Math.max.apply(null,entries.map(function(e){return e[1][v]||0;}).concat([1]));
   var el=document.getElementById('top-mes');
   if(!el)return;
+  if(!entries.length){el.innerHTML='<div style="font-size:13px;color:var(--mut);">Sin datos</div>';return;}
   el.innerHTML=entries.map(function(entry){
     var mes=entry[0],d=entry[1];
     var parts=mes.split('-');
@@ -1460,7 +1490,7 @@ function renderESR(){
       imgT(s.foto,32)+
       '<div style="flex:1;min-width:0;">'+
         '<div style="font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+s.nombre+'</div>'+
-        '<div style="font-size:10px;color:var(--mut);">'+s.cod+'   '+(s.cat||'')+'   '+fmt(s.alq||0)+'</div>'+
+        '<div style="font-size:10px;color:var(--mut);">'+s.cod+' · '+(s.cat||'')+' · '+fmt(s.alq||0)+'</div>'+
       '</div>'+
       '<button class="btn bsm bp" onclick="addEditItem('+s.cod+')">Agregar</button>'+
     '</div>';
