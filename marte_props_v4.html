@@ -504,7 +504,8 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.9rem;">
           <div style="font-weight:500;font-size:14px;">Actividad por mes</div>
           <div style="display:flex;gap:6px;">
-            <button class="btn bs bsm" id="mes-btn-rec" onclick="setMesVista('rec')" style="background:var(--coral);color:#fff;">Recaudación</button>
+            <button class="btn bs bsm" id="mes-btn-all" onclick="setMesVista('all')" style="background:var(--coral);color:#fff;">En paralelo</button>
+            <button class="btn bs bsm" id="mes-btn-rec" onclick="setMesVista('rec')">Recaudación</button>
             <button class="btn bs bsm" id="mes-btn-items" onclick="setMesVista('items')">Items</button>
             <button class="btn bs bsm" id="mes-btn-alq" onclick="setMesVista('alq')">Alquileres</button>
           </div>
@@ -1377,10 +1378,10 @@ function cycleFacturador(num){
 }
 
 
-var _mesVista='rec';
+var _mesVista='all';
 function setMesVista(v){
   _mesVista=v;
-  ['rec','items','alq'].forEach(function(k){
+  ['all','rec','items','alq'].forEach(function(k){
     var btn=document.getElementById('mes-btn-'+k);
     if(btn){btn.style.background=k===v?'var(--coral)':'';btn.style.color=k===v?'#fff':'';}
   });
@@ -1394,6 +1395,23 @@ function renderMesChart(v){
   var el=document.getElementById('top-mes');
   if(!el)return;
   if(!entries.length){el.innerHTML='<div style="font-size:13px;color:var(--mut);">Sin datos</div>';return;}
+  if(v==='all'){
+    var mx={rec:1,items:1,alq:1};
+    entries.forEach(function(e){['rec','items','alq'].forEach(function(k){mx[k]=Math.max(mx[k],e[1][k]||0);});});
+    var cols=[['rec','Recaudación'],['items','Items'],['alq','Alquileres']];
+    var head='<div style="display:grid;grid-template-columns:64px repeat(3,1fr);gap:12px;font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;padding-bottom:6px;border-bottom:0.5px solid var(--bor);margin-bottom:8px;"><div></div>'+cols.map(function(c){return '<div>'+c[1]+'</div>';}).join('')+'</div>';
+    el.innerHTML=head+entries.map(function(entry){
+      var parts=entry[0].split('-'),d=entry[1];
+      var label=meses_es[parseInt(parts[1])-1]+' '+parts[0];
+      var cells=cols.map(function(c){
+        var val=d[c[0]]||0;
+        var txt=c[0]==='rec'?'$ '+Math.round(val).toLocaleString('es-AR'):String(val);
+        return '<div><div style="font-size:12px;font-weight:500;margin-bottom:3px;">'+txt+'</div><div class="barbg"><div class="barfill" style="width:'+Math.round(val/mx[c[0]]*100)+'%;"></div></div></div>';
+      }).join('');
+      return '<div style="display:grid;grid-template-columns:64px repeat(3,1fr);gap:12px;align-items:center;margin-bottom:12px;"><div style="font-size:12px;">'+label+'</div>'+cells+'</div>';
+    }).join('');
+    return;
+  }
   el.innerHTML=entries.map(function(entry){
     var mes=entry[0],d=entry[1];
     var parts=mes.split('-');
