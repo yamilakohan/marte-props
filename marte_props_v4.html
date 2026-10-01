@@ -636,10 +636,19 @@ const PAGO_ORDER=['na','pendiente','facturado','pagado'];
 const PAGO_LABEL={na:'N/A',pendiente:'Pendiente',facturado:'Facturado',pagado:'Pagado'};
 const PAGO_CLASS={na:'p-na',pendiente:'p-pendiente',facturado:'p-facturado',pagado:'p-pagado'};
 function defaultPago(estado,pago){
-  if(pago&&PAGO_LABEL[pago])return pago;
-  return (estado||'borrador')==='borrador'?'na':'pendiente';
+  const borr=(estado||'borrador')==='borrador';
+  if(pago&&PAGO_LABEL[pago]){
+    if(pago==='na'&&!borr)return 'pendiente';   // confirmado/entregado/... nunca es N/A
+    return pago;
+  }
+  return borr?'na':'pendiente';
 }
-function nextPago(p){const cur=PAGO_LABEL[p]?p:'na';const i=PAGO_ORDER.indexOf(cur);return PAGO_ORDER[(i+1)%PAGO_ORDER.length];}
+function nextPago(p,estado){
+  if((estado||'borrador')==='borrador')return 'na';           // borrador: sin cobro, no cicla
+  const ciclo=['pendiente','facturado','pagado'];             // pendiente → facturado → pagado → pendiente
+  const i=ciclo.indexOf(p);
+  return ciclo[(i+1)%ciclo.length];
+}
 
 const HB=[
   {n:"11-1217",f:"2025-12-19",c:"Camila Colauti - Moria - About Ent.",r:"2025-12-17",dv:"2025-12-23",it:[{a:20001,d:"FASANO",p:11500},{a:20002,d:"CARTERA PARMA",p:10500},{a:20021,d:"CARTERA RITA",p:12500},{a:20022,d:"CARTERA SOLAR",p:12500},{a:20023,d:"CARTERA MOSS",p:10500},{a:20029,d:"CARTERA BRIGITTE",p:11500},{a:20031,d:"CARTERA MERLINA",p:12500},{a:20036,d:"SARITA",p:14500},{a:20045,d:"CARTERA BERTA",p:10500},{a:20049,d:"CARTERA BARBARA",p:9500},{a:20052,d:"CARTERA XL CUERO",p:14500},{a:35006,d:"RIÑONERA NEGRA SAMSONITE",p:9500}]},
@@ -764,6 +773,11 @@ function goSec(id){
 function avEst(num){
   ensureLocal(num);
   RL[num].estado=nextEst(RL[num].estado||'borrador');
+  const pagoNuevo=defaultPago(RL[num].estado,RL[num].pago);
+  if(pagoNuevo!==RL[num].pago){
+    RL[num].pago=pagoNuevo;
+    postToSheet({action:'updatePago',numero:num,valor:pagoNuevo}).catch(()=>{});
+  }
   saveRL();
   postToSheet({action:'updateEstado',numero:num,valor:RL[num].estado}).catch(()=>{});
   if(RL[num].estado==='confirmado'){
@@ -774,7 +788,7 @@ function avEst(num){
 }
 function avPago(num){
   ensureLocal(num);
-  RL[num].pago=nextPago(defaultPago(RL[num].estado,RL[num].pago));
+  RL[num].pago=nextPago(defaultPago(RL[num].estado,RL[num].pago),RL[num].estado);
   saveRL();
   postToSheet({action:'updatePago',numero:num,valor:RL[num].pago}).catch(()=>{});
   if($('section-remitos').classList.contains('active'))renderRemitos();
@@ -804,8 +818,9 @@ function renderDash(){
   }).join('');
   const byPago={na:0,pendiente:0,facturado:0,pagado:0};
   remActivos.forEach(r=>{const pago=defaultPago(r.estado,r.pago);byPago[pago]=(byPago[pago]||0)+1;});
+  const nBorr=rem.filter(r=>(r.estado||'borrador')==='borrador').length;
   $('d-pago').innerHTML=`<div style="display:flex;gap:8px;margin-bottom:.9rem;">
-    <div style="flex:1;background:var(--tag);border-radius:8px;padding:10px;"><div style="font-size:11px;color:var(--mut);">N/A</div><div style="font-size:20px;font-weight:300;font-family:'DM Serif Display',serif;color:var(--mut);">${byPago.na}</div></div>
+    <div style="flex:1;background:var(--tag);border-radius:8px;padding:10px;"><div style="font-size:11px;color:var(--mut);">Borradores</div><div style="font-size:20px;font-weight:300;font-family:'DM Serif Display',serif;color:var(--mut);">${nBorr}</div></div>
     <div style="flex:1;background:var(--rbg);border-radius:8px;padding:10px;"><div style="font-size:11px;color:var(--rtx);">Pendientes</div><div style="font-size:20px;font-weight:300;font-family:'DM Serif Display',serif;color:var(--rtx);">${byPago.pendiente}</div></div>
     <div style="flex:1;background:var(--abg);border-radius:8px;padding:10px;"><div style="font-size:11px;color:var(--atx);">Facturados</div><div style="font-size:20px;font-weight:300;font-family:'DM Serif Display',serif;color:var(--atx);">${byPago.facturado}</div></div>
     <div style="flex:1;background:var(--gbg);border-radius:8px;padding:10px;"><div style="font-size:11px;color:var(--gtx);">Pagados</div><div style="font-size:20px;font-weight:300;font-family:'DM Serif Display',serif;color:var(--gtx);">${byPago.pagado}</div></div>
@@ -1543,7 +1558,7 @@ function saveEdit(){
   const num=String($('en').value||'').trim().replace(/[^0-9\-a-zA-Z]/g,'');
   const cli=$('ec').value.trim();
   if(!num||!cli){alert('Completá número y cliente.');return;}
-  const pago=RL[editKey]?RL[editKey].pago:'pendiente';
+  const pago=RL[editKey]?defaultPago($('eest').value,RL[editKey].pago):defaultPago($('eest').value,'');
   const fecha=RL[editKey]?RL[editKey].fecha:new Date().toISOString().slice(0,10);
   if(editKey!==num)delete RL[editKey];
   const editedRemito={numero:num,cliente:cli,
