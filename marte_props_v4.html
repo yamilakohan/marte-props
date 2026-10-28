@@ -95,6 +95,7 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
 /* MODAL */
 .mbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center;}
 .mbg.open{display:flex;}
+#m-ocup{z-index:400;}
 .modal{background:var(--sur);border-radius:16px;padding:1.75rem;width:90%;max-height:90vh;overflow-y:auto;}
 .modal h2{font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:1rem;}
 /* CALENDARIO */
@@ -184,8 +185,8 @@ tr:last-child td{border-bottom:none;}tr:hover td{background:var(--bg);}
       <div></div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.9rem;margin-bottom:1rem;">
-      <div><label>Retiro</label><input id="er" type="date"/></div>
-      <div><label>Devolución</label><input id="ed2" type="date"/></div>
+      <div><label>Retiro</label><input id="er" type="date" onchange="renderESR()"/></div>
+      <div><label>Devolución</label><input id="ed2" type="date" onchange="renderESR()"/></div>
       <div><label>Estado del remito</label>
         <select id="eest">
           <option value="borrador">Borrador</option>
@@ -576,7 +577,7 @@ function loadRemitosFromSheet(){
     });
     if(changed){
       saveRL();
-      renderDash();filterH();
+      renderDash();filterH();suggestRemitoNum();
       if($('section-remitos')&&$('section-remitos').classList.contains('active'))renderRemitos();
       if($('section-calendario')&&$('section-calendario').classList.contains('active'))renderCal();
     }
@@ -680,6 +681,13 @@ function getAllR(){
   const locN=new Set(loc.map(r=>r.numero));
   return[...loc,...base.filter(r=>!locN.has(r.numero))].sort((a,b)=>b.numero.localeCompare(a.numero));
 }
+function dISO(v){const x=String(v||'');return /^\d{4}-\d{2}-\d{2}/.test(x)?x.slice(0,10):x;}
+let pendEditCod=null;
+function ocupPor(cod,desde,hasta,excl){
+  const dD=new Date(desde),dH=new Date(hasta);
+  return getAllR().filter(r=>r.numero!==excl&&(r.estado||'borrador')!=='borrador'&&r.retiro&&r.devolucion&&
+    new Date(dISO(r.retiro))<=dH&&new Date(dISO(r.devolucion))>=dD&&(r.items||[]).some(i=>Number(i.cod)===Number(cod)));
+}
 function getOcup(desde,hasta,excl=null){
   const dD=new Date(desde),dH=new Date(hasta),o=new Set();
   getAllR().forEach(r=>{
@@ -687,7 +695,7 @@ function getOcup(desde,hasta,excl=null){
     if(!r.retiro||!r.devolucion)return;
     // Borradores no bloquean disponibilidad
     if((r.estado||'borrador')==='borrador')return;
-    if(new Date(r.retiro)<=dH&&new Date(r.devolucion)>=dD)r.items.forEach(i=>o.add(i.cod));
+    if(new Date(dISO(r.retiro))<=dH&&new Date(dISO(r.devolucion))>=dD)r.items.forEach(i=>o.add(Number(i.cod)));
   });
   return o;
 }
@@ -749,6 +757,19 @@ function initCats(){
   });
 }
 
+function nextRemitoNum(){
+  var best=null,pre='11';
+  getAllR().forEach(function(r){
+    var m=String(r.numero).match(/^(\d+)-(\d+)$/);
+    if(m){var n=parseInt(m[2],10);if(best===null||n>best){best=n;pre=m[1];}}
+  });
+  return best===null?'':pre+'-'+(best+1);
+}
+function suggestRemitoNum(){
+  var el=$('nr-n');if(!el)return;
+  var cur=el.value.trim();
+  if(!cur||cur===el.dataset.auto){var nx=nextRemitoNum();el.value=nx;el.dataset.auto=nx;}
+}
 function goSec(id){
   document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
@@ -766,7 +787,7 @@ function goSec(id){
     filterSES();
   }
   if(id==='disponibilidad')initCats();
-  if(id==='nuevo-remito'){initCats();renderIS();renderRes();}
+  if(id==='nuevo-remito'){initCats();renderIS();renderRes();suggestRemitoNum();}
   if(id==='calendario')renderCal();
 }
 
@@ -874,8 +895,8 @@ function togItem(cod){
   if(ret&&dev){
     const oc=getOcup(ret,dev);
     if(oc.has(cod)){
-      pendItemCod=cod;
-      const otros=getAllR().filter(r=>r.retiro&&r.devolucion&&new Date(r.retiro)<=new Date(dev)&&new Date(r.devolucion)>=new Date(ret)&&r.items.find(i=>i.cod===cod));
+      pendItemCod=cod;pendEditCod=null;
+      const otros=ocupPor(cod,ret,dev,null);
       const on=otros.length?otros.map(r=>`${r.numero} (${r.cliente.split('-')[0].trim()})`).join(', '):'otro remito';
       $('m-ocup-msg').innerHTML=`<strong>${item.nombre}</strong> ya está en <strong>${on}</strong> para ${fD(ret)} → ${fD(dev)}.<br><br>¿Querés agregarlo igual?`;
       openM('m-ocup');return;
@@ -890,11 +911,12 @@ function changeQty(cod,delta){
   renderIS();renderRes();
 }
 function confirmOcup(){
+  if(pendEditCod!==null){
+    const st=getEffectiveStock().find(s=>s.cod===pendEditCod);
+    if(st&&!editItems.find(i=>String(i.cod)===String(st.cod)))editItems.push({cod:st.cod,desc:st.nombre,alq:st.alq||0,gtia:st.gtia||0,foto:st.foto||'',qty:1,conflicto:true});
+    pendEditCod=null;closeM('m-ocup');renderEIL();renderESR();return;
+  }
   if(pendItemCod!==null){const i=STOCK.find(s=>s.cod===pendItemCod);if(i)SEL.push({...i,qty:1,conflicto:true});pendItemCod=null;}
-  closeM('m-ocup');renderIS();renderRes();
-}
-function confirmOcup(){
-  if(pendItemCod!==null){const i=STOCK.find(s=>s.cod===pendItemCod);if(i)SEL.push({...i,conflicto:true});pendItemCod=null;}
   closeM('m-ocup');renderIS();renderRes();
 }
 function calcRemitoTotals(r){
@@ -932,6 +954,7 @@ function saveAndView(){
   };
   RL[num]=remitoData;
   saveRL();
+  $('nr-n').value='';$('nr-n').dataset.auto='';
   // Sync to Sheet
   postToSheet({action:'saveRemito',remito:remitoData})
     .then(r=>{if(!r.ok)console.log('Sheet sync error:',r.error);})
@@ -1018,6 +1041,11 @@ function buildRemito(r){
           <td style="padding:8px 10px;font-size:13px;font-weight:500;text-align:right;">${fmt(alqFinal)}</td>
         </tr>`;}).join('')}
       </tbody>
+      <tfoot><tr style="border-top:1px solid var(--bor);">
+        <td colspan="3" style="padding:8px 10px;font-size:12px;font-weight:500;text-align:right;">Total de items</td>
+        <td style="padding:8px 10px;font-size:13px;font-weight:500;text-align:center;">${r.items.reduce((n,i)=>n+(i.qty||1),0)}</td>
+        <td></td><td></td>
+      </tr></tfoot>
     </table>
     ${tieneRecargo?`<div style="background:var(--coral-lt);border:1px solid var(--coral);border-radius:8px;padding:10px 14px;margin-bottom:1rem;font-size:11px;color:var(--coral-dk);line-height:1.7;">
       <strong>Nota sobre el recargo por duración:</strong> El precio base de alquiler corresponde a una semana (7 días). 
@@ -1450,7 +1478,8 @@ function abrirEdit(num){
       desc:i.desc||(st?st.nombre:''),
       alq:i.alq!=null?i.alq:(st?st.alq:0),
       gtia:i.gtia!=null?i.gtia:(st?st.gtia:0),
-      foto:i.foto||(st?st.foto:'')
+      foto:i.foto||(st?st.foto:''),
+      qty:i.qty||1
     };
   });
   $('en').value=r.numero||'';
@@ -1509,6 +1538,7 @@ function renderESR(){
   if(!el)return;
   const q=(($('esa')||{value:''}).value||'').toLowerCase().trim();
   const used=new Set(editItems.map(function(i){return String(i.cod);}));
+  const ocE=($('er').value&&$('ed2').value)?getOcup($('er').value,$('ed2').value,editKey):new Set();
   const items=getEffectiveStock().filter(function(s){
     return s.alq>0 &&
       !used.has(String(s.cod)) &&
@@ -1519,10 +1549,11 @@ function renderESR(){
     return;
   }
   el.innerHTML=items.map(function(s){
-    return '<div class="irow">'+
+    var isO=ocE.has(Number(s.cod));
+    return '<div class="irow'+(isO?' ocup':'')+'">'+
       imgT(s.foto,32)+
       '<div style="flex:1;min-width:0;">'+
-        '<div style="font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+s.nombre+'</div>'+
+        '<div style="font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+s.nombre+(isO?' <span style="font-size:10px;background:var(--abg);color:var(--atx);padding:1px 5px;border-radius:10px;">Ocupado</span>':'')+'</div>'+
         '<div style="font-size:10px;color:var(--mut);">'+s.cod+' · '+(s.cat||'')+' · '+fmt(s.alq||0)+'</div>'+
       '</div>'+
       '<button class="btn bsm bp" onclick="addEditItem('+s.cod+')">Agregar</button>'+
@@ -1534,6 +1565,14 @@ function addEditItem(cod){
   const st=getEffectiveStock().find(function(s){return s.cod===cod;});
   if(!st)return;
   if(editItems.find(function(i){return String(i.cod)===String(cod);})){return;}
+  var ret=$('er').value,dev=$('ed2').value;
+  if(ret&&dev&&getOcup(ret,dev,editKey).has(Number(cod))){
+    pendEditCod=cod;pendItemCod=null;
+    var otros=ocupPor(cod,ret,dev,editKey);
+    var on=otros.length?otros.map(function(r){return r.numero+' ('+r.cliente.split('-')[0].trim()+')';}).join(', '):'otro remito';
+    $('m-ocup-msg').innerHTML='<strong>'+st.nombre+'</strong> ya está en <strong>'+on+'</strong> para '+fD(ret)+' → '+fD(dev)+'.<br><br>¿Querés agregarlo igual?';
+    openM('m-ocup');return;
+  }
   editItems.push({cod:st.cod,desc:st.nombre,alq:st.alq||0,gtia:st.gtia||0,foto:st.foto||'',qty:1});
   renderEIL();
   renderESR();
@@ -1541,15 +1580,14 @@ function addEditItem(cod){
 
 function removeEditItem(cod){
   editItems=editItems.filter(function(i){return String(i.cod)!==String(cod);});
-
+  renderEIL();
+  renderESR();
+}
 function changeEditQty(cod,delta){
   var idx=editItems.findIndex(function(i){return String(i.cod)===String(cod);});
   if(idx<0)return;
   var newQty=(editItems[idx].qty||1)+delta;
   if(newQty<=0){editItems.splice(idx,1);}else{editItems[idx].qty=newQty;}
-  renderEIL();
-  renderESR();
-}
   renderEIL();
   renderESR();
 }
